@@ -5,12 +5,15 @@ import {
   View,
   Text,
   ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
+  ImageBackground,
+  Image
 } from "react-native";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import IoniconsIcon from "react-native-vector-icons/Ionicons";
 import EntypoIcon from "react-native-vector-icons/Entypo";
 
+const recycleIllustration = require('../assets/images/recycleillus.png');
 
 function Index(props: any) {
   return (
@@ -28,18 +31,27 @@ function Index(props: any) {
       </View> 
       {/* header*/}
       <View style={styles.scrollArea}>
+        
+            
         <ScrollView
           horizontal={true}
           contentContainerStyle={styles.scrollArea_contentContainerStyle}
         >
+          
           <View style={styles.loremIpsum2ColumnRow}>
             <View style={styles.loremIpsum2Column}>
               <Text style={styles.loremIpsum2}>
-                Atik Yaglari {"\n"}Geri Donustur!
+                Atik Yaglari {"\n"}Geri Donusturrrrr
               </Text>
               <TouchableOpacity style={styles.button}></TouchableOpacity>
             </View>
-            <View style={styles.rect}></View>
+            <ImageBackground
+              source={recycleIllustration} // Use the local image
+              style={styles.rect}
+              imageStyle={styles.image}
+            >
+            </ImageBackground>
+            
           </View>
         </ScrollView>
       </View>
@@ -93,7 +105,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   icon: {
-    color: "rgba(128,128,128,1)",
+    color: "green",
     fontSize: 35,
     marginTop: 3
   },
@@ -112,7 +124,7 @@ const styles = StyleSheet.create({
     marginTop: 5
   },
   icon2: {
-    color: "rgba(128,128,128,1)",
+    color: "green",
     fontSize: 30,
     marginLeft: 139,
     marginTop:10,
@@ -144,7 +156,7 @@ const styles = StyleSheet.create({
   button: {
     width: 132,
     height: 28,
-    backgroundColor: "rgba(248,231,28,1)",
+    backgroundColor: "#F6E96B",
     borderRadius: 25,
     overflow: "visible",
     shadowColor: "rgba(248,231,28,1)",
@@ -161,11 +173,16 @@ const styles = StyleSheet.create({
     width: 159
   },
   rect: {
-    width: 114,
-    height: 94,
-    backgroundColor: "#E6E6E6",
-    borderRadius: 37,
-    marginLeft: 18
+    width: 170,
+    height: 90,
+    
+    
+    
+  },
+  image: {
+   
+    width:170,
+    height:105,
   },
   loremIpsum2ColumnRow: {
     height: 108,
@@ -238,7 +255,7 @@ const styles = StyleSheet.create({
     marginTop: 54
   },
   icon3: {
-    color: "rgba(128,128,128,1)",
+    color: "green",
     fontSize: 40,
     height: 44,
     width: 40
