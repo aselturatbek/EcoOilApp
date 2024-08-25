@@ -9,21 +9,21 @@ export default function TabLayout() {
     <View style={{ flex: 1 }}>
       <Tabs
         screenOptions={{
-          tabBarActiveTintColor: 'green', // Color when tab is selected
+          tabBarActiveTintColor: '#6fdb64', // Color when tab is selected
           tabBarStyle: {
-            backgroundColor: "#F6E96B", // Transparent background
-            borderTopWidth: 10, // Border thickness
-            borderTopColor:"#F6E96B", // Border color
+            backgroundColor: "#F6E96B", 
             position: 'absolute',
-            borderRadius:25,
-            
+            borderTopLeftRadius:25,
+            borderTopRightRadius:25,
             height: 90,
             left: 0,
             right: 0,
             bottom: 0,
-            
             elevation: 0,
             zIndex: 0,
+            shadowOffset: { width: 0, height: 0 }, // Remove shadow for iOS
+            shadowOpacity: 0, // Remove shadow for iOS
+            shadowRadius: 0, // Remove shadow for iOS
           },
           headerShown: false,
         }}>
@@ -82,13 +82,16 @@ const styles = StyleSheet.create({
     bottom: 50, // FAB'ı yukarı taşımak için bottom değerini arttırdık
     left: '50%',
     transform: [{ translateX: -25 }], // FAB'ı yatayda ortalamak için
-    backgroundColor: "green",
+    backgroundColor: "#6fdb64",
     borderRadius: 25,
     height: 50,
     width: 50,
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 5,
+    shadowOffset: { width: 0, height: 0 }, // Remove shadow for iOS
+    shadowOpacity: 0.35, // Remove shadow for iOS
+    shadowRadius: 4, // Remove shadow for iOS
     zIndex: 1,
   },
   fab1:{
@@ -102,7 +105,7 @@ const styles = StyleSheet.create({
     width: 58,
     alignItems: 'center',
     justifyContent: 'center',
-    elevation: 5,
+    elevation: 0,
     zIndex: 1,
     
   }

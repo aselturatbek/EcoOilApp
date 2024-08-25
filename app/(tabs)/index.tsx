@@ -1,5 +1,4 @@
-//HOME SCREEN
-import React, { Component } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   View,
@@ -7,55 +6,77 @@ import {
   ScrollView,
   TouchableOpacity,
   ImageBackground,
-  Image
+  Image,
+  Dimensions,
 } from "react-native";
 import FeatherIcon from "react-native-vector-icons/Feather";
-import IoniconsIcon from "react-native-vector-icons/Ionicons";
 import EntypoIcon from "react-native-vector-icons/Entypo";
+import { useNavigation } from '@react-navigation/native'; // For navigation
+
+
+const { width, height } = Dimensions.get("window");
 
 const recycleIllustration = require('../assets/images/recycleillus.png');
+const bgImage = require('../assets/images/bgheader.jpg');
 
-function Index(props: any) {
+
+function Index() {
+  const navigation = useNavigation();
+  const [isMenuVisible, setMenuVisible] = useState(false);
+
   return (
-    //top of the page,username and menu
     <View style={styles.container}>
       <View style={styles.iconRow}>
-        <FeatherIcon name="user" style={styles.icon}></FeatherIcon>
+        <TouchableOpacity onPress={() => navigation.navigate('ProfileScreen')}>
+          <FeatherIcon name="user" style={styles.icon} />
+        </TouchableOpacity>
         <Text style={styles.loremIpsum}>
           <Text style={styles.WelcomeText}>Welcome,</Text>
-          {"\n"}Asel Turatbek!</Text>
-        <FeatherIcon
-          name="more-horizontal"
-          style={styles.icon2}
-        ></FeatherIcon>
-      </View> 
-      {/* header*/}
-      <View style={styles.scrollArea}>
-        
-            
+          {"\n"}Asel Turatbek!
+        </Text>
+        <TouchableOpacity onPress={() => setMenuVisible(!isMenuVisible)}>
+          <FeatherIcon name="more-horizontal" style={styles.icon2} />
+        </TouchableOpacity>
+      </View>
+      
+      {/* Burger Menu */}
+      {isMenuVisible && (
+        <View style={styles.menu}>
+          <TouchableOpacity onPress={() => console.log('Menu Item 1')}>
+            <Text>Menu Item 1</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => console.log('Menu Item 2')}>
+            <Text>Menu Item 2</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => console.log('Menu Item 3')}>
+            <Text>Menu Item 3</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      <ImageBackground style={styles.scrollArea} source={bgImage} imageStyle={styles.bgImage}>
         <ScrollView
           horizontal={true}
           contentContainerStyle={styles.scrollArea_contentContainerStyle}
         >
-          
           <View style={styles.loremIpsum2ColumnRow}>
             <View style={styles.loremIpsum2Column}>
               <Text style={styles.loremIpsum2}>
-                Atik Yaglari {"\n"}Geri Donusturrrrr
+                Geri Donustur {"\n"}Geri Donustur{"\n"}Geri Donustur
               </Text>
-              <TouchableOpacity style={styles.button}></TouchableOpacity>
+              <TouchableOpacity style={styles.button}>
+                <Text style={styles.buttonText}>Geri Dönüştür</Text>
+              </TouchableOpacity>
             </View>
             <ImageBackground
-              source={recycleIllustration} // Use the local image
+              source={recycleIllustration}
               style={styles.rect}
               imageStyle={styles.image}
-            >
-            </ImageBackground>
-            
+            />
           </View>
         </ScrollView>
-      </View>
-      {/* statistics*/}
+      </ImageBackground>
+
       <View style={styles.rect2Row}>
         <View style={styles.rect2}>
           <Text style={styles.loremIpsum3}>150</Text>
@@ -67,23 +88,20 @@ function Index(props: any) {
           <Text style={styles.loremIpsum5}>150</Text>
         </View>
       </View>
-      {/* toplama noktalari*/}
+
       <View style={styles.rect7}>
-        <Text style={styles.loremIpsum8}></Text>
         <View style={styles.icon3Row}>
-          <EntypoIcon name="location" style={styles.icon3}></EntypoIcon>
-          <Text style={styles.loremIpsum7}>Toplama Noktalarina Goz At!</Text>
+          <EntypoIcon name="location" style={styles.icon3} />
+          <Text style={styles.loremIpsum7}>Toplama Noktalarına Göz At!</Text>
         </View>
       </View>
 
-      {/* blog,bilgilendirme postlari*/}
       <View style={styles.ecoOilStackColumnRow}>
         <View style={styles.ecoOilStackColumn}>
           <View style={styles.ecoOilStack}>
-            <Text style={styles.ecoOil}></Text>
             <View style={styles.rect10}>
               <Text style={styles.randevularim}>
-                Geri Donustur, Odul Kazan!
+                Geri Dönüştür, Ödül Kazan!
               </Text>
             </View>
           </View>
@@ -96,260 +114,234 @@ function Index(props: any) {
         </View>
       </View>
     </View>
-    
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    padding: width * 0.05, // 5% padding on all sides
   },
   icon: {
-    color: "green",
+    color: "#6fdb64",
     fontSize: 35,
-    marginTop: 3
+    marginTop: 3,
   },
   loremIpsum: {
-    fontFamily:'Montserrat-Bold',
-    color: "#121212",
-    fontSize:15,
     marginLeft: 15,
-    marginTop: 5
+    marginTop: 5,
+    fontFamily: 'Montserrat-Bold',
   },
   WelcomeText: {
-    fontFamily:'Montserrat-Regular',
+    fontFamily: 'Montserrat-Regular',
     color: "#121212",
-    fontSize:15,
-    marginLeft: 15,
-    marginTop: 5
+    fontSize: 15, // fixed font size
   },
   icon2: {
-    color: "green",
+    color: "#6fdb64",
     fontSize: 30,
-    marginLeft: 139,
-    marginTop:10,
+    marginLeft: 'auto',
+    marginTop: 10,
   },
   iconRow: {
     height: 44,
     flexDirection: "row",
     marginTop: 44,
     marginLeft: 23,
-    marginRight: 22
+    marginRight: 22,
   },
   scrollArea: {
-    width: 330,
-    height: 169,
+    width: '100%',
+    height: height * 0.2,
     backgroundColor: "rgba(168,236,95,1)",
     borderRadius: 21,
     marginTop: 9,
-    alignSelf: "center"
+    alignSelf: "center",
   },
   scrollArea_contentContainerStyle: {
-    width: 330,
-    height: 169
+    height: height * 0.2,
+    alignItems: 'center',
+  },
+  bgImage: {
+    borderRadius: 21,
+    transform: [{ scaleX: -1 }], // Horizontal flip
   },
   loremIpsum2: {
     fontFamily: "Montserrat-Bold",
-    color: "#121212",
-    fontSize: 20
-  },
-  button: {
-    width: 132,
-    height: 28,
-    backgroundColor: "#F6E96B",
-    borderRadius: 25,
-    overflow: "visible",
-    shadowColor: "rgba(248,231,28,1)",
-    shadowOffset: {
-      width: 3,
-      height: 3
-    },
-    elevation: 75,
-    shadowOpacity: 0.37,
-    shadowRadius: 25,
-    marginTop: 20
+    color: "black",
+    fontSize: width * 0.05, // Responsive font size
   },
   loremIpsum2Column: {
-    width: 159
+    justifyContent: 'center',
+  },
+  button: {
+    width: '90%',
+    height: height * 0.04,
+    backgroundColor: "#F6E96B",
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 30,
+    // Shadow style
+    elevation: 5, // For Android
+    shadowColor: "#000", // For iOS
+    shadowOffset: { width: 0, height: 2 }, // For iOS
+    shadowOpacity: 0.3, // For iOS
+    shadowRadius: 4, // For iOS
+  },
+  buttonText: {
+    fontFamily: "Montserrat-Bold",
+    color: "green",
+    fontSize: width * 0.035, // Responsive font size
   },
   rect: {
-    width: 170,
-    height: 90,
-    
-    
-    
+    width: width * 0.45,
+    height: height * 0.15,
   },
   image: {
-   
-    width:170,
-    height:105,
+    width: '100%',
+    height: '100%',
   },
   loremIpsum2ColumnRow: {
-    height: 108,
     flexDirection: "row",
-    marginTop: 40,
-    marginLeft: 11,
-    marginRight: 28
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    width: '100%',
   },
   rect2: {
-    width: 99,
-    height: 101,
+    width: '30%',
+    height: height * 0.12,
     backgroundColor: "#E6E6E6",
-    borderRadius: 21
+    borderRadius: 21,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   loremIpsum3: {
     fontFamily: "Montserrat-Bold",
     color: "#121212",
-    fontSize: 40,
-    marginTop: 26,
-    marginLeft: 15
+    fontSize: width * 0.08, // Responsive font size
   },
   rect5: {
-    width: 99,
-    height: 101,
+    width: '30%',
+    height: height * 0.12,
     backgroundColor: "#E6E6E6",
     borderRadius: 21,
-    marginLeft: 16
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: '2.5%',
   },
   loremIpsum4: {
     fontFamily: "Montserrat-Bold",
     color: "#121212",
-    fontSize: 40,
-    marginTop: 26,
-    marginLeft: 15
+    fontSize: width * 0.08, // Responsive font size
   },
   rect6: {
-    width: 99,
-    height: 101,
+    width: '30%',
+    height: height * 0.12,
     backgroundColor: "#E6E6E6",
     borderRadius: 21,
-    marginLeft: 16
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: '2.5%',
   },
   loremIpsum5: {
     fontFamily: "Montserrat-Bold",
     color: "#121212",
-    fontSize: 40,
-    marginTop: 26,
-    marginLeft: 16
+    fontSize: width * 0.08, // Responsive font size
   },
   rect2Row: {
-    height: 101,
     flexDirection: "row",
+    justifyContent: 'space-between',
     marginTop: 22,
-    marginLeft: 23,
-    marginRight: 23
   },
   rect7: {
-    width: 330,
-    height: 54,
+    width: '100%',
+    height: height * 0.07,
     backgroundColor: "#E6E6E6",
     borderRadius: 21,
     flexDirection: "row",
+    justifyContent: 'center',
+    alignItems: 'center',
     marginTop: 24,
-    marginLeft: 23
-  },
-  loremIpsum8: {
-    fontFamily: "Montserrat-Regular",
-    color: "#121212",
-    marginLeft: 1,
-    marginTop: 54
   },
   icon3: {
-    color: "green",
+    color: "#6fdb64",
     fontSize: 40,
     height: 44,
-    width: 40
+    width: 40,
   },
   loremIpsum7: {
     fontFamily: "Montserrat-Regular",
     color: "#121212",
+    fontSize: width * 0.045, // Responsive font size
     marginLeft: 8,
-    marginTop: 14
   },
   icon3Row: {
-    height: 44,
     flexDirection: "row",
+    alignItems: 'center',
+  },
+  ecoOilStackColumnRow: {
+    flexDirection: "row",
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
+  ecoOilStackColumn: {
     flex: 1,
-    marginRight: 82,
-    marginLeft: 19,
-    marginTop: 5
   },
-  loremIpsum6: {
-    fontFamily: "Montserrat-Bold",
-    color: "#121212",
-    fontSize: 20,
-    marginTop: -62,
-    marginLeft: 92
-  },
-  loremIpsum9: {
-    fontFamily: "Montserrat-Bold",
-    color: "#121212",
-    marginTop: 79,
-    marginLeft: 26
-  },
-  ecoOil: {
-    top: 0,
-    left: 55,
-    position: "absolute",
-    fontFamily: "Montserrat-Regular",
-    color: "#121212",
-    fontSize: 40
+  ecoOilStack: {
+    flexDirection: "row",
+    alignItems: 'center',
   },
   rect10: {
-    top: 0,
-    left: 0,
-    width: 199,
-    height: 59,
-    position: "absolute",
-    backgroundColor: "#E6E6E6",
-    borderRadius: 21
+    width: '100%',
+    height: height * 0.12,
+    backgroundColor: "#A8EC5F",
+    borderRadius: 21,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   randevularim: {
     fontFamily: "Montserrat-Bold",
     color: "#121212",
-    marginTop: 14,
-    marginLeft: 9
-  },
-  ecoOilStack: {
-    width: 199,
-    height: 59
+    fontSize: width * 0.05, // Responsive font size
   },
   rect8: {
-    width: 199,
-    height: 135,
-    backgroundColor: "#E6E6E6",
+    width: '100%',
+    height: height * 0.12,
+    backgroundColor: "#A8EC5F",
     borderRadius: 21,
-    marginTop: 10
+    marginTop: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   rect11: {
-    width: 199,
-    height: 68,
-    backgroundColor: "rgba(186,248,119,1)",
-    borderRadius: 21
-  },
-  ecoOilStackColumn: {
-    width: 199
+    width: '100%',
+    height: '100%',
   },
   rect9: {
-    width: 123,
-    height: 204,
-    backgroundColor: "#E6E6E6",
+    width: '48%',
+    height: height * 0.26,
+    backgroundColor: "#A8EC5F",
     borderRadius: 21,
-    marginLeft: 8
   },
   rect12: {
-    width: 123,
-    height: 59,
-    backgroundColor: "rgba(184,233,134,1)",
-    borderRadius: 21
+    width: '100%',
+    height: '100%',
   },
-  ecoOilStackColumnRow: {
-    height: 204,
-    flexDirection: "row",
-    marginTop: 11,
-    marginLeft: 23,
-    marginRight: 22
-  }
+  menu: {
+    position: 'absolute',
+    top: 50,
+    right: 10,
+    backgroundColor: '#FFF',
+    borderRadius: 5,
+    padding: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 5,
+  },
 });
 
 export default Index;
