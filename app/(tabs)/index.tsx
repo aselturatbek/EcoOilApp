@@ -11,6 +11,8 @@ import {
 } from "react-native";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import EntypoIcon from "react-native-vector-icons/Entypo";
+import { FontAwesome5 } from '@expo/vector-icons';
+
 import { Menu, MenuOptions, MenuOption, MenuTrigger, MenuProvider } from 'react-native-popup-menu';
 
 const { width, height } = Dimensions.get("window");
@@ -29,6 +31,7 @@ function Index(props: any) {
             <Text style={styles.WelcomeText}>Welcome,</Text>
             {"\n"}Asel Turatbek!
           </Text>
+          {/*pop up menu */}
           <View style={{ position: 'relative' }}>
             <Menu>
               <MenuTrigger>
@@ -50,7 +53,7 @@ function Index(props: any) {
           </View>
         </View>
 
-        {/*header,carousel*/}
+        {/*header section*/}
         <ImageBackground style={styles.scrollArea} source={bgImage} imageStyle={styles.bgImage}>
           <ScrollView
             horizontal={true}
@@ -74,18 +77,24 @@ function Index(props: any) {
             </View>
           </ScrollView>
         </ImageBackground>
-
-        <View style={styles.rect2Row}>
-          <View style={styles.rect2}>
-            <Text style={styles.loremIpsum3}>150</Text>
-          </View>
-          <View style={styles.rect5}>
-            <Text style={styles.loremIpsum4}>150</Text>
-          </View>
-          <View style={styles.rect6}>
-            <Text style={styles.loremIpsum5}>150</Text>
-          </View>
-        </View>
+        {/*statistics section*/ }
+        <View style={styles.statsContainer}>
+      <View style={[styles.statBox, styles.box1]}>
+        <FontAwesome5 name="recycle" style={styles.statIcon} />
+        <Text style={styles.statText}>150</Text>
+        <Text style={styles.statLabel}>Total Items</Text>
+      </View>
+      <View style={[styles.statBox, styles.box2]}>
+        <FontAwesome5 name="calendar-check" style={styles.statIcon} />
+        <Text style={styles.statText}>150</Text>
+        <Text style={styles.statLabel}>Appointments</Text>
+      </View>
+      <View style={[styles.statBox, styles.box3]}>
+        <FontAwesome5 name="trophy" style={styles.statIcon} />
+        <Text style={styles.statText}>150</Text>
+        <Text style={styles.statLabel}>Rewards</Text>
+      </View>
+    </View>
 
         <View style={styles.rect7}>
           <View style={styles.icon3Row}>
@@ -216,6 +225,50 @@ const styles = StyleSheet.create({
     borderRadius: 21,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  statsContainer: {
+    flexDirection: "row",
+    justifyContent: 'space-between',
+    marginTop: 22,
+  },
+  statBox: {
+    width: '30%',
+    height: height * 0.12,
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#E6E6E5',
+    elevation: 5, // Shadow for Android
+    shadowColor: '#000', // Shadow for iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+  box1: {
+    backgroundColor: '#6fdb64', // Green
+  },
+  box2: {
+    backgroundColor: '#6fdb64', // Yellow
+  },
+  box3: {
+    backgroundColor: '#6fdb64', // Light Red
+  },
+  statIcon: {
+    fontSize: 20,
+    color: 'green',
+    marginBottom: 5,
+  },
+  statText: {
+    fontFamily: 'Montserrat-Bold',
+    fontSize: width * 0.09,
+    color: 'beige',
+  },
+  statLabel: {
+    fontFamily: 'Montserrat-Regular',
+    fontSize: width * 0.029,
+    color: 'beige',
+    marginTop: 5,
   },
   loremIpsum3: {
     fontFamily: "Montserrat-Bold",
