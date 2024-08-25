@@ -19,7 +19,10 @@ const { width, height } = Dimensions.get("window");
 
 const recycleIllustration = require('../assets/images/recycleillus.png');
 const bgImage = require('../assets/images/bgheader.jpg');
-const profileImage = require('../assets/images/bgheader.jpg'); // Replace with your profile image
+const profileImage = require('../assets/images/bgheader.jpg'); 
+const bgMap = require('../assets/images/mapbg2.jpg'); 
+
+
 
 function Index(props: any) {
   return (
@@ -95,13 +98,14 @@ function Index(props: any) {
         <Text style={styles.statLabel}>Rewards</Text>
       </View>
     </View>
-
-        <View style={styles.rect7}>
+        {/*location section*/ }
+        <ImageBackground style={styles.rect7} source={bgMap} imageStyle={styles.mapImage}>
           <View style={styles.icon3Row}>
             <EntypoIcon name="location" style={styles.icon3}></EntypoIcon>
             <Text style={styles.loremIpsum7}>Toplama Noktalarına Göz At!</Text>
           </View>
-        </View>
+        </ImageBackground>
+        
 
         <View style={styles.ecoOilStackColumnRow}>
           <View style={styles.ecoOilStackColumn}>
@@ -317,15 +321,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 24,
   },
+  mapImage:{
+    borderRadius:21,
+
+
+  },
   icon3: {
-    color: "#6fdb64",
+    color: "green",
     fontSize: 40,
     height: 44,
     width: 40
   },
   loremIpsum7: {
-    fontFamily: "Montserrat-Regular",
-    color: "#121212",
+    fontFamily: "Montserrat-Bold",
+    color: "green",
     fontSize: width * 0.045, // Responsive font size
     marginLeft: 8,
   },
