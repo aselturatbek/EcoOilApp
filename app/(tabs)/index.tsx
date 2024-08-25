@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   StyleSheet,
   View,
@@ -7,113 +7,112 @@ import {
   TouchableOpacity,
   ImageBackground,
   Image,
-  Dimensions,
+  Dimensions
 } from "react-native";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import EntypoIcon from "react-native-vector-icons/Entypo";
-import { useNavigation } from '@react-navigation/native'; // For navigation
-
+import { Menu, MenuOptions, MenuOption, MenuTrigger, MenuProvider } from 'react-native-popup-menu';
 
 const { width, height } = Dimensions.get("window");
 
 const recycleIllustration = require('../assets/images/recycleillus.png');
 const bgImage = require('../assets/images/bgheader.jpg');
+const profileImage = require('../assets/images/bgheader.jpg'); // Replace with your profile image
 
-
-function Index() {
-  const navigation = useNavigation();
-  const [isMenuVisible, setMenuVisible] = useState(false);
-
+function Index(props: any) {
   return (
-    <View style={styles.container}>
-      <View style={styles.iconRow}>
-        <TouchableOpacity onPress={() => navigation.navigate('ProfileScreen')}>
-          <FeatherIcon name="user" style={styles.icon} />
-        </TouchableOpacity>
-        <Text style={styles.loremIpsum}>
-          <Text style={styles.WelcomeText}>Welcome,</Text>
-          {"\n"}Asel Turatbek!
-        </Text>
-        <TouchableOpacity onPress={() => setMenuVisible(!isMenuVisible)}>
-          <FeatherIcon name="more-horizontal" style={styles.icon2} />
-        </TouchableOpacity>
-      </View>
-      
-      {/* Burger Menu */}
-      {isMenuVisible && (
-        <View style={styles.menu}>
-          <TouchableOpacity onPress={() => console.log('Menu Item 1')}>
-            <Text>Menu Item 1</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => console.log('Menu Item 2')}>
-            <Text>Menu Item 2</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => console.log('Menu Item 3')}>
-            <Text>Menu Item 3</Text>
-          </TouchableOpacity>
+    <MenuProvider>
+      <View style={styles.container}>
+        <View style={styles.iconRow}>
+          <FeatherIcon name="user" style={styles.icon}></FeatherIcon>
+          <Text style={styles.loremIpsum}>
+            <Text style={styles.WelcomeText}>Welcome,</Text>
+            {"\n"}Asel Turatbek!
+          </Text>
+          <View style={{ position: 'relative' }}>
+            <Menu>
+              <MenuTrigger>
+                <FeatherIcon
+                  name="more-horizontal"
+                  style={styles.icon2}
+                ></FeatherIcon>
+              </MenuTrigger>
+              <MenuOptions customStyles={{ optionsContainer: styles.menuOptions }}>
+                <View style={styles.profileSection}>
+                  <Image source={profileImage} style={styles.profileImage} />
+                  <Text style={styles.username}>ecooiltubitak</Text>
+                </View>
+                <MenuOption onSelect={() => alert('Instagram')} text="Instagram" />
+                <MenuOption onSelect={() => alert('LinkedIn')} text="LinkedIn" />
+                <MenuOption onSelect={() => alert('Logout')} text="Logout" />
+              </MenuOptions>
+            </Menu>
+          </View>
         </View>
-      )}
 
-      <ImageBackground style={styles.scrollArea} source={bgImage} imageStyle={styles.bgImage}>
-        <ScrollView
-          horizontal={true}
-          contentContainerStyle={styles.scrollArea_contentContainerStyle}
-        >
-          <View style={styles.loremIpsum2ColumnRow}>
-            <View style={styles.loremIpsum2Column}>
-              <Text style={styles.loremIpsum2}>
-                Geri Donustur {"\n"}Geri Donustur{"\n"}Geri Donustur
-              </Text>
-              <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonText}>Geri Dönüştür</Text>
-              </TouchableOpacity>
+        {/*header,carousel*/}
+        <ImageBackground style={styles.scrollArea} source={bgImage} imageStyle={styles.bgImage}>
+          <ScrollView
+            horizontal={true}
+            contentContainerStyle={styles.scrollArea_contentContainerStyle}
+          >
+            <View style={styles.loremIpsum2ColumnRow}>
+              <View style={styles.loremIpsum2Column}>
+                <Text style={styles.loremIpsum2}>
+                  Geri Donustur {"\n"}Geri Donustur{"\n"}Geri Donustur
+                </Text>
+                <TouchableOpacity style={styles.button}>
+                  <Text style={styles.buttonText}>Geri Dönüştür</Text>
+                </TouchableOpacity>
+              </View>
+              <ImageBackground
+                source={recycleIllustration}
+                style={styles.rect}
+                imageStyle={styles.image}
+              >
+              </ImageBackground>
             </View>
-            <ImageBackground
-              source={recycleIllustration}
-              style={styles.rect}
-              imageStyle={styles.image}
-            />
+          </ScrollView>
+        </ImageBackground>
+
+        <View style={styles.rect2Row}>
+          <View style={styles.rect2}>
+            <Text style={styles.loremIpsum3}>150</Text>
           </View>
-        </ScrollView>
-      </ImageBackground>
+          <View style={styles.rect5}>
+            <Text style={styles.loremIpsum4}>150</Text>
+          </View>
+          <View style={styles.rect6}>
+            <Text style={styles.loremIpsum5}>150</Text>
+          </View>
+        </View>
 
-      <View style={styles.rect2Row}>
-        <View style={styles.rect2}>
-          <Text style={styles.loremIpsum3}>150</Text>
+        <View style={styles.rect7}>
+          <View style={styles.icon3Row}>
+            <EntypoIcon name="location" style={styles.icon3}></EntypoIcon>
+            <Text style={styles.loremIpsum7}>Toplama Noktalarına Göz At!</Text>
+          </View>
         </View>
-        <View style={styles.rect5}>
-          <Text style={styles.loremIpsum4}>150</Text>
-        </View>
-        <View style={styles.rect6}>
-          <Text style={styles.loremIpsum5}>150</Text>
-        </View>
-      </View>
 
-      <View style={styles.rect7}>
-        <View style={styles.icon3Row}>
-          <EntypoIcon name="location" style={styles.icon3} />
-          <Text style={styles.loremIpsum7}>Toplama Noktalarına Göz At!</Text>
-        </View>
-      </View>
-
-      <View style={styles.ecoOilStackColumnRow}>
-        <View style={styles.ecoOilStackColumn}>
-          <View style={styles.ecoOilStack}>
-            <View style={styles.rect10}>
-              <Text style={styles.randevularim}>
-                Geri Dönüştür, Ödül Kazan!
-              </Text>
+        <View style={styles.ecoOilStackColumnRow}>
+          <View style={styles.ecoOilStackColumn}>
+            <View style={styles.ecoOilStack}>
+              <View style={styles.rect10}>
+                <Text style={styles.randevularim}>
+                  Geri Dönüştür, Ödül Kazan!
+                </Text>
+              </View>
+            </View>
+            <View style={styles.rect8}>
+              <View style={styles.rect11}></View>
             </View>
           </View>
-          <View style={styles.rect8}>
-            <View style={styles.rect11}></View>
+          <View style={styles.rect9}>
+            <View style={styles.rect12}></View>
           </View>
         </View>
-        <View style={styles.rect9}>
-          <View style={styles.rect12}></View>
-        </View>
       </View>
-    </View>
+    </MenuProvider>
   );
 }
 
@@ -125,10 +124,10 @@ const styles = StyleSheet.create({
   icon: {
     color: "#6fdb64",
     fontSize: 35,
-    marginTop: 3,
+    marginTop: 3
   },
   loremIpsum: {
-    marginLeft: 15,
+    marginRight: 90,
     marginTop: 5,
     fontFamily: 'Montserrat-Bold',
   },
@@ -149,6 +148,7 @@ const styles = StyleSheet.create({
     marginTop: 44,
     marginLeft: 23,
     marginRight: 22,
+    justifyContent: "space-between", // Items spaced evenly
   },
   scrollArea: {
     width: '100%',
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(168,236,95,1)",
     borderRadius: 21,
     marginTop: 9,
-    alignSelf: "center",
+    alignSelf: "center"
   },
   scrollArea_contentContainerStyle: {
     height: height * 0.2,
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   },
   bgImage: {
     borderRadius: 21,
-    transform: [{ scaleX: -1 }], // Horizontal flip
+    transform: [{ scaleX: -1 }], // Yatay çevirme (flip horizontal)
   },
   loremIpsum2: {
     fontFamily: "Montserrat-Bold",
@@ -182,12 +182,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 30,
-    // Shadow style
-    elevation: 5, // For Android
-    shadowColor: "#000", // For iOS
-    shadowOffset: { width: 0, height: 2 }, // For iOS
-    shadowOpacity: 0.3, // For iOS
-    shadowRadius: 4, // For iOS
+    // Gölge stili
+    elevation: 5, // Android için
+    shadowColor: "#000", // iOS için
+    shadowOffset: { width: 0, height: 2 }, // iOS için
+    shadowOpacity: 0.3, // iOS için
+    shadowRadius: 4, // iOS için
   },
   buttonText: {
     fontFamily: "Montserrat-Bold",
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#E6E6E6",
     borderRadius: 21,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   loremIpsum3: {
     fontFamily: "Montserrat-Bold",
@@ -257,10 +257,9 @@ const styles = StyleSheet.create({
   },
   rect7: {
     width: '100%',
-    height: height * 0.07,
+    height: height * 0.12,
     backgroundColor: "#E6E6E6",
     borderRadius: 21,
-    flexDirection: "row",
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 24,
@@ -269,7 +268,7 @@ const styles = StyleSheet.create({
     color: "#6fdb64",
     fontSize: 40,
     height: 44,
-    width: 40,
+    width: 40
   },
   loremIpsum7: {
     fontFamily: "Montserrat-Regular",
@@ -299,7 +298,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#A8EC5F",
     borderRadius: 21,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   randevularim: {
     fontFamily: "Montserrat-Bold",
@@ -313,7 +312,7 @@ const styles = StyleSheet.create({
     borderRadius: 21,
     marginTop: 18,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   rect11: {
     width: '100%',
@@ -329,18 +328,36 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  menu: {
+  menuOptions: {
+    padding: 0.5,
+    borderRadius: 15,
+    backgroundColor: 'white',
     position: 'absolute',
-    top: 50,
-    right: 10,
-    backgroundColor: '#FFF',
-    borderRadius: 5,
-    padding: 10,
-    shadowColor: '#000',
+    right: 0, // Sağ tarafa yerleştirir
+    elevation: 5, // Gölge efekti Android için
+    shadowColor: "#000", // Gölge efekti iOS için
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 5,
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    minWidth: 200, // Increase width for better visibility
+  },
+  profileSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  profileImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 10,
+  },
+  username: {
+    fontFamily: 'Montserrat-Bold',
+    color: '#121212',
+    fontSize: 16,
   },
 });
 
