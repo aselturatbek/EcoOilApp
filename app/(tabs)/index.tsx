@@ -12,7 +12,6 @@ import {
 import FeatherIcon from "react-native-vector-icons/Feather";
 import EntypoIcon from "react-native-vector-icons/Entypo";
 import { FontAwesome5 } from '@expo/vector-icons';
-
 import { Menu, MenuOptions, MenuOption, MenuTrigger, MenuProvider } from 'react-native-popup-menu';
 
 const { width, height } = Dimensions.get("window");
@@ -22,19 +21,17 @@ const bgImage = require('../assets/images/bgheader.jpg');
 const profileImage = require('../assets/images/bgheader.jpg'); 
 const bgMap = require('../assets/images/mapbg2.jpg'); 
 
-
-
 function Index(props: any) {
   return (
     <MenuProvider>
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <View style={styles.iconRow}>
           <FeatherIcon name="user" style={styles.icon}></FeatherIcon>
           <Text style={styles.loremIpsum}>
             <Text style={styles.WelcomeText}>Welcome,</Text>
             {"\n"}Asel Turatbek!
           </Text>
-          {/*pop up menu */}
+          {/* Pop-up menu */}
           <View style={{ position: 'relative' }}>
             <Menu>
               <MenuTrigger>
@@ -56,12 +53,9 @@ function Index(props: any) {
           </View>
         </View>
 
-        {/*header section*/}
+        {/* Header section */}
         <ImageBackground style={styles.scrollArea} source={bgImage} imageStyle={styles.bgImage}>
-          <ScrollView
-            horizontal={true}
-            contentContainerStyle={styles.scrollArea_contentContainerStyle}
-          >
+          <View style={styles.scrollArea_contentContainerStyle}>
             <View style={styles.loremIpsum2ColumnRow}>
               <View style={styles.loremIpsum2Column}>
                 <Text style={styles.loremIpsum2}>
@@ -78,35 +72,37 @@ function Index(props: any) {
               >
               </ImageBackground>
             </View>
-          </ScrollView>
+          </View>
         </ImageBackground>
-        {/*statistics section*/ }
+
+        {/* Statistics section */}
         <View style={styles.statsContainer}>
-      <View style={[styles.statBox, styles.box1]}>
-        <FontAwesome5 name="recycle" style={styles.statIcon} />
-        <Text style={styles.statText}>150</Text>
-        <Text style={styles.statLabel}>Total Items</Text>
-      </View>
-      <View style={[styles.statBox, styles.box2]}>
-        <FontAwesome5 name="calendar-check" style={styles.statIcon} />
-        <Text style={styles.statText}>150</Text>
-        <Text style={styles.statLabel}>Appointments</Text>
-      </View>
-      <View style={[styles.statBox, styles.box3]}>
-        <FontAwesome5 name="trophy" style={styles.statIcon} />
-        <Text style={styles.statText}>150</Text>
-        <Text style={styles.statLabel}>Rewards</Text>
-      </View>
-    </View>
-        {/*location section*/ }
+          <View style={[styles.statBox, styles.box1]}>
+            <FontAwesome5 name="recycle" style={styles.statIcon} />
+            <Text style={styles.statText}>150</Text>
+            <Text style={styles.statLabel}>Total Items</Text>
+          </View>
+          <View style={[styles.statBox, styles.box2]}>
+            <FontAwesome5 name="calendar-check" style={styles.statIcon} />
+            <Text style={styles.statText}>150</Text>
+            <Text style={styles.statLabel}>Appointments</Text>
+          </View>
+          <View style={[styles.statBox, styles.box3]}>
+            <FontAwesome5 name="trophy" style={styles.statIcon} />
+            <Text style={styles.statText}>150</Text>
+            <Text style={styles.statLabel}>Rewards</Text>
+          </View>
+        </View>
+
+        {/* Location section */}
         <ImageBackground style={styles.rect7} source={bgMap} imageStyle={styles.mapImage}>
           <View style={styles.icon3Row}>
             <EntypoIcon name="location" style={styles.icon3}></EntypoIcon>
             <Text style={styles.loremIpsum7}>Toplama Noktalarına Göz At!</Text>
           </View>
         </ImageBackground>
-        
 
+        {/* EcoOil Stack section */}
         <View style={styles.ecoOilStackColumnRow}>
           <View style={styles.ecoOilStackColumn}>
             <View style={styles.ecoOilStack}>
@@ -124,7 +120,7 @@ function Index(props: any) {
             <View style={styles.rect12}></View>
           </View>
         </View>
-      </View>
+      </ScrollView>
     </MenuProvider>
   );
 }
@@ -137,7 +133,8 @@ const styles = StyleSheet.create({
   icon: {
     color: "#6fdb64",
     fontSize: 35,
-    marginTop: 3
+    marginTop: 3,
+    marginHorizontal:-19,
   },
   loremIpsum: {
     marginRight: 90,
@@ -183,6 +180,7 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat-Bold",
     color: "black",
     fontSize: width * 0.05, // Responsive font size
+    marginTop:20,
   },
   loremIpsum2Column: {
     justifyContent: 'center',
@@ -194,7 +192,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 30,
+    marginTop: 20,
     // Gölge stili
     elevation: 5, // Android için
     shadowColor: "#000", // iOS için
@@ -323,8 +321,6 @@ const styles = StyleSheet.create({
   },
   mapImage:{
     borderRadius:21,
-
-
   },
   icon3: {
     color: "green",
