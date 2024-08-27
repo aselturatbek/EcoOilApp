@@ -6,6 +6,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as SplashScreen from 'expo-splash-screen';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import WelcomeScreen from './auth/WelcomeScreen';
+import RegisterScreen from './auth/RegisterScreen';
+import LoginScreen from './auth/LoginScreen';
 import Home from './main/HomeScreen'; 
 import Location from './main/LocationScreen';
 import Profile from './main/ProfileScreen';
@@ -148,6 +150,16 @@ export default function RootLayout() {
         <Stack.Screen
           name="auth/WelcomeScreen"
           component={WelcomeScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="auth/RegisterScreen"
+          component={RegisterScreen}
+          options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="auth/LoginScreen"
+          component={LoginScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen

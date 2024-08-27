@@ -5,7 +5,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 // Tanımlaman gereken türler
 type RootStackParamList = {
   Welcome: undefined;
-  main: undefined; // 'Home' yerine 'Main' kullanacağız
+  'auth/RegisterScreen': undefined; // 'Home' yerine 'Main' kullanacağız
 };
 
 type WelcomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Welcome'>;
@@ -20,7 +20,7 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
       <Text style={styles.title}>Welcome to the App!</Text>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate('main')} // Burayı 'Main' olarak güncelledik
+        onPress={() => navigation.navigate('auth/RegisterScreen')} // Burayı 'Main' olarak güncelledik
       >
         <Text style={styles.buttonText}>Get Started</Text>
       </TouchableOpacity>
