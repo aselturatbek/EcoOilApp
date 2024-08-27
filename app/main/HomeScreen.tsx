@@ -13,6 +13,8 @@ import FeatherIcon from "react-native-vector-icons/Feather";
 import EntypoIcon from "react-native-vector-icons/Entypo";
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Menu, MenuOptions, MenuOption, MenuTrigger, MenuProvider } from 'react-native-popup-menu';
+import { useNavigation } from '@react-navigation/native'; // Import useNavigation
+import { StackNavigationProp } from "@react-navigation/stack";
 
 const { width, height } = Dimensions.get("window");
 
@@ -21,7 +23,15 @@ const bgImage = require('../assets/images/bgheader.jpg');
 const profileImage = require('../assets/images/bgheader.jpg'); 
 const bgMap = require('../assets/images/mapbg2.jpg'); 
 
+type RootStackParamList = {
+  Home: undefined;
+  'auth/WelcomeScreen': undefined;
+  // Diğer ekranlarınız
+};
+
+type NavigationPropType=StackNavigationProp<RootStackParamList,'Home'>;
 function Index(props: any) {
+  const navigation = useNavigation<NavigationPropType>(); // Get the navigation prop
   return (
     <MenuProvider>
       <ScrollView style={styles.container}>
@@ -47,7 +57,10 @@ function Index(props: any) {
                 </View>
                 <MenuOption onSelect={() => alert('Instagram')} text="Instagram" />
                 <MenuOption onSelect={() => alert('LinkedIn')} text="LinkedIn" />
-                <MenuOption onSelect={() => alert('Logout')} text="Logout" />
+                <MenuOption onSelect={() => {
+                  // Navigate to WelcomeScreen on logout
+                  navigation.navigate('auth/WelcomeScreen');
+                }} text="Logout" />
               </MenuOptions>
             </Menu>
           </View>
@@ -61,6 +74,7 @@ function Index(props: any) {
                 <Text style={styles.loremIpsum2}>
                   Geri Donustur {"\n"}Geri Donustur{"\n"}Geri Donustur
                 </Text>
+                
                 <TouchableOpacity style={styles.button}>
                   <Text style={styles.buttonText}>Geri Dönüştür</Text>
                 </TouchableOpacity>
@@ -94,7 +108,7 @@ function Index(props: any) {
           </View>
         </View>
 
-        {/* Location section */}
+        {/* location section */}
         <ImageBackground style={styles.rect7} source={bgMap} imageStyle={styles.mapImage}>
           <View style={styles.icon3Row}>
             <EntypoIcon name="location" style={styles.icon3}></EntypoIcon>
@@ -102,12 +116,12 @@ function Index(props: any) {
           </View>
         </ImageBackground>
 
-        {/* EcoOil Stack section */}
-        <View style={styles.ecoOilStackColumnRow}>
-          <View style={styles.ecoOilStackColumn}>
-            <View style={styles.ecoOilStack}>
+        {/* blog section */}
+        <View style={styles.blogCard1}>
+          <View style={styles.blogCard2}>
+            <View style={styles.blogCard3}>
               <View style={styles.rect10}>
-                <Text style={styles.randevularim}>
+                <Text style={styles.context1}>
                   Geri Dönüştür, Ödül Kazan!
                 </Text>
               </View>
@@ -117,7 +131,6 @@ function Index(props: any) {
             </View>
           </View>
           <View style={styles.rect9}>
-            <View style={styles.rect12}></View>
           </View>
         </View>
       </ScrollView>
@@ -338,17 +351,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: 'center',
   },
-  ecoOilStackColumnRow: {
+  blogCard1: {
     flexDirection: "row",
     justifyContent: 'space-between',
     marginTop: 20,
   },
-  ecoOilStackColumn: {
+  blogCard2: {
     flex: 1,
   },
-  ecoOilStack: {
+  blogCard3: {
     flexDirection: "row",
     alignItems: 'center',
+    
   },
   rect10: {
     width: '100%',
@@ -358,7 +372,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  randevularim: {
+  context1: {
     fontFamily: "Montserrat-Bold",
     color: "#121212",
     fontSize: width * 0.05, // Responsive font size
@@ -382,10 +396,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#A8EC5F",
     borderRadius: 21,
   },
-  rect12: {
-    width: '100%',
-    height: '100%',
-  },
+  
   menuOptions: {
     padding: 0.5,
     borderRadius: 15,
