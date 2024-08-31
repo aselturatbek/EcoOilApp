@@ -48,7 +48,7 @@ function RegisterScreen() {
           />
           <TextInput
             style={styles.input}
-            placeholder="Password"
+            placeholder="Şifre Giriniz"
             placeholderTextColor="#ccc"
             secureTextEntry
           />
