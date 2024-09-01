@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   title: {
-    fontSize: 32,
+    fontSize: 27,
     fontWeight: 'bold',
     color: '#004d40', // Updated title color
     shadowColor: 'white',
