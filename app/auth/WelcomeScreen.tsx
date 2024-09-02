@@ -3,6 +3,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet, ImageBackground } from
 import { StackNavigationProp } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Adjust according to your icons package
 
+
 // Define types
 type RootStackParamList = {
   Welcome: undefined;
@@ -16,7 +17,7 @@ interface Props {
 
 const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
   return (
-    <ImageBackground source={require('../assets/images/bgfiligran.png')} style={styles.container}>
+    <ImageBackground source={require('../assets/images/bgfiligran.png')} style={styles.container} imageStyle={styles.bg}>
       <View style={styles.overlay}>
         <Image source={require('../assets/images/earth_3d.png')} style={styles.image} />
         <Text style={styles.title}>EcoOil'e Hoşgeldin!</Text>
@@ -36,6 +37,10 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  bg:{
+    opacity:0.6,
+
+  },
   container: {
     flex: 1,
   },
@@ -47,7 +52,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: 250, // Increased logo size
-    height: 250, // Increased logo size
+    height: 300, // Increased logo size
     marginBottom: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
@@ -59,7 +64,7 @@ const styles = StyleSheet.create({
     fontSize: 27,
     fontWeight: 'bold',
     color: '#004d40', // Updated title color
-    shadowColor: 'white',
+    shadowColor: '#004d40',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 6,
     shadowRadius: 15,

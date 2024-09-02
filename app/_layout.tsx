@@ -132,7 +132,6 @@ export default function RootLayout() {
   const [fontsLoaded] = useFonts({
     'Montserrat-Regular': require('../assets/fonts/monsterrat/Montserrat-Regular.ttf'),
     'Montserrat-Bold': require('../assets/fonts/monsterrat/Montserrat-Bold.ttf'),
-    'seasons': require('../assets/fonts/brastika/seasons_regular.ttf'),
   });
 
   useEffect(() => {

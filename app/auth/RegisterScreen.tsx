@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity,Image, ImageBackground, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, ImageBackground ,Image} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from "@react-navigation/stack";
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 // Define types
@@ -17,148 +18,198 @@ const RegisterScreen: React.FC = () => {
   const navigation = useNavigation<NavigationPropType>();
 
   return (
-    <ImageBackground source={require('../assets/images/bgfiligran.png')} style={styles.background} imageStyle={styles.bgImage}>
-      <View style={styles.container}>
-        <Image source={require('../assets/images/earth_3d.png')} style={styles.image} />
-        <Text style={styles.title}>Let’s Create Account</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your email"
-          placeholderTextColor="#004d40"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your phone number"
-          placeholderTextColor="#004d40"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Create your password"
-          secureTextEntry
-          placeholderTextColor="#004d40"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Confirm your password"
-          secureTextEntry
-          placeholderTextColor="#004d40"
-        />
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('auth/LoginScreen')}>
-          <Text style={styles.buttonText}>Create Account</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('auth/LoginScreen')}>
-          <Text style={styles.linkText}>Already have an Account? Sign-In</Text>
-        </TouchableOpacity>
-        <View style={styles.socialContainer}>
+    <ImageBackground source={require('../assets/images/bgfiligran.png')} style={styles.backgroundImage} imageStyle={styles.backgroundImageStyle}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <Image source={require('../assets/images/purple.png')} style={styles.image} />
+        <View style={styles.container}>
+          <Text style={styles.title}>Cabuk kayit ol!</Text>
+
+          <View style={styles.inputContainer}>
+            <MaterialIcons name="email" size={24} color="#004d40" style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your email"
+              placeholderTextColor="#004d40"
+            />
+          </View>
           
+          <View style={styles.inputContainer}>
+            <MaterialIcons name="phone" size={24} color="#004d40" style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your phone number"
+              placeholderTextColor="#004d40"
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <MaterialIcons name="lock" size={24} color="#004d40" style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="Create your password"
+              secureTextEntry
+              placeholderTextColor="#004d40"
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <MaterialIcons name="lock-outline" size={24} color="#004d40" style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="Confirm your password"
+              secureTextEntry
+              placeholderTextColor="#004d40"
+            />
+          </View>
+
+          <TouchableOpacity onPress={() => {/* Şifreyi unuttum sayfasına yönlendir */}}>
+            <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('auth/LoginScreen')}>
+            <Text style={styles.buttonText}>Create Account</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity onPress={() => navigation.navigate('auth/LoginScreen')}>
+            <Text style={styles.linkText}>Already have an Account? Sign-In</Text>
+          </TouchableOpacity>
+          
+          <View style={styles.socialIcons}>
+            <Icon name="instagram" size={30} color="#004d40" style={styles.icon} />
+            <Icon name="twitter" size={30} color="#004d40" style={styles.icon} />
+            <Icon name="linkedin" size={30} color="#004d40" style={styles.icon} />
+          </View>
+          <Text style={styles.footerText}>Buraya biseyler yazilcak.</Text>
         </View>
-      </View>
-      <View style={styles.socialIcons}>
-          <Icon name="instagram" size={30} color="#004d40" style={styles.icon} />
-          <Icon name="twitter" size={30} color="#004d40" style={styles.icon} />
-          <Icon name="linkedin" size={30} color="#004d40" style={styles.icon} />
-        </View>
+      </ScrollView>
     </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  background: {
+  backgroundImage: {
     flex: 1,
-    resizeMode: 'cover', // Ensures the background covers the entire screen
+    resizeMode: 'cover',
   },
-  bgImage:{
-    opacity:0.6,
+  backgroundImageStyle: {
+    opacity: 0.6,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 20, // ScrollView padding for better spacing (Azaltıldı)
   },
   container: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
+    padding: 20, // İç boşluk azaltıldı
   },
   image: {
-    width: 200,
-    height: 200,
+    width: 390, // Increased logo size
+    height: 320, // Increased logo size
     marginBottom: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 5,
+    borderBottomRightRadius:20,
+    borderBottomLeftRadius:20,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#004d40',
-    marginBottom: 45,
+    marginBottom: 20, // Alt boşluk azaltıldı
     textAlign: 'center',
     fontFamily: 'Montserrat-Bold',
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 4,
+  },
+  inputContainer: {
+    width: '85%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#004d40',
+    borderRadius: 18,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    marginBottom: 10, // Alt boşluk azaltıldı
+    paddingLeft: 10, // Padding azaltıldı
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
   },
   input: {
-    width: '85%',
-    padding: 12,
-    marginBottom: 15,
-    borderWidth: 0.4,
-    borderColor: '#004d40',
-    borderRadius: 15,
+    flex: 1,
+    paddingVertical: 13, // Dikey padding azaltıldı
+    paddingHorizontal: 8, // Yatay padding azaltıldı
     fontFamily: 'Montserrat-Regular',
+  },
+  inputIcon: {
+    marginRight: 8, // Sağ boşluk azaltıldı
+    opacity: 0.6,
   },
   button: {
     backgroundColor: '#004d40',
-    paddingVertical: 10,
-    paddingHorizontal: 30,
-    borderRadius: 15,
+    paddingVertical: 10, // Dikey padding azaltıldı
+    paddingHorizontal: 40, // Yatay padding azaltıldı
+    borderRadius: 18,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5,
-    marginTop: 20,
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.4,
+    shadowRadius: 5,
+    elevation: 7,
+    marginTop: 20, // Üst boşluk azaltıldı
   },
   buttonText: {
     color: '#ffffff',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
     fontFamily: 'Montserrat-Bold',
   },
   linkText: {
     color: '#004d40',
-    marginTop: 15,
+    marginTop: 15, // Üst boşluk azaltıldı
+    textAlign: 'center',
+    fontFamily: 'Montserrat-Regular',
+    textDecorationLine: 'underline',
+  },
+  footerText: {
+    color: '#004d40',
+    marginTop: 10, // Üst boşluk azaltıldı
+    fontSize: 12,
     textAlign: 'center',
     fontFamily: 'Montserrat-Regular',
   },
-  socialContainer: {
-    marginTop: 30,
-    width: '100%',
-    alignItems: 'center',
-  },
-  socialButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#004d40',
-    paddingVertical: 10,
-    paddingHorizontal: 30,
-    borderRadius: 25,
-    marginVertical: 5,
-    width: '80%',
-  },
-  socialButtonText: {
+  forgotPasswordText: {
     color: '#004d40',
-    textAlign: 'center',
-    fontFamily: 'Montserrat-Bold',
-    marginLeft: 10,
-  },
-  icon: {
-    marginRight: 10,
-    marginBottom:40,
+    marginBottom: 20, // Alt boşluk azaltıldı
+    textAlign: 'left',
+    marginTop:10,
+    marginRight:150,
+    width: '85%',
+    fontFamily: 'Montserrat-Regular',
+    textDecorationLine: 'underline',
   },
   socialIcons: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop:80,
+    marginTop: 60, // Üst boşluk azaltıldı
+  },
+  icon: {
+    marginHorizontal: 10, // Yatay boşluk azaltıldı
+    marginBottom: 30, // Alt boşluk azaltıldı
+    transform: [{ scale: 0.9 }],
   },
 });
+
+
+
 
 export default RegisterScreen;
