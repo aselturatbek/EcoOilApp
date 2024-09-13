@@ -18,11 +18,11 @@ const RegisterScreen: React.FC = () => {
   const navigation = useNavigation<NavigationPropType>();
 
   return (
-    <ImageBackground source={require('../assets/images/bgfiligran.png')} style={styles.backgroundImage} imageStyle={styles.backgroundImageStyle}>
+    <ImageBackground source={require('../assets/images/bglight.png')} style={styles.backgroundImage} imageStyle={styles.backgroundImageStyle}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <Image source={require('../assets/images/purple.png')} style={styles.image} />
+      <View style={styles.container1}></View>
         <View style={styles.container}>
-          <Text style={styles.title}>Cabuk kayit ol!</Text>
+          <Text style={styles.title}>Sign Up</Text>
 
           <View style={styles.inputContainer}>
             <MaterialIcons name="email" size={24} color="#004d40" style={styles.inputIcon} />
@@ -79,7 +79,7 @@ const RegisterScreen: React.FC = () => {
             <Icon name="twitter" size={30} color="#004d40" style={styles.icon} />
             <Icon name="linkedin" size={30} color="#004d40" style={styles.icon} />
           </View>
-          <Text style={styles.footerText}>Buraya biseyler yazilcak.</Text>
+          <Text style={styles.footerText}>Get In Touch With Us.</Text>
         </View>
       </ScrollView>
     </ImageBackground>
@@ -105,6 +105,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20, // İç boşluk azaltıldı
   },
+  container1: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 100, // İç boşluk azaltıldı
+  },
   image: {
     width: 390, // Increased logo size
     height: 320, // Increased logo size
@@ -118,10 +123,10 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius:20,
   },
   title: {
-    fontSize: 28,
+    fontSize: 25,
     fontWeight: 'bold',
     color: '#004d40',
-    marginBottom: 20, // Alt boşluk azaltıldı
+    marginBottom: 30, // Alt boşluk azaltıldı
     textAlign: 'center',
     fontFamily: 'Montserrat-Bold',
     textShadowColor: 'rgba(0, 0, 0, 0.3)',
@@ -133,7 +138,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#004d40',
+    borderColor: 'white',
     borderRadius: 18,
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
     marginBottom: 10, // Alt boşluk azaltıldı
@@ -153,6 +158,7 @@ const styles = StyleSheet.create({
   inputIcon: {
     marginRight: 8, // Sağ boşluk azaltıldı
     opacity: 0.6,
+    fontSize:20,
   },
   button: {
     backgroundColor: '#004d40',
@@ -206,6 +212,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10, // Yatay boşluk azaltıldı
     marginBottom: 30, // Alt boşluk azaltıldı
     transform: [{ scale: 0.9 }],
+    
   },
 });
 
