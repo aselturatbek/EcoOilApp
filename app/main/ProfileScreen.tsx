@@ -10,24 +10,24 @@ function ProfileScreen() {
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         
-        {/* Profil Resmi ve Arkaplan */}
+        {/* Profile Picture and Background */}
         <ImageBackground source={require('../assets/images/bgdarkest.png')} style={styles.banner} imageStyle={styles.headerImage}>
           <Image source={require('../assets/images/bglight.png')} style={styles.profileImage} />
           <Text style={styles.name}>Asel Turatbek</Text>
-          <Text style={styles.bio}>Geri dönüşüme katkıda bulunarak doğayı koruyan bir çevreci.</Text>
+          <Text style={styles.bio}>An environmentalist committed to protecting nature through recycling efforts.</Text>
         </ImageBackground>
 
-        {/* Hakkında Bilgi */}
+        {/* About Section */}
         <View style={styles.infoSection}>
-          <Text style={styles.infoTitle}>Hakkımda</Text>
+          <Text style={styles.infoTitle}>About Me</Text>
           <Text style={styles.infoText}>
-            Geri dönüşüm bilincini yaymak ve çevresel etkiyi azaltmak için gönüllü çalışmalar yapıyorum. Mobil uygulama geliştirme konusunda deneyimliyim ve çevreyi korumak adına projeler geliştiriyorum.
+            I am dedicated to raising awareness about recycling and reducing environmental impact through volunteer work. With experience in mobile app development, I also work on projects aimed at protecting the environment.
           </Text>
         </View>
 
-        {/* İletişim Bilgileri */}
+        {/* Contact Information */}
         <View style={styles.contactSection}>
-          <Text style={styles.infoTitle}>İletişim Bilgileri</Text>
+          <Text style={styles.infoTitle}>Contact Info</Text>
           <View style={styles.contactRow}>
             <FeatherIcon name="mail" style={styles.icon} />
             <Text style={styles.contactText}>recyclehero@example.com</Text>
