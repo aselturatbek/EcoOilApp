@@ -1,14 +1,13 @@
 import React, { useEffect } from 'react';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as SplashScreen from 'expo-splash-screen';
-import { useColorScheme } from '@/hooks/useColorScheme';
 import WelcomeScreen from './auth/WelcomeScreen';
 import RegisterScreen from './auth/RegisterScreen';
 import LoginScreen from './auth/LoginScreen';
-import Home from './main/HomeScreen'; 
+import Home from './main/HomeScreen';
 import Location from './main/LocationScreen';
 import Profile from './main/ProfileScreen';
 import GiftScreen from './main/GiftScreen';
@@ -27,7 +26,7 @@ const TabNavigator = () => {
         screenOptions={{
           tabBarActiveTintColor: '#6fdb64', // Color when tab is selected
           tabBarStyle: {
-            backgroundColor: "#F6E96B", 
+            backgroundColor: "#F6E96B",
             position: 'absolute',
             borderTopLeftRadius: 25,
             borderTopRightRadius: 25,
@@ -95,9 +94,9 @@ const TabNavigator = () => {
 const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
-    bottom: 50, // FAB'ı yukarı taşımak için bottom değerini arttırdık
+    bottom: 50,
     left: '50%',
-    transform: [{ translateX: -25 }], // FAB'ı yatayda ortalamak için
+    transform: [{ translateX: -25 }],
     backgroundColor: "#6fdb64",
     borderRadius: 25,
     height: 50,
@@ -105,16 +104,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 5,
-    shadowOffset: { width: 0, height: 0 }, // Remove shadow for iOS
-    shadowOpacity: 0.35, // Remove shadow for iOS
-    shadowRadius: 4, // Remove shadow for iOS
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.35,
+    shadowRadius: 4,
     zIndex: 1,
   },
   fab1: {
     position: 'absolute',
-    bottom: 46, // FAB'ı yukarı taşımak için bottom değerini arttırdık
+    bottom: 46,
     left: '49%',
-    transform: [{ translateX: -25 }], // FAB'ı yatayda ortalamak için
+    transform: [{ translateX: -25 }],
     backgroundColor: "#F6E96B",
     borderRadius: 25,
     height: 58,
@@ -127,8 +126,6 @@ const styles = StyleSheet.create({
 });
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  
   const [fontsLoaded] = useFonts({
     'Montserrat-Regular': require('../assets/fonts/monsterrat/Montserrat-Regular.ttf'),
     'Montserrat-Bold': require('../assets/fonts/monsterrat/Montserrat-Bold.ttf'),
@@ -145,7 +142,7 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'light' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={DefaultTheme}>
       <Stack.Navigator>
         <Stack.Screen
           name="auth/WelcomeScreen"
@@ -164,10 +161,9 @@ export default function RootLayout() {
         />
         <Stack.Screen
           name="main"
-          component={TabNavigator} // Tab navigatörünü buraya koy
+          component={TabNavigator}
           options={{ headerShown: false }}
         />
-        
       </Stack.Navigator>
     </ThemeProvider>
   );

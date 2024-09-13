@@ -3,7 +3,6 @@ import { View, Text, Image, TouchableOpacity, StyleSheet, ImageBackground } from
 import { StackNavigationProp } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Adjust according to your icons package
 
-
 // Define types
 type RootStackParamList = {
   Welcome: undefined;
@@ -17,15 +16,15 @@ interface Props {
 
 const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
   return (
-    <ImageBackground source={require('../assets/images/bgfiligran.png')} style={styles.container} imageStyle={styles.bg}>
+    <ImageBackground source={require('../assets/images/bglight.png')} style={styles.container} imageStyle={styles.bg}>
       <View style={styles.overlay}>
         <Image source={require('../assets/images/earth_3d.png')} style={styles.image} />
-        <Text style={styles.title}>EcoOil'e Hoşgeldin!</Text>
-        <Text style={styles.subtitle}>Hızla uygulamanın tasarımını keşfet!</Text>
+        <Text style={styles.title}>Welcome to EcoLab!</Text>
+        <Text style={styles.subtitle}>Join us in our mission to make recycling effortless and impactful!</Text>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('auth/RegisterScreen')}>
-          <Text style={styles.buttonText}>Hadi Başlayalım :)</Text>
+          <Text style={styles.buttonText}>Let's Get Started :)</Text>
         </TouchableOpacity>
-        <Text style={styles.subtitle1}>Bizim sosyal medya hesapları</Text>
+        <Text style={styles.subtitle1}>Follow us on social media</Text>
         <View style={styles.socialIcons}>
           <Icon name="instagram" size={30} color="#004d40" style={styles.icon} />
           <Icon name="twitter" size={30} color="#004d40" style={styles.icon} />
@@ -37,9 +36,8 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  bg:{
-    opacity:0.6,
-
+  bg: {
+    opacity: 0.6,
   },
   container: {
     flex: 1,
@@ -71,7 +69,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     marginBottom: 15,
     textAlign: 'center',
-    fontFamily: 'Montserrat-Bold'
+    fontFamily: 'Montserrat-Bold',
   },
   subtitle: {
     fontSize: 16,
@@ -97,7 +95,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
-    fontFamily: 'Montserrat-Bold'
+    fontFamily: 'Montserrat-Bold',
   },
   subtitle1: {
     fontSize: 12,
