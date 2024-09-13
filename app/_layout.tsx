@@ -24,9 +24,9 @@ const TabNavigator = () => {
     <View style={{ flex: 1 }}>
       <Tab.Navigator
         screenOptions={{
-          tabBarActiveTintColor: '#6fdb64', // Color when tab is selected
+          tabBarActiveTintColor: '#004d40', // Color when tab is selected
           tabBarStyle: {
-            backgroundColor: "#F6E96B",
+            backgroundColor: "white",
             position: 'absolute',
             borderTopLeftRadius: 25,
             borderTopRightRadius: 25,
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     bottom: 50,
     left: '50%',
     transform: [{ translateX: -25 }],
-    backgroundColor: "#6fdb64",
+    backgroundColor: "#004d40",
     borderRadius: 25,
     height: 50,
     width: 50,
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     bottom: 46,
     left: '49%',
     transform: [{ translateX: -25 }],
-    backgroundColor: "#F6E96B",
+    backgroundColor: "white",
     borderRadius: 25,
     height: 58,
     width: 58,
