@@ -18,18 +18,18 @@ import { StackNavigationProp } from "@react-navigation/stack";
 
 const { width, height } = Dimensions.get("window");
 
-const recycleIllustration = require('../assets/images/recycleillus.png');
-const bgImage = require('../assets/images/bgheader.jpg');
+const recycleIllustration = require('../assets/images/earth_3d.png');
+const bgImage = require('../assets/images/bgdark.png');
 const profileImage = require('../assets/images/bgheader.jpg'); 
-const bgMap = require('../assets/images/mapbg2.jpg'); 
+const bgBlog = require('../assets/images/bgblog1.png'); 
 
 type RootStackParamList = {
   Home: undefined;
   'auth/WelcomeScreen': undefined;
-  // Diğer ekranlarınız
+  // Other screens
 };
 
-type NavigationPropType=StackNavigationProp<RootStackParamList,'Home'>;
+type NavigationPropType = StackNavigationProp<RootStackParamList, 'Home'>;
 function Index(props: any) {
   const navigation = useNavigation<NavigationPropType>(); // Get the navigation prop
   return (
@@ -72,11 +72,11 @@ function Index(props: any) {
             <View style={styles.loremIpsum2ColumnRow}>
               <View style={styles.loremIpsum2Column}>
                 <Text style={styles.loremIpsum2}>
-                  Geri Donustur {"\n"}Geri Donustur{"\n"}Geri Donustur
+                Do your part,{"\n"}recycle{"\n"}today!
                 </Text>
                 
                 <TouchableOpacity style={styles.button}>
-                  <Text style={styles.buttonText}>Geri Dönüştür</Text>
+                  <Text style={styles.buttonText}>Recycle</Text>
                 </TouchableOpacity>
               </View>
               <ImageBackground
@@ -108,21 +108,25 @@ function Index(props: any) {
           </View>
         </View>
 
-        {/* location section */}
-        <ImageBackground style={styles.rect7} source={bgMap} imageStyle={styles.mapImage}>
-          <View style={styles.icon3Row}>
-            <EntypoIcon name="location" style={styles.icon3}></EntypoIcon>
-            <Text style={styles.loremIpsum7}>Toplama Noktalarına Göz At!</Text>
-          </View>
-        </ImageBackground>
+        {/* belirsiz section */}
+        <View style={styles.recentlyRecycledContainer}>
+        <Text style={styles.recentlyRecycledTitle}>Upcoming Recycles</Text>
+        <View style={styles.recentlyRecycledItems}>
+          <Text style={styles.recentlyRecycledItem}>Plastic Bottles - 10kg</Text>
+          <Text style={styles.recentlyRecycledItem}>Paper - 5kg</Text>
+          <Text style={styles.recentlyRecycledItem}>Glass - 3kg</Text>
+        </View>
+      </View>
+        
 
-        {/* blog section */}
+        {/* Blog section */}
+        <ImageBackground style={styles.scrollArea} source={bgBlog} imageStyle={styles.bgblog}>
         <View style={styles.blogCard1}>
           <View style={styles.blogCard2}>
             <View style={styles.blogCard3}>
               <View style={styles.rect10}>
                 <Text style={styles.context1}>
-                  Geri Dönüştür, Ödül Kazan!
+                  Recycle and Earn Rewards!
                 </Text>
               </View>
             </View>
@@ -130,9 +134,8 @@ function Index(props: any) {
               <View style={styles.rect11}></View>
             </View>
           </View>
-          <View style={styles.rect9}>
           </View>
-        </View>
+        </ImageBackground>
       </ScrollView>
     </MenuProvider>
   );
@@ -144,7 +147,7 @@ const styles = StyleSheet.create({
     padding: width * 0.05, // 5% padding on all sides
   },
   icon: {
-    color: "#6fdb64",
+    color: "#004d40",
     fontSize: 35,
     marginTop: 3,
     marginHorizontal:-19,
@@ -160,7 +163,7 @@ const styles = StyleSheet.create({
     fontSize: 15, // fixed font size
   },
   icon2: {
-    color: "#6fdb64",
+    color: "#004d40",
     fontSize: 30,
     marginLeft: 'auto',
     marginTop: 10,
@@ -187,50 +190,58 @@ const styles = StyleSheet.create({
   },
   bgImage: {
     borderRadius: 21,
-    transform: [{ scaleX: -1 }], // Yatay çevirme (flip horizontal)
+    transform: [{ scaleX: -1 }], // Flip horizontally
   },
   loremIpsum2: {
     fontFamily: "Montserrat-Bold",
-    color: "black",
+    color: "white",
     fontSize: width * 0.05, // Responsive font size
     marginTop:20,
+    elevation: 5, // For Android
+    shadowColor: "#004d40", // For iOS
+    shadowOffset: { width: 2, height: 2 }, // For iOS
+    shadowOpacity: 0.7, // For iOS
+    shadowRadius: 4, // For iOS
   },
   loremIpsum2Column: {
     justifyContent: 'center',
   },
   button: {
-    width: '90%',
+    width: '120%',
     height: height * 0.04,
-    backgroundColor: "#F6E96B",
+    backgroundColor: "#004d40",
     borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 20,
-    // Gölge stili
-    elevation: 5, // Android için
-    shadowColor: "#000", // iOS için
-    shadowOffset: { width: 0, height: 2 }, // iOS için
-    shadowOpacity: 0.3, // iOS için
-    shadowRadius: 4, // iOS için
+    // Shadow style
+    elevation: 5, // For Android
+    shadowColor: "#000", // For iOS
+    shadowOffset: { width: 0, height: 2 }, // For iOS
+    shadowOpacity: 0.3, // For iOS
+    shadowRadius: 4, // For iOS
   },
   buttonText: {
     fontFamily: "Montserrat-Bold",
-    color: "green",
+    color: "white",
     fontSize: width * 0.035, // Responsive font size
   },
   rect: {
     width: width * 0.45,
     height: height * 0.15,
+    marginLeft:60,
+    marginTop:20,
+    
   },
   image: {
-    width: '100%',
+    width: '80%',
     height: '100%',
   },
   loremIpsum2ColumnRow: {
     flexDirection: "row",
-    alignItems: 'center',
+    alignItems: 'flex-end',
     justifyContent: 'space-between',
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
     width: '100%',
   },
   rect2: {
@@ -261,173 +272,127 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   box1: {
-    backgroundColor: '#6fdb64', // Green
+    backgroundColor: '#004d40',
+    opacity:0.6,
   },
   box2: {
-    backgroundColor: '#6fdb64', // Yellow
+    backgroundColor: '#004d40',
+    opacity:0.7,
   },
   box3: {
-    backgroundColor: '#6fdb64', // Light Red
+    backgroundColor: '#004d40',
+    opacity:0.8,
   },
   statIcon: {
-    fontSize: 20,
-    color: 'green',
+    fontSize: 30,
+    color: '#fff',
     marginBottom: 5,
   },
   statText: {
+    fontSize: 20,
+    color: '#fff',
     fontFamily: 'Montserrat-Bold',
-    fontSize: width * 0.09,
-    color: 'beige',
   },
   statLabel: {
+    fontSize: 10,
+    color: '#fff',
     fontFamily: 'Montserrat-Regular',
-    fontSize: width * 0.029,
-    color: 'beige',
-    marginTop: 5,
   },
-  loremIpsum3: {
-    fontFamily: "Montserrat-Bold",
-    color: "#121212",
-    fontSize: width * 0.08, // Responsive font size
+  recentlyRecycledContainer: {
+    marginTop: 20,
+    padding: 10,
+    borderRadius: 15,
+    backgroundColor: '#004d40',
+    opacity:0.6,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
   },
-  rect5: {
-    width: '30%',
-    height: height * 0.12,
-    backgroundColor: "#E6E6E6",
-    borderRadius: 21,
+  recentlyRecycledTitle: {
+    fontFamily: 'Montserrat-Bold',
+    color: 'white',
+    fontSize: 18,
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  recentlyRecycledItems: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: '2.5%',
   },
-  loremIpsum4: {
-    fontFamily: "Montserrat-Bold",
-    color: "#121212",
-    fontSize: width * 0.08, // Responsive font size
+  recentlyRecycledItem: {
+    fontFamily: 'Montserrat-Regular',
+    color: 'white',
+    fontSize: 14,
+    marginBottom: 5,
   },
-  rect6: {
-    width: '30%',
-    height: height * 0.12,
-    backgroundColor: "#E6E6E6",
+  bgblog: {
     borderRadius: 21,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: '2.5%',
-  },
-  loremIpsum5: {
-    fontFamily: "Montserrat-Bold",
-    color: "#121212",
-    fontSize: width * 0.08, // Responsive font size
-  },
-  rect2Row: {
-    flexDirection: "row",
-    justifyContent: 'space-between',
-    marginTop: 22,
-  },
-  rect7: {
-    width: '100%',
-    height: height * 0.12,
-    backgroundColor: "#E6E6E6",
-    borderRadius: 21,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 24,
-  },
-  mapImage:{
-    borderRadius:21,
-  },
-  icon3: {
-    color: "green",
-    fontSize: 40,
-    height: 44,
-    width: 40
-  },
-  loremIpsum7: {
-    fontFamily: "Montserrat-Bold",
-    color: "green",
-    fontSize: width * 0.045, // Responsive font size
-    marginLeft: 8,
-  },
-  icon3Row: {
-    flexDirection: "row",
-    alignItems: 'center',
+    transform: [{ scaleX: -1 }], // Flip horizontally
   },
   blogCard1: {
-    flexDirection: "row",
-    justifyContent: 'space-between',
+    width: '100%',
+    height: height * 0.4,
     marginTop: 20,
   },
   blogCard2: {
-    flex: 1,
+    width: '100%',
+    height: '100%',
   },
   blogCard3: {
-    flexDirection: "row",
-    alignItems: 'center',
-    
+    width: '100%',
+    height: '50%',
   },
   rect10: {
     width: '100%',
-    height: height * 0.12,
-    backgroundColor: "#A8EC5F",
-    borderRadius: 21,
+    height: '100%',
+    backgroundColor: "transparent",
+    borderRadius: 15,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    padding: 10,
   },
   context1: {
     fontFamily: "Montserrat-Bold",
-    color: "#121212",
-    fontSize: width * 0.05, // Responsive font size
+    color: "white",
+    fontSize: width * 0.065, // Responsive font size
+    textAlign: 'center',
   },
   rect8: {
     width: '100%',
-    height: height * 0.12,
-    backgroundColor: "#A8EC5F",
-    borderRadius: 21,
-    marginTop: 18,
-    justifyContent: 'center',
-    alignItems: 'center'
+    height: '50%',
+    backgroundColor: "#004d40",
+    borderRadius: 15,
+    marginTop: 10,
   },
   rect11: {
     width: '100%',
     height: '100%',
-  },
-  rect9: {
-    width: '48%',
-    height: height * 0.26,
-    backgroundColor: "#A8EC5F",
-    borderRadius: 21,
+    backgroundColor: "#004d40",
+    borderRadius: 15,
   },
   
   menuOptions: {
-    padding: 0.5,
-    borderRadius: 15,
-    backgroundColor: 'white',
-    position: 'absolute',
-    right: 0, // Sağ tarafa yerleştirir
-    elevation: 5, // Gölge efekti Android için
-    shadowColor: "#000", // Gölge efekti iOS için
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    minWidth: 200, // Increase width for better visibility
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    padding: 10,
+    width: 150,
   },
   profileSection: {
-    flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    marginBottom: 10,
   },
   profileImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 10,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
   },
   username: {
     fontFamily: 'Montserrat-Bold',
-    color: '#121212',
-    fontSize: 16,
-  },
+    color: '#333',
+    fontSize: 14,
+  }
 });
 
 export default Index;
