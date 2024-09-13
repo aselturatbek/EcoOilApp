@@ -1,39 +1,48 @@
 import React from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity
-} from "react-native";
+import { StyleSheet, View, ScrollView, Text, Dimensions, ImageBackground, Image } from "react-native";
 import FeatherIcon from "react-native-vector-icons/Feather";
+import MaterialCommunityIconsIcon from "react-native-vector-icons/MaterialCommunityIcons";
 
-function ProfileScreen(props: any) {
+const { width, height } = Dimensions.get("window");
+
+function ProfileScreen() {
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <FeatherIcon name="arrow-left" style={styles.backIcon}></FeatherIcon>
-        <Text style={styles.headerText}>Profile</Text>
-      </View>
-      
-      {/* Profile Details */}
-      <View style={styles.profileSection}>
-        <Text style={styles.userName}>Asel Turatbek</Text>
-        <Text style={styles.userEmail}>asel.turatbek@example.com</Text>
-      </View>
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        
+        {/* Profil Resmi ve Arkaplan */}
+        <ImageBackground source={require('../assets/images/bgdarkest.png')} style={styles.banner} imageStyle={styles.headerImage}>
+          <Image source={require('../assets/images/bglight.png')} style={styles.profileImage} />
+          <Text style={styles.name}>Asel Turatbek</Text>
+          <Text style={styles.bio}>Geri dönüşüme katkıda bulunarak doğayı koruyan bir çevreci.</Text>
+        </ImageBackground>
 
-      {/* Actions */}
-      <View style={styles.actionsSection}>
-        <TouchableOpacity style={styles.actionButton}>
-          <Text style={styles.actionText}>Edit Profile</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.actionButton}>
-          <Text style={styles.actionText}>Settings</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.actionButton}>
-          <Text style={styles.actionText}>Logout</Text>
-        </TouchableOpacity>
-      </View>
+        {/* Hakkında Bilgi */}
+        <View style={styles.infoSection}>
+          <Text style={styles.infoTitle}>Hakkımda</Text>
+          <Text style={styles.infoText}>
+            Geri dönüşüm bilincini yaymak ve çevresel etkiyi azaltmak için gönüllü çalışmalar yapıyorum. Mobil uygulama geliştirme konusunda deneyimliyim ve çevreyi korumak adına projeler geliştiriyorum.
+          </Text>
+        </View>
+
+        {/* İletişim Bilgileri */}
+        <View style={styles.contactSection}>
+          <Text style={styles.infoTitle}>İletişim Bilgileri</Text>
+          <View style={styles.contactRow}>
+            <FeatherIcon name="mail" style={styles.icon} />
+            <Text style={styles.contactText}>recyclehero@example.com</Text>
+          </View>
+          <View style={styles.contactRow}>
+            <FeatherIcon name="phone" style={styles.icon} />
+            <Text style={styles.contactText}>+123 456 7890</Text>
+          </View>
+          <View style={styles.contactRow}>
+            <MaterialCommunityIconsIcon name="linkedin" style={styles.icon} />
+            <Text style={styles.contactText}>linkedin.com/in/recyclehero</Text>
+          </View>
+        </View>
+        
+      </ScrollView>
     </View>
   );
 }
@@ -41,59 +50,86 @@ function ProfileScreen(props: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "white",
   },
-  header: {
-    height: 60,
+  scrollViewContent: {
+    alignItems: "center",
+    paddingVertical: 20,
+  },
+  banner: {
+    width: width * 1,
+    height: height * 0.4,
+    borderRadius: 30,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 40,
+    marginTop:-20,
+  },
+  headerImage: {
+    borderRadius: 30,
+  },
+  profileImage: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 3,
+    borderColor: "#fff",
+    marginBottom: 10,
+  },
+  name: {
+    fontFamily: "Montserrat-Bold",
+    fontSize: 26,
+    color: "white",
+  },
+  bio: {
+    fontFamily: "Montserrat-Regular",
+    fontSize: 14,
+    color: "white",
+    opacity: 0.8,
+    textAlign: "center",
+    marginHorizontal: 20,
+  },
+  infoSection: {
+    width: width * 0.9,
+    backgroundColor: "#E6E6E6",
+    borderRadius: 20,
+    padding: 20,
+    marginBottom: 20,
+  },
+  infoTitle: {
+    fontFamily: "Montserrat-Bold",
+    fontSize: 18,
+    color: "#004d40",
+    marginBottom: 10,
+  },
+  infoText: {
+    fontFamily: "Montserrat-Regular",
+    fontSize: 14,
+    color: "#004d40",
+    opacity: 0.8,
+  },
+  contactSection: {
+    width: width * 0.9,
+    backgroundColor: "#E6E6E6",
+    borderRadius: 20,
+    padding: 20,
+    marginBottom: 20,
+  },
+  contactRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: "#E6E6E6",
-    paddingHorizontal: 20,
-    elevation: 2
-  },
-  backIcon: {
-    color: "#121212",
-    fontSize: 30
-  },
-  headerText: {
-    fontFamily: "Montserrat-Bold",
-    fontSize: 20,
-    color: "#121212"
-  },
-  profileSection: {
-    alignItems: "center",
-    marginTop: 20,
-  },
-  userName: {
-    fontFamily: "Montserrat-Bold",
-    fontSize: 24,
-    color: "#121212",
-    marginTop: 10
-  },
-  userEmail: {
-    fontFamily: "Montserrat-Regular",
-    fontSize: 16,
-    color: "#121212",
-    marginTop: 5
-  },
-  actionsSection: {
-    marginTop: 30,
-    paddingHorizontal: 20
-  },
-  actionButton: {
-    backgroundColor: "#E6E6E6",
-    borderRadius: 25,
-    paddingVertical: 15,
     marginBottom: 10,
-    alignItems: "center",
-    elevation: 2
   },
-  actionText: {
-    fontFamily: "Montserrat-Bold",
-    fontSize: 16,
-    color: "#121212"
-  }
+  contactText: {
+    fontFamily: "Montserrat-Regular",
+    fontSize: 14,
+    color: "#004d40",
+    marginLeft: 10,
+  },
+  icon: {
+    color: "#004d40",
+    fontSize: 20,
+  },
 });
 
 export default ProfileScreen;
