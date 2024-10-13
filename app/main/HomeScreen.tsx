@@ -1,4 +1,5 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
+import axios from 'axios';
 import {
   StyleSheet,
   View,
@@ -15,13 +16,14 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { Menu, MenuOptions, MenuOption, MenuTrigger, MenuProvider } from 'react-native-popup-menu';
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation
 import { StackNavigationProp } from "@react-navigation/stack";
+import {User} from "@/constants";
 
 const { width, height } = Dimensions.get("window");
 
 const recycleIllustration = require('../assets/images/earth_3d.png');
 const bgImage = require('../assets/images/bgdark.png');
-const profileImage = require('../assets/images/bgheader.jpg'); 
-const bgBlog = require('../assets/images/bgblog1.png'); 
+const profileImage = require('../assets/images/bgheader.jpg');
+const bgBlog = require('../assets/images/bgblog1.png');
 
 type RootStackParamList = {
   Home: undefined;
@@ -32,6 +34,19 @@ type RootStackParamList = {
 type NavigationPropType = StackNavigationProp<RootStackParamList, 'Home'>;
 function Index(props: any) {
   const navigation = useNavigation<NavigationPropType>(); // Get the navigation prop
+
+  const [allUsers, setAllUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    axios.get('http://127.0.0.1:8000/api/users')
+        .then((response: { data: React.SetStateAction<User[]>; }) => {
+          setAllUsers(response.data);
+        })
+        .catch((error: any) => {
+          console.error('There was an error!', error);
+        });
+  }, [allUsers]);
+
   return (
     <MenuProvider>
       <ScrollView style={styles.container}>
@@ -74,7 +89,7 @@ function Index(props: any) {
                 <Text style={styles.loremIpsum2}>
                 Do your part,{"\n"}recycle{"\n"}today!
                 </Text>
-                
+
                 <TouchableOpacity style={styles.button}>
                   <Text style={styles.buttonText}>Recycle</Text>
                 </TouchableOpacity>
@@ -88,6 +103,18 @@ function Index(props: any) {
             </View>
           </View>
         </ImageBackground>
+
+        <View>
+            <Text style={styles.loremIpsum2}>
+                Top Recyclers
+            </Text>
+            {allUsers.map((user: User) => (
+                <View key={user.id} style={{margin: 6, display: "flex", justifyContent: "space-between", flexDirection: "row"}}>
+                    <Text>{user.username}</Text>
+                    <Text>{user.email}</Text>
+                </View>
+            ))}
+        </View>
 
         {/* Statistics section */}
         <View style={styles.statsContainer}>
@@ -117,7 +144,7 @@ function Index(props: any) {
           <Text style={styles.recentlyRecycledItem}>Glass - 3kg</Text>
         </View>
       </View>
-        
+
 
         {/* Blog section */}
         <ImageBackground style={styles.scrollArea} source={bgBlog} imageStyle={styles.bgblog}>
@@ -231,7 +258,7 @@ const styles = StyleSheet.create({
     height: height * 0.15,
     marginLeft:60,
     marginTop:20,
-    
+
   },
   image: {
     width: '80%',
@@ -372,7 +399,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#004d40",
     borderRadius: 15,
   },
-  
+
   menuOptions: {
     backgroundColor: '#fff',
     borderRadius: 8,
