@@ -39,7 +39,7 @@ function Index(props: any) {
           <FeatherIcon name="user" style={styles.icon}></FeatherIcon>
           <Text style={styles.loremIpsum}>
             <Text style={styles.WelcomeText}>Welcome,</Text>
-            {"\n"}Asel Turatbek!
+            {"\n"}Beyzos!
           </Text>
           {/* Pop-up menu */}
           <View style={{ position: 'relative' }}>

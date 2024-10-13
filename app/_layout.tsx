@@ -14,6 +14,9 @@ import GiftScreen from './main/GiftScreen';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import Feather from 'react-native-vector-icons/Feather';
+import EditProfileScreen from "@/app/modals/EditProfileScreen";
+import AppointmentsScreen from "@/app/modals/AppointmentsScreen";
+
 
 // Tab ve Stack navigatörlerini oluştur
 const Stack = createStackNavigator();
@@ -164,6 +167,16 @@ export default function RootLayout() {
           component={TabNavigator}
           options={{ headerShown: false }}
         />
+          <Stack.Screen
+              name="modals/EditProfileScreen"
+              component={EditProfileScreen}
+              options={{ headerShown: false }}
+          />
+          <Stack.Screen
+              name="modals/AppointmentsScreen"
+              component={AppointmentsScreen}
+              options={{ headerShown: false }}
+          />
       </Stack.Navigator>
     </ThemeProvider>
   );
