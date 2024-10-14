@@ -16,6 +16,7 @@ import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import Feather from 'react-native-vector-icons/Feather';
 import EditProfileScreen from "@/app/modals/EditProfileScreen";
 import AppointmentsScreen from "@/app/modals/AppointmentsScreen";
+import AdressScreen from "@/app/modals/AdressScreen";
 
 
 // Tab ve Stack navigatörlerini oluştur
@@ -175,6 +176,11 @@ export default function RootLayout() {
           <Stack.Screen
               name="modals/AppointmentsScreen"
               component={AppointmentsScreen}
+              options={{ headerShown: false }}
+          />
+          <Stack.Screen
+              name="modals/AdressScreen"
+              component={AdressScreen}
               options={{ headerShown: false }}
           />
       </Stack.Navigator>

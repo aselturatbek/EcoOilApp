@@ -20,11 +20,12 @@ import { useNavigation } from "@react-navigation/native";
 type RootStackParamList = {
   'modals/EditProfileScreen': undefined;
   'modals/AppointmentsScreen': undefined; // Düzeltildi
+  'modals/AdressScreen': undefined;
 };
 
 type NavigationPropType = StackNavigationProp<
     RootStackParamList,
-    'modals/EditProfileScreen' | 'modals/AppointmentsScreen'
+    'modals/EditProfileScreen' | 'modals/AppointmentsScreen' | 'modals/AdressScreen'
 >;
 
 const { width, height } = Dimensions.get("window");
@@ -78,7 +79,7 @@ const ProfileScreen: React.FC = () => {
                 navigation.navigate("modals/AppointmentsScreen") // Doğru rota kullanıldı
             )}
             {renderButton("Adreslerim", "map-pin", () =>
-                Alert.alert("Adreslerim")
+                navigation.navigate("modals/AdressScreen")
             )}
             {renderButton("Uygulama Bilgisi", "info", () =>
                 Alert.alert("Uygulama Bilgisi")

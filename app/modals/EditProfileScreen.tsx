@@ -8,7 +8,7 @@ import {
     TouchableOpacity,
     KeyboardAvoidingView,
     ScrollView,
-    Image
+    Image,
 } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import * as ImagePicker from 'expo-image-picker';
@@ -17,6 +17,7 @@ import { useNavigation } from '@react-navigation/native';
 const EditProfileScreen: React.FC = () => {
     const navigation = useNavigation();
     const [image, setImage] = useState<string | null>(null);
+
     const [form, setForm] = useState({
         name: '',
         phone: '',
@@ -78,30 +79,30 @@ const EditProfileScreen: React.FC = () => {
                 <Text style={[styles.title, styles.montserratText]}>Profil Düzenle</Text>
 
                 <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
-                    {image ? (
-                        <Image source={{ uri: image }} style={styles.profileImage} />
-                    ) : (
-                        <FeatherIcon name="camera" size={50} color="#004d40" />
-                    )}
+                    <View style={styles.imageContainer}>
+                        {image ? (
+                            <Image source={{ uri: image }} style={styles.profileImage} />
+                        ) : (
+                            <FeatherIcon name="camera" size={30} color="#fff" />
+                        )}
+                    </View>
                     <Text style={[styles.imageText, styles.montserratText]}>
                         Profil Resmi Seç
                     </Text>
                 </TouchableOpacity>
 
                 <View style={styles.formContainer}>
-                    {renderInput("İsim Soyisim", "user", "name", form.name)}
-                    {renderInput("Telefon Numarası", "phone", "phone", form.phone)}
-                    {renderInput("E-posta", "mail", "email", form.email)}
-                    {renderInput("Kullanıcı Adı", "at-sign", "username", form.username)}
-                    {renderInput("Şifre", "lock", "password", form.password, true)}
+                    {renderInput('İsim Soyisim', 'user', 'name', form.name)}
+                    {renderInput('Telefon Numarası', 'phone', 'phone', form.phone)}
+                    {renderInput('E-posta', 'mail', 'email', form.email)}
+                    {renderInput('Kullanıcı Adı', 'at-sign', 'username', form.username)}
+                    {renderInput('Şifre', 'lock', 'password', form.password, true)}
 
                     <TouchableOpacity
                         style={styles.saveButton}
                         onPress={() => Alert.alert('Profil Güncellendi')}
                     >
-                        <Text style={[styles.saveButtonText, styles.montserratText]}>
-                            Kaydet
-                        </Text>
+                        <Text style={[styles.saveButtonText, styles.montserratText]}>Kaydet</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>
@@ -132,11 +133,19 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 30,
     },
+    imageContainer: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        backgroundColor: '#004d40',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 10,
+    },
     profileImage: {
         width: 100,
         height: 100,
         borderRadius: 50,
-        marginBottom: 10,
     },
     imageText: {
         fontSize: 16,
