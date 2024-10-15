@@ -16,10 +16,9 @@ import * as ImagePicker from "expo-image-picker";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from "@react-navigation/native";
 
-// Navigasyon parametrelerini tanımlama
 type RootStackParamList = {
   'modals/EditProfileScreen': undefined;
-  'modals/AppointmentsScreen': undefined; // Düzeltildi
+  'modals/AppointmentsScreen': undefined;
   'modals/AdressScreen': undefined;
 };
 
@@ -28,11 +27,12 @@ type NavigationPropType = StackNavigationProp<
     'modals/EditProfileScreen' | 'modals/AppointmentsScreen' | 'modals/AdressScreen'
 >;
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 const ProfileScreen: React.FC = () => {
   const navigation = useNavigation<NavigationPropType>();
   const [image, setImage] = useState<string | null>(null);
+  const [points, setPoints] = useState<number>(100);
 
   const [form, setForm] = useState({
     name: "Asel Turatbek",
@@ -61,14 +61,30 @@ const ProfileScreen: React.FC = () => {
           <ImageBackground
               source={require("../assets/images/bgdarkest.png")}
               style={styles.banner}
+              imageStyle={styles.bannerImage}
           >
-            <Image
-                source={{ uri: image || require("../assets/images/bglight.png") }}
-                style={styles.profileImage}
-            />
-            <Text style={[styles.name, styles.montserratBold]}>
-              {form.name}
-            </Text>
+            <View style={styles.profileContainer}>
+              <Image
+                  source={{ uri: image || require("../assets/images/bglight.png") }}
+                  style={styles.profileImage}
+              />
+              <TouchableOpacity
+                  style={styles.editIcon}
+                  onPress={() => navigation.navigate("modals/EditProfileScreen")}
+              >
+                <FeatherIcon name="edit-2" size={20} color="#fff" />
+              </TouchableOpacity>
+            </View>
+            <Text style={[styles.name, styles.montserratBold]}>{form.name}</Text>
+            <View style={styles.pointsContainer}>
+              <Image
+                  source={require("../assets/images/final_clean_logo.png")}
+                  style={styles.ecoOilLogo}
+              />
+              <Text style={[styles.pointsText, styles.montserratText]}>
+                {points} Puan
+              </Text>
+            </View>
           </ImageBackground>
 
           <View style={styles.buttonContainer}>
@@ -76,7 +92,7 @@ const ProfileScreen: React.FC = () => {
                 navigation.navigate("modals/EditProfileScreen")
             )}
             {renderButton("Randevularım", "calendar", () =>
-                navigation.navigate("modals/AppointmentsScreen") // Doğru rota kullanıldı
+                navigation.navigate("modals/AppointmentsScreen")
             )}
             {renderButton("Adreslerim", "map-pin", () =>
                 navigation.navigate("modals/AdressScreen")
@@ -113,24 +129,57 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   banner: {
-    width: width,
-    height: height * 0.4,
-    borderRadius: 30,
+    width: width * 1.1, // Genişliği küçülttük
+    height: 300, // Yüksekliği ayarladık
+    borderRadius: 60, // Yuvarlak kenar ekledik
+    overflow: "hidden", // Taşma olmaması için
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 20,
+    marginBottom: 40,
+    marginTop: -19,
+  },
+  bannerImage: {
+    resizeMode: "cover", // Görüntüyü düzgün yerleştirmek için
+  },
+  profileContainer: {
+    position: "relative",
+    alignItems: "center",
+    justifyContent: "center",
   },
   profileImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+    width: 110,
+    height: 110,
+    borderRadius: 55,
     borderWidth: 3,
     borderColor: "#fff",
-    marginBottom: 10,
+  },
+  editIcon: {
+    position: "absolute",
+    bottom: 0,
+    right: 11,
+    backgroundColor: "#026a59",
+    padding: 5,
+    borderRadius: 20,
   },
   name: {
-    fontSize: 26,
+    fontSize: 24,
     color: "#fff",
+    marginTop: 20,
+  },
+  pointsContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 5,
+  },
+  pointsText: {
+    marginLeft: 1,
+    fontSize: 16,
+    color: "#fff",
+  },
+  ecoOilLogo: {
+    width: 40,
+    height: 40,
+    marginLeft: 10,
   },
   buttonContainer: {
     width: width * 0.9,

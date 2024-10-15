@@ -23,14 +23,21 @@ const LoginScreen: React.FC = () => {
     const [password, setPassword] = useState("");
 
     const handleLogin = () => {
-        axios.post('http://localhost:8000/api/login', {
-            email: email,
-            password: password,
-        }).then(response => {
-            console.log(response.data);
-            navigation.navigate('main');
-        })
-        };
+        // API çağrısını yorum satırına aldım
+        // axios.post('http://localhost:8000/api/login', {
+        //     email: email,
+        //     password: password,
+        // }).then(response => {
+        //     console.log(response.data);
+        //     navigation.navigate('main');
+        // }).catch(error => {
+        //     console.error('Login Error: ', error);
+        //     alert('Login failed. Please try again.');
+        // });
+
+        // Doğrudan ana ekrana yönlendir
+        navigation.navigate('main');
+    };
 
     return (
         <ImageBackground source={require('../assets/images/bglight.png')} style={styles.backgroundImage} imageStyle={styles.backgroundImageStyle}>

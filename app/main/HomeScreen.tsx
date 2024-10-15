@@ -37,15 +37,15 @@ function Index(props: any) {
 
   const [allUsers, setAllUsers] = useState<User[]>([]);
 
-  useEffect(() => {
-    axios.get('http://127.0.0.1:8000/api/users')
-        .then((response: { data: React.SetStateAction<User[]>; }) => {
-          setAllUsers(response.data);
-        })
-        .catch((error: any) => {
-          console.error('There was an error!', error);
-        });
-  }, [allUsers]);
+ // useEffect(() => {
+   // axios.get('http://127.0.0.1:8000/api/users')
+     //   .then((response: { data: React.SetStateAction<User[]>; }) => {
+    //      setAllUsers(response.data);
+    //    })
+      //  .catch((error: any) => {
+     //     console.error('There was an error!', error);
+    //    });
+  //}, [allUsers]);
 
   return (
     <MenuProvider>

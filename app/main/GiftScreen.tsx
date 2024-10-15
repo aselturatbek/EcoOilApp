@@ -1,57 +1,100 @@
-import React, { Component } from "react";
-import { StyleSheet, View, ScrollView, Text, Dimensions, ImageBackground } from "react-native";
-import MaterialCommunityIconsIcon from "react-native-vector-icons/MaterialCommunityIcons";
-import IoniconsIcon from "react-native-vector-icons/Ionicons";
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  Text,
+  Dimensions,
+  Image,
+  ImageSourcePropType,
+  TouchableOpacity,
+  Modal,
+  TextInput,
+} from "react-native";
 import FeatherIcon from "react-native-vector-icons/Feather";
+
 const { width, height } = Dimensions.get("window");
 
 function GiftScreen() {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedGift, setSelectedGift] = useState<{ name: string; points: string; description: string } | null>(null);
+
+  const gifts = [
+    { name: "Bisiklet", points: "1000 Puan", description: "Harika bir bisiklet kazanın!" },
+    { name: "Kupa", points: "500 Puan", description: "Özel tasarım bir kupa." },
+    { name: "T-Shirt", points: "300 Puan", description: "EcoOil tasarımlı rahat bir tişört." },
+    { name: "Çanta", points: "700 Puan", description: "Şık ve kullanışlı bir çanta." },
+  ];
+
+  const openModal = (gift: { name: string; points: string; description: string }) => {
+    setSelectedGift(gift);
+    setModalVisible(true);
+  };
+
   return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        
-        {/* Banner alanını ImageBackground ile sarıyoruz */}
-        <ImageBackground source={require('../assets/images/bgdarkest.png')} style={styles.banner} imageStyle={styles.headerImage}>
-          <Text style={styles.title}>Geri Dönüştür, {"\n"}Ödüller Kazan!</Text>
-          
-        </ImageBackground>
-      
-        <View style={styles.searchSection}>
-          <Text style={styles.subtitle}>What gifts do we have?</Text>
-          <FeatherIcon name="search" style={styles.icon2} />
-        </View>
+      <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.scrollViewContent}>
+          {/* Transparan Banner */}
+          <View style={styles.banner}>
+            <Text style={styles.title}>Geri Dönüştür, {"\n"}Ödüller Kazan!</Text>
+            <View style={styles.pointsContainer}>
+              <Image
+                  source={require("../assets/images/final_clean_logo.png")}
+                  style={styles.pointsIcon}
+              />
+              <Text style={styles.pointsText}>1000 Puan</Text>
+            </View>
+          </View>
 
-        <View style={styles.cardsRow}>
-          <View style={styles.card}>
-            
-            
+          {/* Arama Butonu */}
+          <View style={styles.searchSection}>
+            <TextInput
+                style={styles.searchInput}
+                placeholder="Hediye arayın..."
+                placeholderTextColor="rgba(0,77,64,0.5)"
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+            />
+            <FeatherIcon name="search" style={styles.searchIcon} />
           </View>
-          <View style={styles.card}>
-            
-            
-          </View>
-        </View>
-        <View style={styles.cardsRow}>
-          <View style={styles.card}>
-            
-            
-          </View>
-          <View style={styles.card}>
-            
-            
-          </View>
-        </View>
 
-        <View style={styles.cardsRow}>
-          <View style={styles.card}>
-           
+          {/* Kartlar */}
+          <View style={styles.cardsRow}>
+            {gifts.map((gift, index) => (
+                <TouchableOpacity key={index} onPress={() => openModal(gift)} style={styles.card}>
+                  <Image source={require("../assets/images/final_clean_logo.png")} style={styles.cardImage} />
+                  <Text style={styles.giftName}>{gift.name}</Text>
+                  <Text style={styles.cardPoints}>{gift.points}</Text>
+                </TouchableOpacity>
+            ))}
           </View>
-          <View style={styles.card}>
-            
-          </View>
-        </View>
-      </ScrollView>
-    </View>
+
+          {/* Modal */}
+          <Modal visible={modalVisible} animationType="slide" transparent={true}>
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+                {selectedGift && (
+                    <>
+                      <Text style={styles.modalTitle}>{selectedGift.name}</Text>
+                      <Text style={styles.modalPoints}>{selectedGift.points}</Text>
+                      <Text style={styles.modalDescription}>{selectedGift.description}</Text>
+                      <TouchableOpacity
+                          style={styles.buyButton}
+                          onPress={() => alert("Satın alma işlemi başlatıldı!")}
+                      >
+                        <Text style={styles.buyButtonText}>Satın Al</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => setModalVisible(false)}>
+                        <Text style={styles.closeButton}>Kapat</Text>
+                      </TouchableOpacity>
+                    </>
+                )}
+              </View>
+            </View>
+          </Modal>
+        </ScrollView>
+      </View>
   );
 }
 
@@ -65,90 +108,144 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   banner: {
+    backgroundColor: "rgba(2,117,97,0.22)",
+    borderRadius: 20,
     width: width * 1,
-    height: height * 0.25,
-    borderRadius: 30,
+    paddingVertical: 40,
     alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 40,
-    marginTop: -30,
-  },
-  headerImage: {
-    width: width * 1,
-    height: height * 0.35,
-    borderRadius: 30,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 40,
-    marginTop: -30,
+    marginBottom: 20,
   },
   title: {
     fontFamily: "Montserrat-Bold",
     fontSize: 24,
-    color: "white",
+    color: "#004d40",
     textAlign: "center",
-    marginTop:100,
+    marginBottom: 20,
   },
-  
+  pointsContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#004d40",
+    borderRadius: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    elevation: 5,
+  },
+  pointsIcon: {
+    width: 30,
+    height: 30,
+    marginRight: 10,
+  },
+  pointsText: {
+    fontFamily: "Montserrat-Bold",
+    fontSize: 18,
+    color: "#ffffff",
+  },
   searchSection: {
     flexDirection: "row",
     width: width * 0.9,
-    justifyContent: 'space-around',
+    justifyContent: "space-between",
     alignItems: "center",
     backgroundColor: "white",
     borderRadius: 20,
     padding: 10,
     marginBottom: 20,
-    elevation: 5, // For Android
-    shadowColor: "#004d40", // For iOS
-    shadowOffset: { width: 2, height: 2 }, // For iOS
-    shadowOpacity: 0.7, // For iOS
-    shadowRadius: 4, // For iOS
+    elevation: 5,
+    shadowColor: "#004d40",
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.7,
+    shadowRadius: 4,
   },
-  subtitle: {
+  searchInput: {
+    flex: 1,
     fontFamily: "Montserrat-Regular",
-    fontSize: 15,
-    opacity:0.6,
-    color: "rgba(0,77,64,1)",
+    fontSize: 16,
+    color: "#004d40",
   },
-  icon2: {
-    color: "rgba(0,77,64,1)",
-    fontSize: 20,
+  searchIcon: {
+    fontSize: 24,
+    color: "#004d40",
   },
   cardsRow: {
     flexDirection: "row",
+    flexWrap: "wrap",
     justifyContent: "space-between",
     width: width * 0.9,
-    marginBottom: 20,
   },
   card: {
     backgroundColor: "#004d40",
-    opacity:0.6,
+    opacity: 0.8,
     borderRadius: 20,
     width: width * 0.43,
-    height: height * 0.19,
+    height: height * 0.2,
     justifyContent: "center",
     alignItems: "center",
+    marginBottom: 10,
+    padding: 10,
   },
   cardImage: {
-    backgroundColor: "rgba(0,77,64,1)",
-    width: "100%",
-    height: "70%",
-    borderRadius: 20,
+    width: 60,
+    height: 60,
+    marginBottom: 10,
+  },
+  giftName: {
+    fontFamily: "Montserrat-Bold",
+    fontSize: 18,
+    color: "white",
+    textAlign: "center",
   },
   cardPoints: {
+    fontFamily: "Montserrat-Regular",
+    fontSize: 16,
+    color: "rgba(255,255,255,0.8)",
+    marginTop: 5,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    width: width * 0.8,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 20,
+    alignItems: "center",
+  },
+  modalTitle: {
     fontFamily: "Montserrat-Bold",
     fontSize: 24,
-    color: "rgba(0,77,64,1)",
-    marginTop: 10,
+    marginBottom: 10,
   },
-  icon3: {
-    color: "rgba(0,77,64,1)",
-    fontSize: 30,
+  modalPoints: {
+    fontFamily: "Montserrat-Regular",
+    fontSize: 18,
+    marginBottom: 10,
+    color: "#004d40",
   },
-  icon4: {
-    color: "rgba(0,77,64,1)",
-    fontSize: 30,
+  modalDescription: {
+    fontFamily: "Montserrat-Regular",
+    fontSize: 16,
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  buyButton: {
+    backgroundColor: "#004d40",
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginBottom: 10,
+  },
+  buyButtonText: {
+    fontFamily: "Montserrat-Bold",
+    fontSize: 16,
+    color: "white",
+  },
+  closeButton: {
+    fontFamily: "Montserrat-Regular",
+    fontSize: 16,
+    color: "#004d40",
   },
 });
 

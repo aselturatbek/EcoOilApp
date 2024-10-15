@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
 
 interface Address {
     id: string;
@@ -24,6 +25,7 @@ interface Address {
 const { width, height } = Dimensions.get('window');
 
 const AdressScreen: React.FC = () => {
+    const navigation = useNavigation();
     const [addresses, setAddresses] = useState<Address[]>([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [addressTitle, setAddressTitle] = useState('');
@@ -58,6 +60,9 @@ const AdressScreen: React.FC = () => {
 
     return (
         <SafeAreaView style={styles.container}>
+            <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                <Ionicons name="arrow-back" size={24} color="#004d40" />
+            </TouchableOpacity>
         <View style={{width: "100%", justifyContent: "center", alignItems: "center"}}>
             <Text style={[styles.title, styles.montserratBold]}>Adreslerim</Text>
         </View>
@@ -142,6 +147,10 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: '#F5F5F5',
         padding: 20,
+    },
+    backButton: {
+        alignSelf: 'flex-start',
+        marginBottom: 10,
     },
     title: {
         fontSize: 28,
