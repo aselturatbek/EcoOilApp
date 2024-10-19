@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     View,
     Text,
@@ -15,8 +15,14 @@ import FeatherIcon from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
+import {Appointment} from "@/constants";
+import Constants from 'expo-constants';
+import {useUser} from "@/app/auth/UserContext";
 
-interface Appointment {
+
+const API_URL = Constants.expoConfig?.extra?.API_URL ?? 'http://localhost:8000';
+
+interface _Appointment {
     id: string;
     address: string;
     date: string;
@@ -26,7 +32,7 @@ interface Appointment {
 
 const AppointmentsScreen: React.FC = () => {
     const navigation = useNavigation();
-    const [appointments, setAppointments] = useState<Appointment[]>([]);
+    const [appointments, setAppointments] = useState<_Appointment[]>([]);
     const [newAppointment, setNewAppointment] = useState({
         address: '',
         date: new Date(),
@@ -35,6 +41,45 @@ const AppointmentsScreen: React.FC = () => {
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showModal, setShowModal] = useState(false); // Modal görünürlüğü
     const [tab, setTab] = useState<'current' | 'past'>('current'); // Sekmeler
+
+    const [userAppointments, setUserAppointments] = useState<Appointment[]>([]);
+
+    const { user } = useUser();
+
+    const fetchAppointments = async () => {
+        const response = await fetch(`${API_URL}/api/user_appointments/${user?.id}`);
+        const data = await response.json();
+
+        setUserAppointments(data);
+    }
+
+    useEffect(() => {
+        fetchAppointments();
+    }, []);
+
+    const handleAddAppointment = async () => {
+        const response = await fetch(`${API_URL}/api/add_appointment`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                user_id: user?.id,
+                address: newAppointment.address,
+                date: newAppointment.date,
+                amount: newAppointment.oilAmount,
+            }),
+        });
+        const data = await response.json();
+        if (response.ok) {
+            setUserAppointments([...userAppointments, data]);
+            setNewAppointment({ address: '', date: new Date(), oilAmount: '' });
+            setShowModal(false);
+            Alert.alert('Randevu Eklendi');
+        } else {
+            Alert.alert('Randevu eklenirken bir hata oluştu.');
+        }
+    }
 
     const addAppointment = () => {
         const now = new Date();
@@ -124,6 +169,26 @@ const AppointmentsScreen: React.FC = () => {
                         </Text>
                     }
                 />
+                {userAppointments.map((appointment) => (
+                    <View style={styles.appointmentItem}>
+                        <View style={{ flex: 1 }}>
+                            <View style={styles.appointmentInfoContainer}>
+                                <FontAwesome5 name="map-marker-alt" size={16} color="#004d40" style={styles.icon} />
+                                <Text style={styles.appointmentAddress}>Adres: {appointment.address}</Text>
+                            </View>
+                            <View style={styles.appointmentInfoContainer}>
+                                <Text style={styles.appointmentDate}>Tarih/Saat: {appointment.date}</Text>
+                            </View>
+                            <View style={styles.appointmentInfoContainer}>
+                                <Text style={styles.appointmentOil}>Yağ Miktarı: {appointment.amount} Litre</Text>
+                            </View>
+                        </View>
+                        <TouchableOpacity onPress={() => setUserAppointments(userAppointments.filter((a) => a.id !== appointment.id))}>
+                            <FeatherIcon name="trash-2" size={20} color="#C62828" />
+                        </TouchableOpacity>
+                    </View>
+                ))
+                }
 
                 {/* Yeni Randevu Ekleme Butonu */}
                 <TouchableOpacity style={styles.addButton} onPress={() => setShowModal(true)}>
@@ -178,7 +243,7 @@ const AppointmentsScreen: React.FC = () => {
                             />
 
                             <View style={styles.modalButtonContainer}>
-                                <TouchableOpacity style={styles.modalAddButton} onPress={addAppointment}>
+                                <TouchableOpacity style={styles.modalAddButton} onPress={handleAddAppointment}>
                                     <Text style={styles.modalButtonText}>Ekle</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity

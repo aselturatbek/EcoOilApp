@@ -17,16 +17,18 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from "@react-navigation/native";
 import {useUser} from "@/app/auth/UserContext";
 import Feather from "react-native-vector-icons/Feather";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type RootStackParamList = {
     'modals/EditProfileScreen': undefined;
     'modals/AppointmentsScreen': undefined;
     'modals/AdressScreen': undefined;
+    'auth/WelcomeScreen': undefined;
 };
 
 type NavigationPropType = StackNavigationProp<
     RootStackParamList,
-    'modals/EditProfileScreen' | 'modals/AppointmentsScreen' | 'modals/AdressScreen'
+    'modals/EditProfileScreen' | 'modals/AppointmentsScreen' | 'modals/AdressScreen' | 'auth/WelcomeScreen'
 >;
 
 const { width } = Dimensions.get("window");
@@ -37,6 +39,12 @@ const ProfileScreen: React.FC = () => {
     const [points, setPoints] = useState<number>(100);
 
     const { user, setUser } = useUser();
+
+    const handleLogout = async () => {
+        await AsyncStorage.removeItem('user');
+        setUser(null);
+        navigation.navigate('auth/WelcomeScreen');
+    };
 
     const [form, setForm] = useState({
         name: user?.name,
@@ -113,8 +121,10 @@ const ProfileScreen: React.FC = () => {
                 <Button
                     title="Çıkış Yap"
                     color="#C62828"
-                    onPress={() => Alert.alert("Çıkış Yapıldı")}
+                    onPress={() => handleLogout()}
+
                 />
+
             </ScrollView>
         </View>
     );

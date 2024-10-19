@@ -5,6 +5,7 @@ export interface IHasId {
 export interface IModel extends IHasId {
     created_at: string;
     updated_at: string;
+
     deleted_at?: string;
 }
 
@@ -31,6 +32,7 @@ export interface Appointment extends IModel {
     user_id: number;
     address: string;
     date: string;
+    amount: number;
 }
 
 export interface Transaction extends IModel {
