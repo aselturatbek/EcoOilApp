@@ -17,7 +17,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import EditProfileScreen from "@/app/modals/EditProfileScreen";
 import AppointmentsScreen from "@/app/modals/AppointmentsScreen";
 import AdressScreen from "@/app/modals/AdressScreen";
-import { UserProvider } from './auth/UserContext'; // Import UserProvider
+import { UserProvider } from './auth/UserContext';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
