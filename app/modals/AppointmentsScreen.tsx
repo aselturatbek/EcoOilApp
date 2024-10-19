@@ -95,25 +95,27 @@ const AppointmentsScreen: React.FC = () => {
                     </TouchableOpacity>
                 </View>
 
-                <FlatList
-                    data={tab === 'current' ? currentAppointments : pastAppointments}
-                    keyExtractor={(item) => item.id}
-                    renderItem={({ item }) => (
-                        <View style={styles.appointmentItem}>
-                            <Text style={styles.appointmentAddress}>Adres: {item.address}</Text>
-                            <Text style={styles.appointmentDate}>Tarih/Saat: {item.date}</Text>
-                            <Text style={styles.appointmentOil}>Yağ Miktarı: {item.oilAmount}</Text>
-                            <TouchableOpacity onPress={() => setAppointments(appointments.filter((a) => a.id !== item.id))}>
-                                <FeatherIcon name="trash-2" size={20} color="#C62828" />
-                            </TouchableOpacity>
-                        </View>
-                    )}
-                    ListEmptyComponent={
-                        <Text style={styles.emptyText}>
-                            {tab === 'current' ? 'Henüz mevcut randevu eklenmedi.' : 'Geçmiş randevu yok.'}
-                        </Text>
-                    }
-                />
+                <ScrollView>
+                    <FlatList
+                        data={tab === 'current' ? currentAppointments : pastAppointments}
+                        keyExtractor={(item) => item.id}
+                        renderItem={({ item }) => (
+                            <View style={styles.appointmentItem}>
+                                <Text style={styles.appointmentAddress}>Adres: {item.address}</Text>
+                                <Text style={styles.appointmentDate}>Tarih/Saat: {item.date}</Text>
+                                <Text style={styles.appointmentOil}>Yağ Miktarı: {item.oilAmount}</Text>
+                                <TouchableOpacity onPress={() => setAppointments(appointments.filter((a) => a.id !== item.id))}>
+                                    <FeatherIcon name="trash-2" size={20} color="#C62828" />
+                                </TouchableOpacity>
+                            </View>
+                        )}
+                        ListEmptyComponent={
+                            <Text style={styles.emptyText}>
+                                {tab === 'current' ? 'Henüz randevu yok.' : 'Geçmiş randevu yok.'}
+                            </Text>
+                        }
+                    />
+                </ScrollView>
 
                 {/* Yeni Randevu Ekleme Butonu */}
                 <TouchableOpacity style={styles.addButton} onPress={() => setShowModal(true)}>

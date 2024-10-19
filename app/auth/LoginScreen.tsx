@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from "@react-navigation/stack";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import axios from "axios";
+import { useUser } from '../auth/UserContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Define types
 type RootStackParamList = {
@@ -17,27 +19,34 @@ type NavigationPropType = StackNavigationProp<RootStackParamList, 'main'>;
 
 const LoginScreen: React.FC = () => {
     const navigation = useNavigation<NavigationPropType>();
+    const { setUser } = useUser();
 
     const [email, setEmail] = useState("");
-    const [phone, setPhone] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleLogin = () => {
-        // API çağrısını yorum satırına aldım
-        // axios.post('http://localhost:8000/api/login', {
-        //     email: email,
-        //     password: password,
-        // }).then(response => {
-        //     console.log(response.data);
-        //     navigation.navigate('main');
-        // }).catch(error => {
-        //     console.error('Login Error: ', error);
-        //     alert('Login failed. Please try again.');
-        // });
-
-        // Doğrudan ana ekrana yönlendir
-        navigation.navigate('main');
+    const handleLogin = async () => {
+        try {
+            const response = await axios.post('http://192.168.134.146:8000/api/login',
+                { email, password });
+            const userData = response.data;
+            await AsyncStorage.setItem('user', JSON.stringify(userData));
+            setUser(userData);
+            navigation.navigate('main');
+        } catch (error) {
+            console.error('Login failed', error);
+        }
     };
+
+    const loadUserFromStorage = async () => {
+        const storedUser = await AsyncStorage.getItem('user');
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        }
+    };
+
+    useEffect(() => {
+        loadUserFromStorage(); // Uygulama açıldığında kullanıcıyı yükle
+    }, []);
 
     return (
         <ImageBackground source={require('../assets/images/bglight.png')} style={styles.backgroundImage} imageStyle={styles.backgroundImageStyle}>
@@ -54,6 +63,8 @@ const LoginScreen: React.FC = () => {
                             style={styles.input}
                             placeholder="Enter your email"
                             placeholderTextColor="#004d40"
+                            autoCapitalize={'none'}
+                            keyboardType={'email-address'}
                         />
                     </View>
 
@@ -66,6 +77,7 @@ const LoginScreen: React.FC = () => {
                             placeholder="Enter your password"
                             secureTextEntry
                             placeholderTextColor="#004d40"
+                            autoCapitalize={'none'}
                         />
                     </View>
 
@@ -138,7 +150,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(255, 255, 255, 0.8)',
         marginBottom: 10,
         paddingLeft: 10,
-        elevation: 6,
+        elevation: 0,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 5 },
         shadowOpacity: 0.2,
