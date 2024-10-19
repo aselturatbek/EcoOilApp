@@ -24,16 +24,17 @@ const LoginScreen: React.FC = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+
     const handleLogin = async () => {
         try {
-            const response = await axios.post('http://192.168.134.146:8000/api/login',
+            const response = await axios.post('http://172.20.10.3:8000/api/login',
                 { email, password });
             const userData = response.data;
             await AsyncStorage.setItem('user', JSON.stringify(userData));
             setUser(userData);
             navigation.navigate('main');
         } catch (error) {
-            console.error('Login failed', error);
+            console.error('Giriş başarısız.', error);
         }
     };
 
@@ -53,7 +54,7 @@ const LoginScreen: React.FC = () => {
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <View style={styles.container1}></View>
                 <View style={styles.container}>
-                    <Text style={styles.title}>Log In</Text>
+                    <Text style={styles.title}>Giriş Yap</Text>
 
                     <View style={styles.inputContainer}>
                         <MaterialIcons name="email" size={24} color="#004d40" style={styles.inputIcon} />
@@ -61,7 +62,7 @@ const LoginScreen: React.FC = () => {
                             value={email}
                             onChangeText={setEmail}
                             style={styles.input}
-                            placeholder="Enter your email"
+                            placeholder="Mail adresinizi girin.."
                             placeholderTextColor="#004d40"
                             autoCapitalize={'none'}
                             keyboardType={'email-address'}
@@ -74,7 +75,7 @@ const LoginScreen: React.FC = () => {
                             value={password}
                             onChangeText={setPassword}
                             style={styles.input}
-                            placeholder="Enter your password"
+                            placeholder="Şifrenizi girin.."
                             secureTextEntry
                             placeholderTextColor="#004d40"
                             autoCapitalize={'none'}
@@ -82,15 +83,15 @@ const LoginScreen: React.FC = () => {
                     </View>
 
                     <TouchableOpacity onPress={() => {/* Şifreyi unuttum sayfasına yönlendir */}} >
-                        <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+                        <Text style={styles.forgotPasswordText}>Şifrenizi mi unuttunuz?</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.button} onPress={handleLogin}>
-                        <Text style={styles.buttonText}>Log In</Text>
+                        <Text style={styles.buttonText}>Giriş Yap</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={() => navigation.navigate('auth/RegisterScreen')}>
-                        <Text style={styles.linkText}>Don't have an Account? Sign Up</Text>
+                        <Text style={styles.linkText}>Henüz hesabın yok mu? Kayıt ol!</Text>
                     </TouchableOpacity>
 
                     <View style={styles.socialIcons}>
@@ -98,7 +99,7 @@ const LoginScreen: React.FC = () => {
                         <Icon name="twitter" size={30} color="#004d40" style={styles.icon} />
                         <Icon name="linkedin" size={30} color="#004d40" style={styles.icon} />
                     </View>
-                    <Text style={styles.footerText}>Get In Touch With Us.</Text>
+                    <Text style={styles.footerText}>Bizi takip edin.</Text>
                 </View>
             </ScrollView>
         </ImageBackground>
