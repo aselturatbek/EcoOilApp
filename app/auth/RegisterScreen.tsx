@@ -5,6 +5,9 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {useUser} from "@/app/auth/UserContext";
+import Constants from 'expo-constants';
+
+const API_URL = Constants.expoConfig?.extra?.API_URL ?? 'http://localhost:8000';
 
 // Define types
 type RootStackParamList = {
@@ -34,7 +37,7 @@ const RegisterScreen: React.FC = () => {
         }
 
         try {
-            const response = await fetch('http://172.20.10.3:8000/api/register', {
+            const response = await fetch(`${API_URL}/api/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
