@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import axios from "axios";
 import { useUser } from '../auth/UserContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants';
 
 // Define types
 type RootStackParamList = {
@@ -16,6 +17,8 @@ type RootStackParamList = {
 };
 
 type NavigationPropType = StackNavigationProp<RootStackParamList, 'main'>;
+
+const API_URL = Constants.expoConfig?.extra?.API_URL ?? 'http://localhost:8000';
 
 const LoginScreen: React.FC = () => {
     const navigation = useNavigation<NavigationPropType>();
@@ -27,7 +30,7 @@ const LoginScreen: React.FC = () => {
 
     const handleLogin = async () => {
         try {
-            const response = await axios.post('http://172.20.10.3:8000/api/login',
+            const response = await axios.post(`${API_URL}/api/login`,
                 { email, password });
             const userData = response.data;
             await AsyncStorage.setItem('user', JSON.stringify(userData));

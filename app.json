@@ -7,6 +7,9 @@
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
+    "extra": {
+      "API_URL": "http://192.168.134.146:8000"
+    },
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
