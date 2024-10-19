@@ -13,17 +13,28 @@ import {
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
+import {useUser} from "@/app/auth/UserContext";
+import {User} from "@/constants";
 
 const EditProfileScreen: React.FC = () => {
     const navigation = useNavigation();
     const [image, setImage] = useState<string | null>(null);
 
-    const [form, setForm] = useState({
-        name: '',
-        phone: '',
-        email: '',
-        username: '',
-        password: '',
+    const { user, setUser } = useUser();
+
+    const [form, setForm] = useState<User>({
+        created_at: "",
+        deleted_at: "",
+        updated_at: "",
+        id: user?.id || 0,
+        username: user?.username || "",
+        name: user?.name || "",
+        surname: user?.surname || "",
+        email: user?.email || "",
+        phone: user?.phone || "",
+        role: user?.role || "",
+        profile_photo_url: user?.profile_photo_url || "",
+        email_verified_at: ""
     });
 
     const handleInputChange = (key: keyof typeof form, value: string) => {
@@ -83,7 +94,10 @@ const EditProfileScreen: React.FC = () => {
                         {image ? (
                             <Image source={{ uri: image }} style={styles.profileImage} />
                         ) : (
-                            <FeatherIcon name="camera" size={30} color="#fff" />
+                            <Image
+                                source={{ uri: user?.profile_photo_url }}
+                                style={styles.profileImage}
+                            />
                         )}
                     </View>
                     <Text style={[styles.imageText, styles.montserratText]}>
@@ -92,11 +106,11 @@ const EditProfileScreen: React.FC = () => {
                 </TouchableOpacity>
 
                 <View style={styles.formContainer}>
+                    {renderInput('Kullanıcı Adı', 'at-sign', 'username', form.username)}
                     {renderInput('İsim Soyisim', 'user', 'name', form.name)}
                     {renderInput('Telefon Numarası', 'phone', 'phone', form.phone)}
                     {renderInput('E-posta', 'mail', 'email', form.email)}
-                    {renderInput('Kullanıcı Adı', 'at-sign', 'username', form.username)}
-                    {renderInput('Şifre', 'lock', 'password', form.password, true)}
+
 
                     <TouchableOpacity
                         style={styles.saveButton}

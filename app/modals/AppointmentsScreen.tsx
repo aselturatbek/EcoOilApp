@@ -7,13 +7,13 @@ import {
     StyleSheet,
     TextInput,
     Alert,
-    KeyboardAvoidingView,
-    Platform,
     ScrollView,
     Modal,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import FeatherIcon from 'react-native-vector-icons/Feather';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
 
 interface Appointment {
@@ -67,9 +67,7 @@ const AppointmentsScreen: React.FC = () => {
     const pastAppointments = appointments.filter((a) => a.isPast);
 
     return (
-        <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-            style={styles.container}>
+        <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
                 <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
                     <FeatherIcon name="arrow-left" size={24} color="#004d40" />
@@ -95,30 +93,41 @@ const AppointmentsScreen: React.FC = () => {
                     </TouchableOpacity>
                 </View>
 
-                <ScrollView>
-                    <FlatList
-                        data={tab === 'current' ? currentAppointments : pastAppointments}
-                        keyExtractor={(item) => item.id}
-                        renderItem={({ item }) => (
-                            <View style={styles.appointmentItem}>
-                                <Text style={styles.appointmentAddress}>Adres: {item.address}</Text>
-                                <Text style={styles.appointmentDate}>Tarih/Saat: {item.date}</Text>
-                                <Text style={styles.appointmentOil}>Yağ Miktarı: {item.oilAmount}</Text>
-                                <TouchableOpacity onPress={() => setAppointments(appointments.filter((a) => a.id !== item.id))}>
-                                    <FeatherIcon name="trash-2" size={20} color="#C62828" />
-                                </TouchableOpacity>
+                <FlatList
+                    style={{ width: '100%', flexGrow: 0 }}
+                    data={tab === 'current' ? currentAppointments : pastAppointments}
+                    keyExtractor={(item) => item.id}
+                    renderItem={({ item }) => (
+                        <View style={styles.appointmentItem}>
+                            <View style={{ flex: 1 }}>
+                                <View style={styles.appointmentInfoContainer}>
+                                    <FontAwesome5 name="map-marker-alt" size={16} color="#004d40" style={styles.icon} />
+                                    <Text style={styles.appointmentAddress}>Adres: {item.address}</Text>
+                                </View>
+                                <View style={styles.appointmentInfoContainer}>
+
+                                    <Text style={styles.appointmentDate}>Tarih/Saat: {item.date}</Text>
+                                </View>
+                                <View style={styles.appointmentInfoContainer}>
+
+                                    <Text style={styles.appointmentOil}>Yağ Miktarı: {item.oilAmount}</Text>
+                                </View>
                             </View>
-                        )}
-                        ListEmptyComponent={
-                            <Text style={styles.emptyText}>
-                                {tab === 'current' ? 'Henüz randevu yok.' : 'Geçmiş randevu yok.'}
-                            </Text>
-                        }
-                    />
-                </ScrollView>
+                            <TouchableOpacity onPress={() => setAppointments(appointments.filter((a) => a.id !== item.id))}>
+                                <FeatherIcon name="trash-2" size={20} color="#C62828" />
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                    ListEmptyComponent={
+                        <Text style={styles.emptyText}>
+                            {tab === 'current' ? 'Henüz randevu yok.' : 'Geçmiş randevu yok.'}
+                        </Text>
+                    }
+                />
 
                 {/* Yeni Randevu Ekleme Butonu */}
                 <TouchableOpacity style={styles.addButton} onPress={() => setShowModal(true)}>
+                    <FeatherIcon name="plus" size={20} color="#004d40" style={styles.addButtonIcon} />
                     <Text style={styles.addButtonText}>Yeni Randevu Ekle</Text>
                 </TouchableOpacity>
 
@@ -142,6 +151,7 @@ const AppointmentsScreen: React.FC = () => {
                             <TouchableOpacity
                                 onPress={() => setShowDatePicker(true)}
                                 style={styles.datePickerButton}>
+                                <MaterialCommunityIcons name="calendar" size={20} color="#004d40" style={styles.datePickerIcon} />
                                 <Text style={styles.datePickerText}>
                                     {newAppointment.date.toLocaleString()}
                                 </Text>
@@ -181,7 +191,7 @@ const AppointmentsScreen: React.FC = () => {
                     </View>
                 </Modal>
             </ScrollView>
-        </KeyboardAvoidingView>
+        </View>
     );
 };
 
@@ -194,6 +204,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingBottom: 30,
         alignItems: 'center',
+        flexGrow: 1, // İçeriğin esnek büyümesini sağlamak
     },
     backButton: {
         alignSelf: 'flex-start',
@@ -236,6 +247,9 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontFamily: 'Montserrat-regular',
     },
+    tabIcon: {
+        marginRight: 5,
+    },
     appointmentItem: {
         backgroundColor: '#E6E6E6',
         padding: 15,
@@ -245,11 +259,23 @@ const styles = StyleSheet.create({
         flexDirection: 'row', // Randevu bilgilerini yan yana yerleştirme
         justifyContent: 'space-between', // Boşluğu eşit dağıtma
         alignItems: 'center',
+        shadowColor: '#000', // Gölge ekleyerek belirgin bir görünüm
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5, // Android için gölge efekti
+    },
+    appointmentInfoContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 5,
+    },
+    icon: {
+        marginRight: 8,
     },
     appointmentAddress: {
         fontSize: 16,
         color: '#004d40',
-        marginBottom: 5,
         flex: 1, // Alanı dolduracak şekilde ayarlama
     },
     appointmentDate: {
@@ -268,17 +294,22 @@ const styles = StyleSheet.create({
         fontFamily: 'Montserrat-regular',
     },
     addButton: {
-        backgroundColor: '#004d40',
         paddingVertical: 12,
         paddingHorizontal: 20,
         borderRadius: 5,
         marginTop: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     addButtonText: {
-        color: '#fff',
+        color: '#004d40',
         fontSize: 16,
         fontWeight: 'bold',
         fontFamily: 'Montserrat-regular',
+        marginLeft: 10,
+    },
+    addButtonIcon: {
+        marginRight: 5,
     },
     modalContainer: {
         flex: 1,
@@ -319,9 +350,14 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         alignItems: 'center',
         backgroundColor: '#f9f9f9',
+        flexDirection: 'row',
     },
     datePickerText: {
         color: '#004d40',
+        marginLeft: 10,
+    },
+    datePickerIcon: {
+        marginRight: 8,
     },
     modalButtonContainer: {
         flexDirection: 'row',
