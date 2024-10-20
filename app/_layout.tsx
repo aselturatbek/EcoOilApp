@@ -18,6 +18,7 @@ import EditProfileScreen from "@/app/modals/EditProfileScreen";
 import AppointmentsScreen from "@/app/modals/AppointmentsScreen";
 import AdressScreen from "@/app/modals/AdressScreen";
 import { UserProvider } from './auth/UserContext';
+import LogoScreen from './auth/LogoScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -147,7 +148,12 @@ export default function RootLayout() {
     return (
         <UserProvider>
             <ThemeProvider value={DefaultTheme}>
-                <Stack.Navigator initialRouteName="auth/WelcomeScreen">
+                <Stack.Navigator initialRouteName="auth/LogoScreen">
+                <Stack.Screen
+                        name="auth/LogoScreen"
+                        component={LogoScreen}
+                        options={{ headerShown: false }}
+                    />
                     <Stack.Screen
                         name="auth/WelcomeScreen"
                         component={WelcomeScreen}
