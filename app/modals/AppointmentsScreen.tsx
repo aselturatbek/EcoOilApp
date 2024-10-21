@@ -169,8 +169,8 @@ const AppointmentsScreen: React.FC = () => {
                         </Text>
                     }
                 />
-                {userAppointments.map((appointment) => (
-                    <View style={styles.appointmentItem}>
+                {userAppointments.map((appointment, index) => (
+                    <View style={styles.appointmentItem} key={index}>
                         <View style={{ flex: 1 }}>
                             <View style={styles.appointmentInfoContainer}>
                                 <FontAwesome5 name="map-marker-alt" size={16} color="#004d40" style={styles.icon} />
