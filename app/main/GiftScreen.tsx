@@ -124,14 +124,14 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     pointsContainer: {
-        width: width * 0.4,
         flexDirection: "row",
         alignItems: "center",
         backgroundColor: "#004d40",
         borderRadius: 20,
-        paddingHorizontal: 15,
         paddingVertical: 8,
-        elevation: 5,
+        display: "flex",
+        justifyContent: "center",
+        width: "auto"
     },
     pointsIcon: {
         width: 30,
