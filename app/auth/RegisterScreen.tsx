@@ -27,7 +27,6 @@ const RegisterScreen: React.FC = () => {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [passwordAgain, setPasswordAgain] = useState("");
 
     const surnameInputRef = useRef<TextInput>(null);
     const phoneInputRef = useRef<TextInputMask>(null);
@@ -39,11 +38,6 @@ const RegisterScreen: React.FC = () => {
     };
 
     const handleRegister = async () => {
-        if (password !== passwordAgain) {
-            alert("Şifreler uyuşmuyor. Tekrar deneyin.");
-            return;
-        }
-
         try {
             const response = await fetch(`${API_URL}/api/register`, {
                 method: 'POST',
@@ -215,7 +209,6 @@ const RegisterScreen: React.FC = () => {
                                     ref={passwordInputRef}
                                     returnKeyType="done"
                                     onSubmitEditing={() => Keyboard.dismiss()}  
-                                    
                                 />
                                 <TouchableOpacity style={styles.button} onPress={handleRegister}>
                                     <Text style={styles.buttonText}>Kayıt Ol</Text>
