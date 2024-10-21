@@ -20,12 +20,21 @@ import AdressScreen from "@/app/modals/AdressScreen";
 import { UserProvider } from './auth/UserContext';
 import LogoScreen from './auth/LogoScreen';
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from "@react-navigation/stack";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
+type RootStackParamList = {
+    Home: undefined;
+    'modals/AppointmentsScreen': undefined;
+    // Other screens
+};
+
+type NavigationPropType = StackNavigationProp<RootStackParamList, 'modals/AppointmentsScreen'>;
+
 const TabNavigator = () => {
-    const navigation = useNavigation(); 
+    const navigation = useNavigation<NavigationPropType>(); 
     return (
         <View style={{ flex: 1 }}>
             <Tab.Navigator
