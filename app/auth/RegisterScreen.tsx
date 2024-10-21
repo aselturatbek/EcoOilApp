@@ -1,17 +1,15 @@
-import React, {useState} from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, ImageBackground ,Image} from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, ImageBackground, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from "@react-navigation/stack";
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {useUser} from "@/app/auth/UserContext";
+import { useUser } from "@/app/auth/UserContext";
 import Constants from 'expo-constants';
+import { TextInputMask } from 'react-native-masked-text';
 
 const API_URL = Constants.expoConfig?.extra?.API_URL ?? 'http://localhost:8000';
 
-// Define types
 type RootStackParamList = {
-    'auth/WelcomeScreen': undefined;
     'auth/LoginScreen': undefined;
     main: undefined;
 };
@@ -22,13 +20,23 @@ const RegisterScreen: React.FC = () => {
     const navigation = useNavigation<NavigationPropType>();
     const { setUser } = useUser();
 
-    const [username, setUsername] = useState("");
+    const [step, setStep] = useState(1);
     const [name, setName] = useState("");
     const [surname, setSurname] = useState("");
-    const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordAgain, setPasswordAgain] = useState("");
+
+    const surnameInputRef = useRef<TextInput>(null);
+    const phoneInputRef = useRef<TextInputMask>(null);
+    const mailInputRef = useRef<TextInput>(null);
+    const passwordInputRef = useRef<TextInput>(null);
+
+    const handleNextStep = () => {
+        if (step < 3) setStep(step + 1);
+    };
 
     const handleRegister = async () => {
         if (password !== passwordAgain) {
@@ -43,11 +51,11 @@ const RegisterScreen: React.FC = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    username,
                     name,
                     surname,
-                    email,
                     phone,
+                    username,
+                    email,
                     password,
                 }),
             });
@@ -57,124 +65,180 @@ const RegisterScreen: React.FC = () => {
             }
 
             const user = await response.json();
-
-            // Set the user in context
             setUser(user);
-
-            // Navigate to the main screen
-            navigation.navigate('auth/LoginScreen');
+            setStep(3);  // Kayıt başarılı olduğunda 3. adıma geç
+            setTimeout(() => {
+                navigation.navigate('auth/LoginScreen');  // 2 saniye sonra LoginScreen'e yönlendir
+            }, 2000);
         } catch (error) {
             console.error(error);
             alert("Kayıt başarısız. Lütfen bilgilerinizi kontrol edin.");
         }
     };
+
+    const renderStepIndicator = () => (
+        <View style={styles.stepIndicator}>
+          {[1, 2, 3].map((stepNum, index) => (
+            <React.Fragment key={stepNum}>
+              <View
+                style={[styles.circle, { 
+                  backgroundColor: step >= stepNum ? '#004d40' : '#ddd',
+                  width: step === stepNum && stepNum !== 3 ? 120 : 35,
+                  height: 35,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  paddingHorizontal: step === stepNum && stepNum !== 3 ? 10 : 0,
+                }]}
+              >
+                {step > stepNum || (step === 3 && stepNum === 3) ? (
+                  <Icon name="check" size={20} color="#fff" />
+                ) : step === stepNum ? (
+                  <Text style={styles.stepTextActive}>
+                    {stepNum === 1 ? 'Kişisel Bilgiler' : stepNum === 2 ? 'Güvenlik' : 'Hoş Geldin'}
+                  </Text>
+                ) : (
+                  <Text style={styles.stepText}>{stepNum}</Text>
+                )}
+              </View>
+              {index < 2 && <View style={styles.stepLine} />}
+            </React.Fragment>
+          ))}
+        </View>
+    );
+
     return (
-        <ImageBackground source={require('../assets/images/bglight.png')} style={styles.backgroundImage} imageStyle={styles.backgroundImageStyle}>
-            <ScrollView contentContainerStyle={styles.scrollContainer}>
-                <View style={styles.container1}></View>
-                <View style={styles.container}>
-                    <Text style={styles.title}>EcoOil'e Kayıt ol!</Text>
+        <ImageBackground source={require('../assets/images/bglight.png')} style={styles.backgroundImage}>
+            <KeyboardAvoidingView
+                style={styles.keyboardAvoidingView}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 100}
+            >
+                <ScrollView contentContainerStyle={styles.scrollContainer}>
+                    <View style={styles.container}>
+                        
+                        {step === 1 && (
+                            <>
+                            <Text style={styles.title}>EcoOil’e</Text>
+                            <Text style={styles.subtitle}>Kayıt Ol.</Text>
 
-                    <View style={styles.inputContainer}>
-                        <Icon name="user" size={24} color="#004d40" style={styles.inputIcon} />
-                        <TextInput
-                            value={username}
-                            onChangeText={setUsername}
-                            style={styles.input}
-                            placeholder=" Kullanıcı adı giriniz.."
-                            placeholderTextColor="#004d40"
-                        />
+                            {renderStepIndicator()}
+                                <View style={styles.rowContainer}>
+                                    <View style={styles.inputHalf}>
+                                        <Text style={styles.label}>Ad</Text>
+                                        <TextInput
+                                            value={name}
+                                            onChangeText={setName}
+                                            style={styles.input}
+                                            placeholderTextColor="#004d40"
+                                            returnKeyType="next"
+                                            onSubmitEditing={() => surnameInputRef.current?.focus()}
+                                            blurOnSubmit={false}
+                                        />
+                                    </View>
+                                    <View style={styles.inputHalf}>
+                                        <Text style={styles.label}>Soyad</Text>
+                                        <TextInput
+                                            value={surname}
+                                            onChangeText={setSurname}
+                                            style={styles.input}
+                                            placeholderTextColor="#004d40"
+                                            ref={surnameInputRef}
+                                            returnKeyType="next"
+                                        
+                                            blurOnSubmit={false}
+                                        />
+                                    </View>
+                                </View>
+                                <Text style={styles.labelPhone}>Telefon Numarası</Text>
+                                <TextInputMask
+                                    type={'custom'}
+                                    options={{
+                                        mask: '+90 (999) 999 99 99',
+                                    }}
+                                    value={phone}
+                                    onChangeText={setPhone}
+                                    style={styles.input}
+                                    keyboardType="numeric"
+                                    placeholderTextColor="#004d40"
+                                    placeholder='+99 (999) 999 99 99'
+                                    ref={phoneInputRef}  // Ref kullanmaya devam edebilirsin, ama focus() kullanmayacağız
+                                    returnKeyType="done"
+                                    onSubmitEditing={() => Keyboard.dismiss()}  // focus() olmadan kullanıyoruz
+                                />
+
+                                <TouchableOpacity style={styles.button} onPress={handleNextStep}>
+                                    <Text style={styles.buttonText}>Devam Et</Text>
+                                </TouchableOpacity>
+                                <View style={styles.loginContainer}>
+                                    <Text style={styles.loginText}>Hesabın zaten var mı? </Text>
+                                    <TouchableOpacity onPress={() => navigation.navigate('auth/LoginScreen')}>
+                                        <Text style={styles.loginLink}>Giriş Yap</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </>
+                        )}
+
+                        {step === 2 && (
+                            <>
+                            <Text style={styles.title}>EcoOil’e</Text>
+                            <Text style={styles.subtitle}>Kayıt Ol.</Text>
+
+                            {renderStepIndicator()}
+                            <Text style={styles.label2}>Kullanıcı Adı</Text>
+                                <TextInput
+                                    value={username}
+                                    onChangeText={setUsername}
+                                    style={styles.input}
+                                    placeholderTextColor="#004d40"
+                                    returnKeyType="next"
+                                    onSubmitEditing={() => mailInputRef.current?.focus()}
+                                    blurOnSubmit={false}
+                                />
+                                <Text style={styles.label2}>Mail Adresi</Text>
+                                <TextInput
+                                    value={email}
+                                    onChangeText={setEmail}
+                                    style={styles.input}
+                                    keyboardType="email-address" 
+                                    ref={mailInputRef}
+                                    returnKeyType="next"
+                                    onSubmitEditing={() => passwordInputRef.current?.focus()}
+                                    blurOnSubmit={false}
+                                />
+                                <Text style={styles.label2}>Şifre</Text>
+                                <TextInput
+                                    value={password}
+                                    onChangeText={setPassword}
+                                    style={styles.input}
+                                    secureTextEntry
+                                    placeholderTextColor="#004d40"
+                                    ref={passwordInputRef}
+                                    returnKeyType="done"
+                                    onSubmitEditing={() => Keyboard.dismiss()}  
+                                    
+                                />
+                                <TouchableOpacity style={styles.button} onPress={handleRegister}>
+                                    <Text style={styles.buttonText}>Kayıt Ol</Text>
+                                </TouchableOpacity>
+                                <View style={styles.loginContainer}>
+                                    <Text style={styles.loginText}>Hesabın zaten var mı? </Text>
+                                    <TouchableOpacity onPress={() => navigation.navigate('auth/LoginScreen')}>
+                                        <Text style={styles.loginLink}>Giriş Yap</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </>
+                        )}
+
+                        {step === 3 && (
+                            <View>
+                                <Text style={styles.titleWelcome}>EcoOil’e</Text>
+                                <Text style={styles.subtitleWelcome}>Hoşgeldin.</Text>
+                            </View>
+                        )}
+
                     </View>
-                    <View style={styles.inputContainer}>
-                        <Icon name="user" size={24} color="#004d40" style={styles.inputIcon} />
-                        <TextInput
-                            value={name}
-                            onChangeText={setName}
-                            style={styles.input}
-                            placeholder=" Adınızı giriniz.."
-                            placeholderTextColor="#004d40"
-                        />
-                    </View>
-                    <View style={styles.inputContainer}>
-                        <Icon name="user" size={24} color="#004d40" style={styles.inputIcon} />
-                        <TextInput
-                            value={surname}
-                            onChangeText={setSurname}
-                            style={styles.input}
-                            placeholder="Soyadınızı giriniz.."
-                            placeholderTextColor="#004d40"
-                        />
-                    </View>
-
-                    <View style={styles.inputContainer}>
-                        <MaterialIcons name="email" size={24} color="#004d40" style={styles.inputIcon} />
-                        <TextInput
-                            value={email}
-                            onChangeText={setEmail}
-                            style={styles.input}
-                            placeholder="Mail adresinizi giriniz.."
-                            placeholderTextColor="#004d40"
-                        />
-                    </View>
-
-                    <View style={styles.inputContainer}>
-                        <MaterialIcons name="phone" size={24} color="#004d40" style={styles.inputIcon} />
-                        <TextInput
-                            value={phone}
-                            onChangeText={setPhone}
-                            style={styles.input}
-                            placeholder="Telefon numaranızı giriniz.."
-                            placeholderTextColor="#004d40"
-                        />
-                    </View>
-
-                    <View style={styles.inputContainer}>
-                        <MaterialIcons name="lock" size={24} color="#004d40" style={styles.inputIcon} />
-                        <TextInput
-                            value={password}
-                            onChangeText={setPassword}
-                            style={styles.input}
-                            placeholder="Şifre oluşturunuz.."
-                            secureTextEntry
-                            placeholderTextColor="#004d40"
-                        />
-                    </View>
-
-                    <View style={styles.inputContainer}>
-                        <MaterialIcons name="lock-outline" size={24} color="#004d40" style={styles.inputIcon} />
-                        <TextInput
-                            value={passwordAgain}
-                            onChangeText={setPasswordAgain}
-                            style={styles.input}
-                            placeholder="Şifreyi tekrar giriniz.."
-                            secureTextEntry
-                            placeholderTextColor="#004d40"
-                        />
-                    </View>
-
-                    <TouchableOpacity onPress={() => {/* Şifreyi unuttum sayfasına yönlendir */}}>
-                        <Text style={styles.forgotPasswordText}>Şifrenizi mi unuttunuz?</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.button} onPress={() => {
-                        handleRegister();
-
-                    }}>
-                        <Text style={styles.buttonText}> Kayıt Ol !</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={() => navigation.navigate('auth/LoginScreen')}>
-                        <Text style={styles.linkText}>Zaten hesabın var mı? Giriş Yap.</Text>
-                    </TouchableOpacity>
-
-                    <View style={styles.socialIcons}>
-                        <Icon name="instagram" size={30} color="#004d40" style={styles.icon} />
-                        <Icon name="twitter" size={30} color="#004d40" style={styles.icon} />
-                        <Icon name="linkedin" size={30} color="#004d40" style={styles.icon} />
-                    </View>
-                    <Text style={styles.footerText}>Bizi takip edin.</Text>
-                </View>
-            </ScrollView>
+                </ScrollView>
+            </KeyboardAvoidingView>
         </ImageBackground>
     );
 };
@@ -184,132 +248,147 @@ const styles = StyleSheet.create({
         flex: 1,
         resizeMode: 'cover',
     },
-    backgroundImageStyle: {
-        opacity: 0.6,
+    keyboardAvoidingView: {
+        flex: 1,
     },
     scrollContainer: {
-        flexGrow: 1,
+        paddingHorizontal: 30,
+        paddingVertical: 30,
         justifyContent: 'center',
-        alignItems: 'center',
-        paddingVertical: 20, // ScrollView padding for better spacing (Azaltıldı)
+        backgroundColor: 'transparent',
+        paddingTop: 100
     },
     container: {
         alignItems: 'center',
-        justifyContent: 'center',
-        padding: 20, // İç boşluk azaltıldı
-    },
-    container1: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 100, // İç boşluk azaltıldı
-    },
-    image: {
-        width: 390, // Increased logo size
-        height: 320, // Increased logo size
-        marginBottom: 20,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 4,
-        elevation: 5,
-        borderBottomRightRadius:20,
-        borderBottomLeftRadius:20,
+        marginTop: 30
     },
     title: {
-        fontSize: 25,
+        fontSize: 36,
         fontWeight: 'bold',
         color: '#004d40',
-        marginBottom: 30, // Alt boşluk azaltıldı
         textAlign: 'center',
         fontFamily: 'Montserrat-Bold',
-        textShadowColor: 'rgba(0, 0, 0, 0.3)',
-        textShadowOffset: { width: 2, height: 2 },
-        textShadowRadius: 4,
     },
-    inputContainer: {
-        width: '85%',
+    subtitle: {
+        fontSize: 34,
+        color: '#004d40',
+        marginBottom: 20,
+        textAlign: 'center',
+        fontFamily: 'Montserrat-Light',
+    },
+    titleWelcome: {
+        fontSize: 46,
+        fontWeight: 'bold',
+        color: '#004d40',
+        textAlign: 'center',
+        fontFamily: 'Montserrat-Bold',
+        marginTop: 230
+    },
+    subtitleWelcome: {
+        fontSize: 44,
+        color: '#004d40',
+        marginBottom: 20,
+        textAlign: 'center',
+        fontFamily: 'Montserrat-Light',
+    },
+    stepIndicator: {
         flexDirection: 'row',
+        justifyContent: 'center',
         alignItems: 'center',
-        borderWidth: 1,
-        borderColor: 'white',
-        borderRadius: 18,
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
-        marginBottom: 10, // Alt boşluk azaltıldı
-        paddingLeft: 10, // Padding azaltıldı
-        elevation: 6,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 5 },
-        shadowOpacity: 0.2,
-        shadowRadius: 5,
+        marginVertical: 45,
     },
-    input: {
-        flex: 1,
-        paddingVertical: 13, // Dikey padding azaltıldı
-        paddingHorizontal: 8, // Yatay padding azaltıldı
+    circle: {
+        width: 50,
+        height: 35,
+        borderRadius: 14,
+        backgroundColor: '#E0E0E0',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    stepText: {
+        color: '#FFF',
+        fontSize: 14,
         fontFamily: 'Montserrat-Regular',
     },
-    inputIcon: {
-        marginRight: 8, // Sağ boşluk azaltıldı
-        opacity: 0.6,
-        fontSize:20,
+    stepTextActive: {
+        color: '#FFF',
+        fontSize: 14,
+        fontFamily: 'Montserrat-Regular',
+    },
+    stepLine: {
+        width: 68,
+        height: 2,
+        backgroundColor: '#004d40',
+    },
+    rowContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
+    },
+    inputHalf: {
+        width: '48%',
+    },
+    label: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#004d40',
+        marginBottom: 5,
+        fontFamily: 'Montserrat-Bold',
+        marginLeft: 10
+    },
+    label2: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#004d40',
+        marginBottom: 5,
+        fontFamily: 'Montserrat-Bold',
+        alignSelf: 'flex-start'
+    },
+    labelPhone: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#004d40',
+        marginBottom: 5,
+        fontFamily: 'Montserrat-Bold',
+        marginRight: 190
+    },
+    input: {
+        width: '100%',
+        height: 45,
+        borderRadius: 18,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        paddingHorizontal: 10,
+        marginBottom: 15,
+        backgroundColor: '#fff',
+        fontFamily: 'Montserrat-Regular',
     },
     button: {
         backgroundColor: '#004d40',
-        paddingVertical: 10, // Dikey padding azaltıldı
-        paddingHorizontal: 40, // Yatay padding azaltıldı
-        borderRadius: 18,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 5 },
-        shadowOpacity: 0.4,
-        shadowRadius: 5,
-        elevation: 7,
-        marginTop: 20, // Üst boşluk azaltıldı
+        paddingVertical: 12,
+        paddingHorizontal: 60,
+        borderRadius: 25,
+        marginVertical: 20,
     },
     buttonText: {
-        color: '#ffffff',
-        fontSize: 18,
+        color: '#fff',
+        fontSize: 16,
         fontWeight: 'bold',
-        textAlign: 'center',
         fontFamily: 'Montserrat-Bold',
     },
-    linkText: {
-        color: '#004d40',
-        marginTop: 15, // Üst boşluk azaltıldı
-        textAlign: 'center',
-        fontFamily: 'Montserrat-Regular',
-        textDecorationLine: 'underline',
-    },
-    footerText: {
-        color: '#004d40',
-        marginTop: 10, // Üst boşluk azaltıldı
-        fontSize: 12,
-        textAlign: 'center',
-        fontFamily: 'Montserrat-Regular',
-    },
-    forgotPasswordText: {
-        color: '#004d40',
-        marginBottom: 20, // Alt boşluk azaltıldı
-        textAlign: 'left',
-        marginTop:10,
-        marginRight:150,
-        width: '85%',
-        fontFamily: 'Montserrat-Regular',
-        textDecorationLine: 'underline',
-    },
-    socialIcons: {
+    loginContainer: {
         flexDirection: 'row',
-        justifyContent: 'center',
-        marginTop: 60, // Üst boşluk azaltıldı
+        marginTop: 20,
     },
-    icon: {
-        marginHorizontal: 10, // Yatay boşluk azaltıldı
-        marginBottom: 30, // Alt boşluk azaltıldı
-        transform: [{ scale: 0.9 }],
-
+    loginText: {
+        color: '#000',
+        fontFamily: 'Montserrat-Regular',
+    },
+    loginLink: {
+        color: '#004d40',
+        fontWeight: 'bold',
+        fontFamily: 'Montserrat-Bold',
     },
 });
-
-
-
 
 export default RegisterScreen;

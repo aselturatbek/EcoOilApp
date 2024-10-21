@@ -57,7 +57,8 @@ const LoginScreen: React.FC = () => {
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <View style={styles.container1}></View>
                 <View style={styles.container}>
-                    <Text style={styles.title}>Giriş Yap</Text>
+                <Text style={styles.title}>EcoOil’e</Text>
+                <Text style={styles.subtitle}>Giriş Yap.</Text>
 
                     <View style={styles.inputContainer}>
                         <MaterialIcons name="email" size={24} color="#004d40" style={styles.inputIcon} />
@@ -94,7 +95,11 @@ const LoginScreen: React.FC = () => {
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={() => navigation.navigate('auth/RegisterScreen')}>
-                        <Text style={styles.linkText}>Henüz hesabın yok mu? Kayıt ol!</Text>
+                        <Text style={styles.linkText}>
+                        Henüz hesabın yok mu?  <Text style= {styles.linkText2}>
+                              Kayıt ol.
+                            </Text>
+                            </Text>
                     </TouchableOpacity>
 
                     <View style={styles.socialIcons}>
@@ -134,18 +139,21 @@ const styles = StyleSheet.create({
         padding: 100,
     },
     title: {
-        fontSize: 25,
+        fontSize: 36,
         fontWeight: 'bold',
         color: '#004d40',
-        marginBottom: 30,
         textAlign: 'center',
         fontFamily: 'Montserrat-Bold',
-        textShadowColor: 'rgba(0, 0, 0, 0.3)',
-        textShadowOffset: { width: 2, height: 2 },
-        textShadowRadius: 4,
+    },
+    subtitle: {
+        fontSize: 34,
+        color: '#004d40',
+        marginBottom: 20,
+        textAlign: 'center',
+        fontFamily: 'Montserrat-Light',
     },
     inputContainer: {
-        width: '85%',
+        width: '90%',
         flexDirection: 'row',
         alignItems: 'center',
         borderWidth: 1,
@@ -195,11 +203,18 @@ const styles = StyleSheet.create({
         marginTop: 15,
         textAlign: 'center',
         fontFamily: 'Montserrat-Regular',
-        textDecorationLine: 'underline',
+
+    },
+    linkText2: {
+        color: '#004d40',
+        marginTop: 15,
+        textAlign: 'center',
+        fontFamily: 'Montserrat-Bold',
+        
     },
     footerText: {
         color: '#004d40',
-        marginTop: 10,
+        marginTop: -20,
         fontSize: 12,
         textAlign: 'center',
         fontFamily: 'Montserrat-Regular',
@@ -209,7 +224,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         textAlign: 'left',
         marginTop: 10,
-        marginRight: 150,
+        marginRight: 140,
         width: '85%',
         fontFamily: 'Montserrat-Regular',
         textDecorationLine: 'underline',
@@ -217,7 +232,7 @@ const styles = StyleSheet.create({
     socialIcons: {
         flexDirection: 'row',
         justifyContent: 'center',
-        marginTop: 60,
+        marginTop: 130,
     },
     icon: {
         marginHorizontal: 10,
