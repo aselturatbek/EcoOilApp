@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     View,
     Text,
@@ -15,12 +15,12 @@ import {
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
+import {useUser} from "@/app/auth/UserContext";
+import Constants from "expo-constants";
+import { Address } from '@/constants';
 
-interface Address {
-    id: string;
-    title: string;
-    details: string;
-}
+
+const API_URL = Constants.expoConfig?.extra?.API_URL ?? 'http://localhost:8000';
 
 const { width, height } = Dimensions.get('window');
 
@@ -29,67 +29,76 @@ const AdressScreen: React.FC = () => {
     const [addresses, setAddresses] = useState<Address[]>([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [editModalVisible, setEditModalVisible] = useState(false);
-    const [addressTitle, setAddressTitle] = useState('');
+    const [addressName, setAddressName] = useState('');
     const [addressDetails, setAddressDetails] = useState('');
     const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
 
-    const saveAddress = () => {
-        if (addressTitle && addressDetails) {
-            const newAddress = {
-                id: Math.random().toString(),
-                title: addressTitle,
-                details: addressDetails,
-            };
-            setAddresses([...addresses, newAddress]);
-            setAddressTitle('');
-            setAddressDetails('');
-            setModalVisible(false);
-            Alert.alert('Başarılı!', 'Adres başarıyla kaydedildi.');
-        } else {
-            Alert.alert('Hata!', 'Lütfen tüm alanları doldurun.');
-        }
-    };
-
-    const editAddress = () => {
-        if (selectedAddress && addressTitle && addressDetails) {
-            setAddresses(addresses.map(addr =>
-                addr.id === selectedAddress.id
-                    ? { ...addr, title: addressTitle, details: addressDetails }
-                    : addr
-            ));
-            setSelectedAddress(null);
-            setAddressTitle('');
-            setAddressDetails('');
-            setEditModalVisible(false);
-            Alert.alert('Başarılı!', 'Adres başarıyla güncellendi.');
-        } else {
-            Alert.alert('Hata!', 'Lütfen tüm alanları doldurun.');
-        }
-    };
-
-    const deleteAddress = (id: string) => {
-        setAddresses(addresses.filter(addr => addr.id !== id));
-        Alert.alert('Başarılı!', 'Adres başarıyla silindi.');
-    };
-
     const openEditModal = (address: Address) => {
         setSelectedAddress(address);
-        setAddressTitle(address.title);
-        setAddressDetails(address.details);
+        setAddressName(address.address_name);
+        setAddressDetails(address.address_line_1);
         setEditModalVisible(true);
     };
+
+    const { user } = useUser();
+    const [userAddresses, setUserAddresses] = useState<Address[]>([]);
+
+    const fetchAddresses = async () => {
+        try {
+            const response = await fetch(`${API_URL}/api/user_addresses/${user?.id}`);
+            const data = await response.json();
+            setUserAddresses(data);
+        } catch (error) {
+            console.error('Adresler alınamadı.', error);
+        }
+    }
+
+    useEffect(() => {
+        fetchAddresses();
+    }, []);
+
+    const handleDelete = async (address: Address) => {
+        try {
+            await fetch(`${API_URL}/api/addresses/${address.id}`, {
+                method: 'DELETE',
+            });
+            fetchAddresses();
+        } catch (error) {
+            console.error('Adres silinemedi.', error);
+        }
+    }
+
+    const handleAddAddress = async () => {
+        try {
+            await fetch(`${API_URL}/api/addresses`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    address_name: addressName,
+                    address_line_1: addressDetails,
+                    user_id: user?.id,
+                }),
+            });
+            fetchAddresses();
+            setModalVisible(false);
+        } catch (error) {
+            console.error('Adres eklenemedi.', error);
+        }
+    }
 
     const renderAddressItem = ({ item }: { item: Address }) => (
         <View style={styles.addressItem}>
             <Ionicons name="location-outline" size={24} color="#004d40" style={styles.icon} />
             <View style={{ flex: 1 }}>
-                <Text style={[styles.addressTitle, styles.montserratBold]}>{item.title}</Text>
-                <Text style={[styles.addressDetails, styles.montserratText]}>{item.details}</Text>
+                <Text style={[styles.addressTitle, styles.montserratBold]}>{item.address_name}</Text>
+                <Text style={[styles.addressDetails, styles.montserratText]}>{item.address_line_1}</Text>
             </View>
             <TouchableOpacity onPress={() => openEditModal(item)}>
                 <Feather name="edit" size={24} color="#004d40" style={styles.actionIcon} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => deleteAddress(item.id)}>
+            <TouchableOpacity>
                 <Feather name="trash" size={24} color="#C62828" style={styles.actionIcon} />
             </TouchableOpacity>
         </View>
@@ -104,18 +113,21 @@ const AdressScreen: React.FC = () => {
                 <Text style={[styles.title, styles.montserratBold]}>Adreslerim</Text>
             </View>
 
-            <FlatList
-                style={{ marginTop: 20 }}
-                data={addresses}
-                keyExtractor={(item) => item.id}
-                renderItem={renderAddressItem}
-                contentContainerStyle={styles.listContent}
-                ListEmptyComponent={
-                    <Text style={[styles.emptyText, styles.montserratText]}>
-                        Henüz kayıtlı adres yok.
-                    </Text>
-                }
-            />
+            {userAddresses.map((userAddress) => (
+                <View style={styles.addressItem} key={userAddress.id}>
+                    <Ionicons name="location-outline" size={24} color="#004d40" style={styles.icon} />
+                    <View style={{ flex: 1 }}>
+                        <Text style={[styles.addressTitle, styles.montserratBold]}>{userAddress.address_name}</Text>
+                        <Text style={[styles.addressDetails, styles.montserratText]}>{userAddress.address_line_1}</Text>
+                    </View>
+                    <TouchableOpacity onPress={() => openEditModal(userAddress)}>
+                        <Feather name="edit" size={24} color="#004d40" style={styles.actionIcon} />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleDelete(userAddress)}>
+                        <Feather name="trash" size={24} color="#C62828" style={styles.actionIcon} />
+                    </TouchableOpacity>
+                </View>
+            ))}
 
             <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
                 <Feather name="plus" size={30} color="#fff" />
@@ -141,8 +153,8 @@ const AdressScreen: React.FC = () => {
                                 style={styles.input}
                                 placeholder="Adres Başlığı (Örn: Ev, İş)"
                                 placeholderTextColor="#757575"
-                                value={addressTitle}
-                                onChangeText={setAddressTitle}
+                                value={addressName}
+                                onChangeText={setAddressName}
                             />
                         </View>
 
@@ -159,7 +171,7 @@ const AdressScreen: React.FC = () => {
                         </View>
 
                         <View style={styles.modalButtonContainer}>
-                            <TouchableOpacity style={styles.saveButton} onPress={saveAddress}>
+                            <TouchableOpacity style={styles.saveButton} onPress={() => {handleAddAddress()}}>
                                 <Text style={[styles.saveButtonText, styles.montserratText]}>Kaydet</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
@@ -193,8 +205,8 @@ const AdressScreen: React.FC = () => {
                                 style={styles.input}
                                 placeholder="Adres Başlığı (Örn: Ev, İş)"
                                 placeholderTextColor="#757575"
-                                value={addressTitle}
-                                onChangeText={setAddressTitle}
+                                value={addressName}
+                                onChangeText={setAddressName}
                             />
                         </View>
 
@@ -211,7 +223,7 @@ const AdressScreen: React.FC = () => {
                         </View>
 
                         <View style={styles.modalButtonContainer}>
-                            <TouchableOpacity style={styles.saveButton} onPress={editAddress}>
+                            <TouchableOpacity style={styles.saveButton}>
                                 <Text style={[styles.saveButtonText, styles.montserratText]}>Güncelle</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
@@ -230,11 +242,11 @@ const AdressScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        justifyContent: "center",
         alignItems: "center",
         backgroundColor: '#F5F5F5',
         padding: 20,
+        position: 'relative',
+        height: height,
     },
     backButton: {
         alignSelf: 'flex-start',
@@ -295,7 +307,6 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         alignItems: 'center',
         justifyContent: 'center',
-        elevation: 5,
     },
     modalContainer: {
         flex: 1,
