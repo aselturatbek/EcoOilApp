@@ -19,11 +19,13 @@ import AppointmentsScreen from "@/app/modals/AppointmentsScreen";
 import AdressScreen from "@/app/modals/AdressScreen";
 import { UserProvider } from './auth/UserContext';
 import LogoScreen from './auth/LogoScreen';
+import { useNavigation } from '@react-navigation/native';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
+    const navigation = useNavigation(); 
     return (
         <View style={{ flex: 1 }}>
             <Tab.Navigator
@@ -88,7 +90,7 @@ const TabNavigator = () => {
             </Tab.Navigator>
             <TouchableOpacity style={styles.fab1}>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.fab} onPress={() => console.log('FAB Pressed!')}>
+            <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('modals/AppointmentsScreen')}>
                 <Feather name="plus" size={30} color='white' />
             </TouchableOpacity>
         </View>
