@@ -28,8 +28,10 @@ const AdressScreen: React.FC = () => {
     const navigation = useNavigation();
     const [addresses, setAddresses] = useState<Address[]>([]);
     const [modalVisible, setModalVisible] = useState(false);
+    const [editModalVisible, setEditModalVisible] = useState(false);
     const [addressTitle, setAddressTitle] = useState('');
     const [addressDetails, setAddressDetails] = useState('');
+    const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
 
     const saveAddress = () => {
         if (addressTitle && addressDetails) {
@@ -48,13 +50,48 @@ const AdressScreen: React.FC = () => {
         }
     };
 
+    const editAddress = () => {
+        if (selectedAddress && addressTitle && addressDetails) {
+            setAddresses(addresses.map(addr =>
+                addr.id === selectedAddress.id
+                    ? { ...addr, title: addressTitle, details: addressDetails }
+                    : addr
+            ));
+            setSelectedAddress(null);
+            setAddressTitle('');
+            setAddressDetails('');
+            setEditModalVisible(false);
+            Alert.alert('Başarılı!', 'Adres başarıyla güncellendi.');
+        } else {
+            Alert.alert('Hata!', 'Lütfen tüm alanları doldurun.');
+        }
+    };
+
+    const deleteAddress = (id: string) => {
+        setAddresses(addresses.filter(addr => addr.id !== id));
+        Alert.alert('Başarılı!', 'Adres başarıyla silindi.');
+    };
+
+    const openEditModal = (address: Address) => {
+        setSelectedAddress(address);
+        setAddressTitle(address.title);
+        setAddressDetails(address.details);
+        setEditModalVisible(true);
+    };
+
     const renderAddressItem = ({ item }: { item: Address }) => (
         <View style={styles.addressItem}>
             <Ionicons name="location-outline" size={24} color="#004d40" style={styles.icon} />
-            <View>
+            <View style={{ flex: 1 }}>
                 <Text style={[styles.addressTitle, styles.montserratBold]}>{item.title}</Text>
                 <Text style={[styles.addressDetails, styles.montserratText]}>{item.details}</Text>
             </View>
+            <TouchableOpacity onPress={() => openEditModal(item)}>
+                <Feather name="edit" size={24} color="#004d40" style={styles.actionIcon} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => deleteAddress(item.id)}>
+                <Feather name="trash" size={24} color="#C62828" style={styles.actionIcon} />
+            </TouchableOpacity>
         </View>
     );
 
@@ -63,9 +100,9 @@ const AdressScreen: React.FC = () => {
             <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
                 <Ionicons name="arrow-back" size={24} color="#004d40" />
             </TouchableOpacity>
-        <View style={{width: "100%", justifyContent: "center", alignItems: "center"}}>
-            <Text style={[styles.title, styles.montserratBold]}>Adreslerim</Text>
-        </View>
+            <View style={{ width: "100%", justifyContent: "center", alignItems: "center" }}>
+                <Text style={[styles.title, styles.montserratBold]}>Adreslerim</Text>
+            </View>
 
             <FlatList
                 style={{ marginTop: 20 }}
@@ -96,7 +133,6 @@ const AdressScreen: React.FC = () => {
                     style={styles.modalContainer}
                 >
                     <View style={styles.modalContent}>
-
                         <Text style={[styles.modalTitle, styles.montserratBold]}>Yeni Adres Ekle</Text>
 
                         <View style={styles.inputGroup}>
@@ -136,6 +172,58 @@ const AdressScreen: React.FC = () => {
                     </View>
                 </KeyboardAvoidingView>
             </Modal>
+
+            {/* Adres Düzenleme Modalı */}
+            <Modal
+                visible={editModalVisible}
+                animationType="slide"
+                transparent={true}
+                onRequestClose={() => setEditModalVisible(false)}
+            >
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+                    style={styles.modalContainer}
+                >
+                    <View style={styles.modalContent}>
+                        <Text style={[styles.modalTitle, styles.montserratBold]}>Adresi Düzenle</Text>
+
+                        <View style={styles.inputGroup}>
+                            <Feather name="tag" size={20} color="#004d40" style={styles.inputIcon} />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Adres Başlığı (Örn: Ev, İş)"
+                                placeholderTextColor="#757575"
+                                value={addressTitle}
+                                onChangeText={setAddressTitle}
+                            />
+                        </View>
+
+                        <View style={styles.inputGroup}>
+                            <Feather name="map-pin" size={20} color="#004d40" style={styles.inputIcon} />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Adres (Sokak, Şehir, Posta Kodu)"
+                                placeholderTextColor="#757575"
+                                value={addressDetails}
+                                onChangeText={setAddressDetails}
+                                multiline
+                            />
+                        </View>
+
+                        <View style={styles.modalButtonContainer}>
+                            <TouchableOpacity style={styles.saveButton} onPress={editAddress}>
+                                <Text style={[styles.saveButtonText, styles.montserratText]}>Güncelle</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={styles.cancelButton}
+                                onPress={() => setEditModalVisible(false)}
+                            >
+                                <Text style={[styles.saveButtonText, styles.montserratText]}>İptal</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </KeyboardAvoidingView>
+            </Modal>
         </SafeAreaView>
     );
 };
@@ -159,17 +247,29 @@ const styles = StyleSheet.create({
     },
     listContent: {
         paddingTop: 10,
+        paddingBottom: 100,
+        width: "100%",
+        alignItems: 'center',
     },
     addressItem: {
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: '#E6E6E6',
         padding: 15,
-        borderRadius: 10,
+        borderRadius: 15,
         marginBottom: 10,
+        width: width * 0.9,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+        elevation: 5,
     },
     icon: {
         marginRight: 10,
+    },
+    actionIcon: {
+        marginLeft: 10,
     },
     addressTitle: {
         fontSize: 18,
@@ -210,9 +310,6 @@ const styles = StyleSheet.create({
         padding: 20,
         alignItems: 'center',
         elevation: 5,
-    },
-    modalIcon: {
-        marginBottom: 10,
     },
     modalTitle: {
         fontSize: 22,
