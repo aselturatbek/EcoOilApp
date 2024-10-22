@@ -21,6 +21,10 @@ import { UserProvider } from './auth/UserContext';
 import LogoScreen from './auth/LogoScreen';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from "@react-navigation/stack";
+//icons
+import HomeIcon from './assets/icons/HomeIcon';
+import LocationIcon from './assets/icons/LocationIcon';
+import GiftIcon from './assets/icons/GiftIcon';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -45,11 +49,13 @@ const TabNavigator = () => {
                         position: 'absolute',
                         borderTopLeftRadius: 25,
                         borderTopRightRadius: 25,
-                        height: 90,
+                        height: 80,
                         left: 0,
                         right: 0,
                         bottom: 0,
                         elevation: 0,
+                        paddingBottom:10,
+                        paddingLeft:5,
                         shadowOffset: { width: 0, height: 0 },
                         shadowOpacity: 0,
                         shadowRadius: 0,
@@ -61,8 +67,8 @@ const TabNavigator = () => {
                     component={Home}
                     options={{
                         title: '',
-                        tabBarIcon: ({ color, focused }) => (
-                            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+                        tabBarIcon: ({ focused}) => (
+                            <HomeIcon color={focused ? '#004d40' : '#848181'} />
                         ),
                     }}
                 />
@@ -72,8 +78,9 @@ const TabNavigator = () => {
                     options={{
                         title: '',
                         tabBarIcon: ({ color, focused }) => (
-                            <TabBarIcon name={focused ? 'location' : 'location-outline'} color={color} />
+                            <LocationIcon color={focused ? '#004d40' : '#848181'}/>
                         ),
+                        tabBarItemStyle: { marginRight: 20 }
                     }}
                 />
                 <Tab.Screen
@@ -82,9 +89,11 @@ const TabNavigator = () => {
                     options={{
                         title: '',
                         tabBarIcon: ({ color, focused }) => (
-                            <TabBarIcon name={focused ? 'gift' : 'gift-outline'} color={color} />
+                            <TabBarIcon name={focused ? 'gift' : 'gift-outline'} size={30} color={color}  />
                         ),
+                        tabBarItemStyle: { marginLeft: 20 }
                     }}
+                    
                 />
                 <Tab.Screen
                     name="Profile"
@@ -92,7 +101,7 @@ const TabNavigator = () => {
                     options={{
                         title: '',
                         tabBarIcon: ({ color, focused }) => (
-                            <Feather name={focused ? 'user' : 'user'} size={24} color={color} />
+                            <Feather name={focused ? 'user' : 'user'} size={28} color={color} />
                         ),
                     }}
                 />
@@ -109,7 +118,7 @@ const TabNavigator = () => {
 const styles = StyleSheet.create({
     fab: {
         position: 'absolute',
-        bottom: 50,
+        bottom: 40,
         left: '50%',
         transform: [{ translateX: -25 }],
         backgroundColor: "#004d40",
@@ -118,19 +127,17 @@ const styles = StyleSheet.create({
         width: 50,
         alignItems: 'center',
         justifyContent: 'center',
-        elevation: 5,
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.35,
-        shadowRadius: 4,
+        
         zIndex: 1,
     },
     fab1: {
         position: 'absolute',
-        bottom: 46,
+        bottom: 36,
         left: '49%',
+        padding:10,
         transform: [{ translateX: -25 }],
         backgroundColor: "white",
-        borderRadius: 25,
+        borderRadius: 28,
         height: 58,
         width: 58,
         alignItems: 'center',
