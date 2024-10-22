@@ -53,22 +53,26 @@ const RegisterScreen: React.FC = () => {
                     password,
                 }),
             });
-
+    
+            const responseText = await response.text();
+            console.log("API Yanıtı:", responseText);
+    
             if (!response.ok) {
                 throw new Error('Kayıt başarısız.');
             }
-
-            const user = await response.json();
+    
+            const user = JSON.parse(responseText);
             setUser(user);
-            setStep(3);  // Kayıt başarılı olduğunda 3. adıma geç
+            setStep(3);
             setTimeout(() => {
-                navigation.navigate('auth/LoginScreen');  // 2 saniye sonra LoginScreen'e yönlendir
+                navigation.navigate('auth/LoginScreen');
             }, 2000);
         } catch (error) {
-            console.error(error);
+            console.error("Hata:", error);
             alert("Kayıt başarısız. Lütfen bilgilerinizi kontrol edin.");
         }
     };
+    
 
     const renderStepIndicator = () => (
         <View style={styles.stepIndicator}>
