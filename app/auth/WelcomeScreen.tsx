@@ -1,9 +1,7 @@
 import React from 'react';
-import { View, Text, Image, Dimensions, StyleSheet, ImageBackground } from 'react-native';
+import { View, Text, Image, Dimensions, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native';
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from '@react-navigation/native';
-import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 const { width } = Dimensions.get('window');
 
@@ -18,31 +16,14 @@ type NavigationPropType = StackNavigationProp<RootStackParamList, 'auth/LoginScr
 const WelcomeScreen: React.FC = () => {
     const navigation = useNavigation<NavigationPropType>();
 
-    // Butonun büyüklüğünü kontrol etmek için SharedValue oluşturuyoruz
-    const scale = useSharedValue(1);
-
-    // Animasyonlu stil
-    const animatedStyle = useAnimatedStyle(() => {
-        return {
-            transform: [{ scale: scale.value }]
-        };
-    });
-
-    const handlePressIn = () => {
-        // Butona basıldığında hafifçe büyütüyoruz
-        scale.value = withSpring(1.1);
-    };
-
-    const handlePressOut = () => {
-        // Bırakıldığında eski haline dönüyor
-        scale.value = withSpring(1);
+    const handlePress = () => {
         navigation.navigate('auth/LoginScreen');
         console.log("Başla butonuna tıklandı!");
     };
 
     return (
         <ImageBackground
-            source={require('../assets/images/bglight.png')} // Buraya kendi arka plan resmini koy
+            source={require('../assets/images/bglight.png')} // Arka plan resmi
             style={styles.background}
         >
             <View style={styles.container}>
@@ -54,14 +35,9 @@ const WelcomeScreen: React.FC = () => {
                     </Text>
                 </View>
                 <View style={styles.buttonContainer}>
-                    <TouchableWithoutFeedback
-                        onPressIn={handlePressIn}
-                        onPressOut={handlePressOut}
-                    >
-                        <Animated.View style={[styles.startButton, animatedStyle]}>
-                            <Text style={styles.navButtonText}>Tamam</Text>
-                        </Animated.View>
-                    </TouchableWithoutFeedback>
+                    <TouchableOpacity style={styles.startButton} onPress={handlePress}>
+                        <Text style={styles.navButtonText}>Tamam</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </ImageBackground>
@@ -128,6 +104,8 @@ const styles = StyleSheet.create({
         marginTop: 50,
         width: 180,
         height: 40,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     navButtonText: {
         color: '#ffffff',

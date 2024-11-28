@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -21,6 +21,8 @@ import { UserProvider } from './auth/UserContext';
 import LogoScreen from './auth/LogoScreen';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from "@react-navigation/stack";
+import { ThemeProvider } from '@react-navigation/native';
+
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -28,13 +30,12 @@ const Tab = createBottomTabNavigator();
 type RootStackParamList = {
     Home: undefined;
     'modals/AppointmentsScreen': undefined;
-    // Other screens
 };
 
 type NavigationPropType = StackNavigationProp<RootStackParamList, 'modals/AppointmentsScreen'>;
 
 const TabNavigator = () => {
-    const navigation = useNavigation<NavigationPropType>(); 
+    const navigation = useNavigation<NavigationPropType>();
     return (
         <View style={{ flex: 1 }}>
             <Tab.Navigator
@@ -158,51 +159,53 @@ export default function RootLayout() {
     }
 
     return (
-        <UserProvider>
-            <ThemeProvider value={DefaultTheme}>
-                <Stack.Navigator initialRouteName="auth/LogoScreen">
-                <Stack.Screen
-                        name="auth/LogoScreen"
-                        component={LogoScreen}
-                        options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                        name="auth/WelcomeScreen"
-                        component={WelcomeScreen}
-                        options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                        name="auth/RegisterScreen"
-                        component={RegisterScreen}
-                        options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                        name="auth/LoginScreen"
-                        component={LoginScreen}
-                        options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                        name="main"
-                        component={TabNavigator}
-                        options={{ headerShown: false, gestureEnabled: false }}
-                    />
-                    <Stack.Screen
-                        name="modals/EditProfileScreen"
-                        component={EditProfileScreen}
-                        options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                        name="modals/AppointmentsScreen"
-                        component={AppointmentsScreen}
-                        options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                        name="modals/AdressScreen"
-                        component={AdressScreen}
-                        options={{ headerShown: false }}
-                    />
-                </Stack.Navigator>
-            </ThemeProvider>
-        </UserProvider>
+        <NavigationContainer>
+            <UserProvider>
+                <ThemeProvider value={DefaultTheme}>
+                    <Stack.Navigator initialRouteName="auth/LogoScreen">
+                        <Stack.Screen
+                            name="auth/LogoScreen"
+                            component={LogoScreen}
+                            options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                            name="auth/WelcomeScreen"
+                            component={WelcomeScreen}
+                            options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                            name="auth/RegisterScreen"
+                            component={RegisterScreen}
+                            options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                            name="auth/LoginScreen"
+                            component={LoginScreen}
+                            options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                            name="main"
+                            component={TabNavigator}
+                            options={{ headerShown: false, gestureEnabled: false }}
+                        />
+                        <Stack.Screen
+                            name="modals/EditProfileScreen"
+                            component={EditProfileScreen}
+                            options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                            name="modals/AppointmentsScreen"
+                            component={AppointmentsScreen}
+                            options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                            name="modals/AdressScreen"
+                            component={AdressScreen}
+                            options={{ headerShown: false }}
+                        />
+                    </Stack.Navigator>
+                </ThemeProvider>
+            </UserProvider>
+        </NavigationContainer>
     );
 }
