@@ -140,7 +140,7 @@ const renderButton = (text: string, icon: string, onPress: () => void) => (
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#F5F5F5",
+        backgroundColor: "white",
     },
     scrollViewContent: {
         alignItems: "center",
