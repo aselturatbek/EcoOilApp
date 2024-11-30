@@ -1,8 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     View,
     Text,
-    FlatList,
     TouchableOpacity,
     StyleSheet,
     TextInput,
@@ -15,45 +14,49 @@ import FeatherIcon from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
-import {Appointment} from "@/constants";
+import { Picker } from '@react-native-picker/picker';
+import {Address, Appointment} from "@/constants";
 import Constants from 'expo-constants';
-import {useUser} from "@/app/auth/UserContext";
-
+import { useUser } from "@/app/auth/UserContext";
 
 const API_URL = Constants.expoConfig?.extra?.API_URL ?? 'http://localhost:8000';
 
-interface _Appointment {
-    id: string;
-    address: string;
-    date: string;
-    oilAmount: string;
-    isPast: boolean;
-}
-
 const AppointmentsScreen: React.FC = () => {
     const navigation = useNavigation();
-    const [appointments, setAppointments] = useState<_Appointment[]>([]);
     const [newAppointment, setNewAppointment] = useState({
-        address: '',
+        address_id: '',
         date: new Date(),
         oilAmount: '',
     });
     const [showDatePicker, setShowDatePicker] = useState(false);
-    const [showModal, setShowModal] = useState(false); // Modal görünürlüğü
-    const [tab, setTab] = useState<'current' | 'past'>('current'); // Sekmeler
-
+    const [showModal, setShowModal] = useState(false);
+    const [tab, setTab] = useState<'current' | 'past'>('current');
     const [userAppointments, setUserAppointments] = useState<Appointment[]>([]);
+
+    const [userAddresses, setUserAddresses] = useState<Address[]>([]);
 
     const { user } = useUser();
 
     const fetchAppointments = async () => {
-        const response = await fetch(`${API_URL}/api/user_appointments/${user?.id}`);
+        const response = await fetch(`${API_URL}/api/userAppointments/${user?.id}`);
         const data = await response.json();
-
         setUserAppointments(data);
     }
 
+    const fetchAddresses = async () => {
+        const response = await fetch(`${API_URL}/api/user_addresses/${user?.id}`);
+        const data = await response.json();
+        setUserAddresses(data);
+    }
+
     useEffect(() => {
+        if (userAddresses.length > 0 && !newAppointment.address_id) {
+            setNewAppointment({ ...newAppointment, address_id: userAddresses[0].id });
+        }
+    }, [userAddresses]);
+
+    useEffect(() => {
+        fetchAddresses();
         fetchAppointments();
     }, []);
 
@@ -64,8 +67,9 @@ const AppointmentsScreen: React.FC = () => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                user_id: user?.id,
-                address: newAppointment.address,
+                customer_id: user?.id,
+                collector_id: null,
+                address_id: newAppointment.address_id,
                 date: newAppointment.date,
                 amount: newAppointment.oilAmount,
             }),
@@ -73,33 +77,26 @@ const AppointmentsScreen: React.FC = () => {
         const data = await response.json();
         if (response.ok) {
             setUserAppointments([...userAppointments, data]);
-            setNewAppointment({ address: '', date: new Date(), oilAmount: '' });
+            setNewAppointment({ address_id: '', date: new Date(), oilAmount: '' });
             setShowModal(false);
+            fetchAppointments();
             Alert.alert('Randevu Eklendi');
         } else {
             Alert.alert('Randevu eklenirken bir hata oluştu.');
         }
     }
 
-    const addAppointment = () => {
-        const now = new Date();
-        if (newAppointment.address && newAppointment.oilAmount && newAppointment.date) {
-            setAppointments([
-                ...appointments,
-                {
-                    id: Math.random().toString(),
-                    ...newAppointment,
-                    date: newAppointment.date.toLocaleString(),
-                    isPast: newAppointment.date < now,
-                },
-            ]);
-            setNewAppointment({ address: '', date: new Date(), oilAmount: '' });
-            setShowModal(false); // Modal'ı kapatma
-            Alert.alert('Randevu Eklendi');
+    const handleDeleteAppointment = async (id: number) => {
+        const response = await fetch(`${API_URL}/api/appointments/${id}`, {
+            method: 'DELETE',
+        });
+        if (response.ok) {
+            setUserAppointments(userAppointments.filter((a) => a.id !== id));
+            Alert.alert('Randevu Silindi');
         } else {
-            Alert.alert('Lütfen tüm alanları doldurun.');
+            Alert.alert('Randevu silinirken bir hata oluştu.');
         }
-    };
+    }
 
     const onDateChange = (event: any, selectedDate?: Date) => {
         setShowDatePicker(false);
@@ -107,9 +104,6 @@ const AppointmentsScreen: React.FC = () => {
             setNewAppointment({ ...newAppointment, date: selectedDate });
         }
     };
-
-    const currentAppointments = appointments.filter((a) => !a.isPast);
-    const pastAppointments = appointments.filter((a) => a.isPast);
 
     return (
         <View style={styles.container}>
@@ -120,7 +114,6 @@ const AppointmentsScreen: React.FC = () => {
 
                 <Text style={styles.title}>Randevularım</Text>
 
-                {/* Sekme Geçişleri */}
                 <View style={styles.tabContainer}>
                     <TouchableOpacity
                         style={[styles.tabButton, tab === 'current' && styles.activeTab]}
@@ -138,43 +131,14 @@ const AppointmentsScreen: React.FC = () => {
                     </TouchableOpacity>
                 </View>
 
-                <FlatList
-                    style={{ width: '100%', flexGrow: 0 }}
-                    data={tab === 'current' ? currentAppointments : pastAppointments}
-                    keyExtractor={(item) => item.id}
-                    renderItem={({ item }) => (
-                        <View style={styles.appointmentItem}>
-                            <View style={{ flex: 1 }}>
-                                <View style={styles.appointmentInfoContainer}>
-                                    <FontAwesome5 name="map-marker-alt" size={16} color="#004d40" style={styles.icon} />
-                                    <Text style={styles.appointmentAddress}>Adres: {item.address}</Text>
-                                </View>
-                                <View style={styles.appointmentInfoContainer}>
-
-                                    <Text style={styles.appointmentDate}>Tarih/Saat: {item.date}</Text>
-                                </View>
-                                <View style={styles.appointmentInfoContainer}>
-
-                                    <Text style={styles.appointmentOil}>Yağ Miktarı: {item.oilAmount}</Text>
-                                </View>
-                            </View>
-                            <TouchableOpacity onPress={() => setAppointments(appointments.filter((a) => a.id !== item.id))}>
-                                <FeatherIcon name="trash-2" size={20} color="#C62828" />
-                            </TouchableOpacity>
-                        </View>
-                    )}
-                    ListEmptyComponent={
-                        <Text style={styles.emptyText}>
-                            {tab === 'current' ? 'Henüz randevu yok.' : 'Geçmiş randevu yok.'}
-                        </Text>
-                    }
-                />
                 {userAppointments.map((appointment, index) => (
                     <View style={styles.appointmentItem} key={index}>
                         <View style={{ flex: 1 }}>
                             <View style={styles.appointmentInfoContainer}>
                                 <FontAwesome5 name="map-marker-alt" size={16} color="#004d40" style={styles.icon} />
-                                <Text style={styles.appointmentAddress}>Adres: {appointment.address}</Text>
+                                <Text style={styles.appointmentAddress}>
+                                    Adres: {appointment?.address?.address_name}
+                                </Text>
                             </View>
                             <View style={styles.appointmentInfoContainer}>
                                 <Text style={styles.appointmentDate}>Tarih/Saat: {appointment.date}</Text>
@@ -183,38 +147,53 @@ const AppointmentsScreen: React.FC = () => {
                                 <Text style={styles.appointmentOil}>Yağ Miktarı: {appointment.amount} Litre</Text>
                             </View>
                         </View>
-                        <TouchableOpacity onPress={() => setUserAppointments(userAppointments.filter((a) => a.id !== appointment.id))}>
+                        <TouchableOpacity
+                            onPress={() => Alert.alert(
+                                'Uyarı',
+                                `Bu randevuyu silmek istediğinize emin misiniz?`,
+                                [
+                                    {
+                                        text: 'İptal',
+                                        style: 'cancel',
+                                    },
+                                    {
+                                        text: 'Sil',
+                                        onPress: async () => {
+                                            await handleDeleteAppointment(appointment.id)
+                                        }
+                                    },
+                                ],
+                            )}>
                             <FeatherIcon name="trash-2" size={20} color="#C62828" />
                         </TouchableOpacity>
                     </View>
-                ))
-                }
+                ))}
 
-                {/* Yeni Randevu Ekleme Butonu */}
                 <TouchableOpacity style={styles.addButton} onPress={() => setShowModal(true)}>
                     <FeatherIcon name="plus" size={20} color="#004d40" style={styles.addButtonIcon} />
                     <Text style={styles.addButtonText}>Yeni Randevu Ekle</Text>
                 </TouchableOpacity>
 
-                {/* Modal */}
-                <Modal visible={showModal} transparent={true} animationType="slide">
+                <Modal visible={showModal} transparent={true} animationType="fade">
                     <View style={styles.modalContainer}>
                         <View style={styles.modalContent}>
                             <Text style={styles.modalTitle}>Yeni Randevu Ekle</Text>
 
                             <Text style={styles.label}>Adres</Text>
-                            <TextInput
+                            <Picker
                                 style={styles.input}
-                                placeholder="Adres"
-                                value={newAppointment.address}
-                                onChangeText={(text) =>
-                                    setNewAppointment({ ...newAppointment, address: text })
-                                }
-                            />
+                                selectedValue={newAppointment.address_id}
+                                onValueChange={(itemValue) => setNewAppointment({ ...newAppointment, address_id: itemValue })}
+                            >
+                                {userAddresses.map((address, index) => (
+                                    <Picker.Item key={index} label={address.address_name} value={address.id} />
+                                ))}
+                            </Picker>
 
-                            <Text style={styles.label}>Tarih/Saat</Text>
+
+                            <Text style={styles.label}>Tarih / Saat</Text>
                             <TouchableOpacity
-                                onPress={() => setShowDatePicker(true)}
+                                onPress={() => setShowDatePicker(!showDatePicker)}
                                 style={styles.datePickerButton}>
                                 <MaterialCommunityIcons name="calendar" size={20} color="#004d40" style={styles.datePickerIcon} />
                                 <Text style={styles.datePickerText}>
@@ -223,12 +202,25 @@ const AppointmentsScreen: React.FC = () => {
                             </TouchableOpacity>
 
                             {showDatePicker && (
-                                <DateTimePicker
-                                    value={newAppointment.date}
-                                    mode="datetime"
-                                    display="default"
-                                    onChange={onDateChange}
-                                />
+                                <View style={{
+                                    width: '100%',
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    borderWidth: 1,
+                                    borderColor: '#ccc',
+                                    borderRadius: 5,
+                                    padding: 10,
+                                    marginBottom: 20,
+                                    backgroundColor: '#f9f9f9',
+                                }}>
+                                    <DateTimePicker
+                                        value={newAppointment.date}
+                                        mode="datetime"
+                                        display="compact"
+                                        onChange={onDateChange}
+                                    />
+                                </View>
                             )}
 
                             <Text style={styles.label}>Yağ Miktarı (Litre)</Text>
@@ -263,13 +255,13 @@ const AppointmentsScreen: React.FC = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F5F5F5', // Daha soft bir arka plan rengi
+        backgroundColor: '#F5F5F5',
     },
     scrollViewContent: {
         paddingHorizontal: 20,
         paddingBottom: 30,
         alignItems: 'center',
-        flexGrow: 1, // İçeriğin esnek büyümesini sağlamak
+        flexGrow: 1,
     },
     backButton: {
         alignSelf: 'flex-start',
@@ -287,25 +279,25 @@ const styles = StyleSheet.create({
     tabContainer: {
         flexDirection: 'row',
         marginBottom: 20,
-        backgroundColor: '#E8F5E9', // Sekme arka plan rengini açtık
+        backgroundColor: '#E8F5E9',
         borderRadius: 10,
         overflow: 'hidden',
     },
     tabButton: {
         flex: 1,
-        paddingVertical: 12, // Düğme yüksekliğini artırdık
+        paddingVertical: 12,
         alignItems: 'center',
         justifyContent: 'center',
-        borderBottomWidth: 2, // Sekme altı çizgisi
+        borderBottomWidth: 2,
         borderBottomColor: 'transparent',
     },
     activeTab: {
-        backgroundColor: '#004d40', // Aktif sekme rengi
-        borderBottomColor: '#004d40', // Aktif sekme altı çizgisi rengi
+        backgroundColor: '#004d40',
+        borderBottomColor: '#004d40',
     },
     tabText: {
         fontSize: 16,
-        color: '#333', // Daha koyu bir metin rengi
+        color: '#333',
         fontFamily: 'Montserrat-regular',
     },
     activeTabText: {
@@ -321,14 +313,14 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginVertical: 5,
         width: '100%',
-        flexDirection: 'row', // Randevu bilgilerini yan yana yerleştirme
-        justifyContent: 'space-between', // Boşluğu eşit dağıtma
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        shadowColor: '#000', // Gölge ekleyerek belirgin bir görünüm
+        shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
-        elevation: 5, // Android için gölge efekti
+        elevation: 5,
     },
     appointmentInfoContainer: {
         flexDirection: 'row',
@@ -341,7 +333,7 @@ const styles = StyleSheet.create({
     appointmentAddress: {
         fontSize: 16,
         color: '#004d40',
-        flex: 1, // Alanı dolduracak şekilde ayarlama
+        flex: 1,
     },
     appointmentDate: {
         fontSize: 14,
@@ -380,9 +372,11 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0,0,0,0.5)', // Arka planda yarı saydam bir katman
+        backgroundColor: 'rgba(0,0,0,0.5)',
     },
     modalContent: {
+        display: 'flex',
+        flexDirection: 'column',
         width: '80%',
         backgroundColor: '#F5F5F5',
         padding: 20,

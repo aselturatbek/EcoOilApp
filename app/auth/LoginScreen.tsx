@@ -24,8 +24,8 @@ const LoginScreen: React.FC = () => {
     const navigation = useNavigation<NavigationPropType>();
     const { setUser } = useUser();
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [email, setEmail] = useState("test@example.com");
+    const [password, setPassword] = useState("password");
 
 
     const handleLogin = async () => {
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
         marginTop: 15,
         textAlign: 'center',
         fontFamily: 'Montserrat-Bold',
-        
+
     },
     footerText: {
         color: '#004d40',

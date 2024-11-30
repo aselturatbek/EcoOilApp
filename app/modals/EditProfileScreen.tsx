@@ -8,7 +8,7 @@ import {
     TouchableOpacity,
     KeyboardAvoidingView,
     ScrollView,
-    Image,
+    Image, SafeAreaView,
 } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import * as ImagePicker from 'expo-image-picker';
@@ -78,49 +78,51 @@ const EditProfileScreen: React.FC = () => {
     );
 
     return (
-        <KeyboardAvoidingView behavior="padding" style={styles.container}>
-            <ScrollView contentContainerStyle={styles.content}>
-                <TouchableOpacity
-                    style={styles.backButton}
-                    onPress={() => navigation.goBack()}
-                >
-                    <FeatherIcon name="arrow-left" size={24} color="#004d40" />
-                </TouchableOpacity>
-
-                <Text style={[styles.title, styles.montserratText]}>Profil Düzenle</Text>
-
-                <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
-                    <View style={styles.imageContainer}>
-                        {image ? (
-                            <Image source={{ uri: image }} style={styles.profileImage} />
-                        ) : (
-                            <Image
-                                source={{ uri: user?.profile_photo_url }}
-                                style={styles.profileImage}
-                            />
-                        )}
-                    </View>
-                    <Text style={[styles.imageText, styles.montserratText]}>
-                        Profil Resmi Seç
-                    </Text>
-                </TouchableOpacity>
-
-                <View style={styles.formContainer}>
-                    {renderInput('Kullanıcı Adı', 'at-sign', 'username', form.username)}
-                    {renderInput('İsim Soyisim', 'user', 'name', form.name)}
-                    {renderInput('Telefon Numarası', 'phone', 'phone', form.phone)}
-                    {renderInput('E-posta', 'mail', 'email', form.email)}
-
-
+        <SafeAreaView style={styles.container}>
+            <KeyboardAvoidingView behavior="padding" style={styles.container}>
+                <ScrollView contentContainerStyle={styles.content}>
                     <TouchableOpacity
-                        style={styles.saveButton}
-                        onPress={() => Alert.alert('Profil Güncellendi')}
+                        style={styles.backButton}
+                        onPress={() => navigation.goBack()}
                     >
-                        <Text style={[styles.saveButtonText, styles.montserratText]}>Kaydet</Text>
+                        <FeatherIcon name="arrow-left" size={24} color="#004d40" />
                     </TouchableOpacity>
-                </View>
-            </ScrollView>
-        </KeyboardAvoidingView>
+
+                    <Text style={[styles.title, styles.montserratText]}>Profil Düzenle</Text>
+
+                    <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
+                        <View style={styles.imageContainer}>
+                            {image ? (
+                                <Image source={{ uri: image }} style={styles.profileImage} />
+                            ) : (
+                                <Image
+                                    source={{ uri: user?.profile_photo_url }}
+                                    style={styles.profileImage}
+                                />
+                            )}
+                        </View>
+                        <Text style={[styles.imageText, styles.montserratText]}>
+                            Profil Resmi Seç
+                        </Text>
+                    </TouchableOpacity>
+
+                    <View style={styles.formContainer}>
+                        {renderInput('Kullanıcı Adı', 'at-sign', 'username', form.username)}
+                        {renderInput('İsim Soyisim', 'user', 'name', form.name)}
+                        {renderInput('Telefon Numarası', 'phone', 'phone', form.phone)}
+                        {renderInput('E-posta', 'mail', 'email', form.email)}
+
+
+                        <TouchableOpacity
+                            style={styles.saveButton}
+                            onPress={() => Alert.alert('Profil Güncellendi')}
+                        >
+                            <Text style={[styles.saveButtonText, styles.montserratText]}>Kaydet</Text>
+                        </TouchableOpacity>
+                    </View>
+                </ScrollView>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
     );
 };
 
@@ -130,12 +132,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#F5F5F5',
     },
     content: {
-        padding: 30,
+        paddingHorizontal: 30,
         alignItems: 'center',
     },
     backButton: {
         alignSelf: 'flex-start',
-        marginBottom: 10,
     },
     title: {
         fontSize: 28,
