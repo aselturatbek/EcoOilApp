@@ -4,6 +4,10 @@ import WelcomeScreen from './auth/WelcomeScreen';
 import RegisterScreen from './auth/RegisterScreen';
 import LoginScreen from './auth/LoginScreen';
 import TabNavigator from './TabNavigator';
+import AddressScreen from './modals/AdressScreen';
+import EditProfileScreen from './modals/EditProfileScreen';
+import AppointmentsScreen from './modals/AppointmentsScreen';
+import AdressScreen from "./modals/AdressScreen";
 
 const Stack = createStackNavigator();
 
@@ -34,6 +38,21 @@ export const AuthenticatedStack = () => (
             component={TabNavigator}
             options={{ headerShown: false }}
         />
-        {/* Diğer modalları buraya ekleyin */}
+        <Stack.Screen
+            name="modals/AdressScreen"
+            component={AdressScreen}
+            options={{ headerShown: false }}
+        />
+        <Stack.Screen
+            name="modals/EditProfileScreen"
+            component={EditProfileScreen}
+            options={{ headerShown: false }}
+        />
+        <Stack.Screen
+            name="modals/AppointmentsScreen"
+            component={AppointmentsScreen}
+            options={{ headerShown: false }}
+        />
+
     </Stack.Navigator>
 );

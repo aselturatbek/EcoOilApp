@@ -53,14 +53,14 @@ const RegisterScreen: React.FC = () => {
                     password,
                 }),
             });
-    
+
             const responseText = await response.text();
             console.log("API Yanıtı:", responseText);
-    
+
             if (!response.ok) {
                 throw new Error('Kayıt başarısız.');
             }
-    
+
             const user = JSON.parse(responseText);
             setUser(user);
             setStep(3);
@@ -72,35 +72,35 @@ const RegisterScreen: React.FC = () => {
             alert("Kayıt başarısız. Lütfen bilgilerinizi kontrol edin.");
         }
     };
-    
+
 
     const renderStepIndicator = () => (
         <View style={styles.stepIndicator}>
-          {[1, 2, 3].map((stepNum, index) => (
-            <React.Fragment key={stepNum}>
-              <View
-                style={[styles.circle, { 
-                  backgroundColor: step >= stepNum ? '#004d40' : '#ddd',
-                  width: step === stepNum && stepNum !== 3 ? 120 : 35,
-                  height: 35,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  paddingHorizontal: step === stepNum && stepNum !== 3 ? 10 : 0,
-                }]}
-              >
-                {step > stepNum || (step === 3 && stepNum === 3) ? (
-                  <Icon name="check" size={20} color="#fff" />
-                ) : step === stepNum ? (
-                  <Text style={styles.stepTextActive}>
-                    {stepNum === 1 ? 'Kişisel Bilgiler' : stepNum === 2 ? 'Güvenlik' : 'Hoş Geldin'}
-                  </Text>
-                ) : (
-                  <Text style={styles.stepText}>{stepNum}</Text>
-                )}
-              </View>
-              {index < 2 && <View style={styles.stepLine} />}
-            </React.Fragment>
-          ))}
+            {[1, 2, 3].map((stepNum, index) => (
+                <React.Fragment key={stepNum}>
+                    <View
+                        style={[styles.circle, {
+                            backgroundColor: step >= stepNum ? '#004d40' : '#ddd',
+                            width: step === stepNum && stepNum !== 3 ? 120 : 35,
+                            height: 35,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            paddingHorizontal: step === stepNum && stepNum !== 3 ? 10 : 0,
+                        }]}
+                    >
+                        {step > stepNum || (step === 3 && stepNum === 3) ? (
+                            <Icon name="check" size={20} color="#fff" />
+                        ) : step === stepNum ? (
+                            <Text style={styles.stepTextActive}>
+                                {stepNum === 1 ? 'Kişisel Bilgiler' : stepNum === 2 ? 'Güvenlik' : 'Hoş Geldin'}
+                            </Text>
+                        ) : (
+                            <Text style={styles.stepText}>{stepNum}</Text>
+                        )}
+                    </View>
+                    {index < 2 && <View style={styles.stepLine} />}
+                </React.Fragment>
+            ))}
         </View>
     );
 
@@ -113,13 +113,13 @@ const RegisterScreen: React.FC = () => {
             >
                 <ScrollView contentContainerStyle={styles.scrollContainer}>
                     <View style={styles.container}>
-                        
+
                         {step === 1 && (
                             <>
-                            <Text style={styles.title}>EcoOil’e</Text>
-                            <Text style={styles.subtitle}>Kayıt Ol.</Text>
+                                <Text style={styles.title}>EcoOil’e</Text>
+                                <Text style={styles.subtitle}>Kayıt Ol.</Text>
 
-                            {renderStepIndicator()}
+                                {renderStepIndicator()}
                                 <View style={styles.rowContainer}>
                                     <View style={styles.inputHalf}>
                                         <Text style={styles.label}>Ad</Text>
@@ -131,6 +131,7 @@ const RegisterScreen: React.FC = () => {
                                             returnKeyType="next"
                                             onSubmitEditing={() => surnameInputRef.current?.focus()}
                                             blurOnSubmit={false}
+                                            autoCapitalize={"none"}
                                         />
                                     </View>
                                     <View style={styles.inputHalf}>
@@ -142,8 +143,8 @@ const RegisterScreen: React.FC = () => {
                                             placeholderTextColor="#004d40"
                                             ref={surnameInputRef}
                                             returnKeyType="next"
-                                        
                                             blurOnSubmit={false}
+                                            autoCapitalize={"none"}
                                         />
                                     </View>
                                 </View>
@@ -160,6 +161,7 @@ const RegisterScreen: React.FC = () => {
                                     placeholderTextColor="#004d40"
                                     placeholder='+99 (999) 999 99 99'
                                     ref={phoneInputRef}  // Ref kullanmaya devam edebilirsin, ama focus() kullanmayacağız
+                                    autoCapitalize={"none"}
                                     returnKeyType="done"
                                     onSubmitEditing={() => Keyboard.dismiss()}  // focus() olmadan kullanıyoruz
                                 />
@@ -178,11 +180,11 @@ const RegisterScreen: React.FC = () => {
 
                         {step === 2 && (
                             <>
-                            <Text style={styles.title}>EcoOil’e</Text>
-                            <Text style={styles.subtitle}>Kayıt Ol.</Text>
+                                <Text style={styles.title}>EcoOil’e</Text>
+                                <Text style={styles.subtitle}>Kayıt Ol.</Text>
 
-                            {renderStepIndicator()}
-                            <Text style={styles.label2}>Kullanıcı Adı</Text>
+                                {renderStepIndicator()}
+                                <Text style={styles.label2}>Kullanıcı Adı</Text>
                                 <TextInput
                                     value={username}
                                     onChangeText={setUsername}
@@ -191,17 +193,19 @@ const RegisterScreen: React.FC = () => {
                                     returnKeyType="next"
                                     onSubmitEditing={() => mailInputRef.current?.focus()}
                                     blurOnSubmit={false}
+                                    autoCapitalize={"none"}
                                 />
                                 <Text style={styles.label2}>Mail Adresi</Text>
                                 <TextInput
                                     value={email}
                                     onChangeText={setEmail}
                                     style={styles.input}
-                                    keyboardType="email-address" 
+                                    keyboardType="email-address"
                                     ref={mailInputRef}
                                     returnKeyType="next"
                                     onSubmitEditing={() => passwordInputRef.current?.focus()}
                                     blurOnSubmit={false}
+                                    autoCapitalize={"none"}
                                 />
                                 <Text style={styles.label2}>Şifre</Text>
                                 <TextInput
@@ -212,11 +216,41 @@ const RegisterScreen: React.FC = () => {
                                     placeholderTextColor="#004d40"
                                     ref={passwordInputRef}
                                     returnKeyType="done"
-                                    onSubmitEditing={() => Keyboard.dismiss()}  
+                                    onSubmitEditing={() => Keyboard.dismiss()}
+                                    autoCapitalize={"none"}
                                 />
-                                <TouchableOpacity style={styles.button} onPress={handleRegister}>
-                                    <Text style={styles.buttonText}>Kayıt Ol</Text>
-                                </TouchableOpacity>
+                                <View style={{display: "flex", flexDirection: "row", paddingHorizontal: 10, gap: 12, justifyContent: "space-between", alignItems: "center"}}>
+                                    <TouchableOpacity style={{
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        borderWidth: 1.5,
+                                        borderColor: "#004d40",
+                                        paddingVertical: 12,
+                                        borderRadius: 12,
+                                        width: "35%"
+                                    }} onPress={() => {
+                                        if (step > 1) setStep(step - 1);
+                                    }}>
+                                        <Text style={{
+                                            color: "#004d40",
+                                            fontSize: 16,
+                                            fontWeight: "bold"
+                                        }}>Geri</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={{
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        backgroundColor: '#004d40',
+                                        paddingVertical: 12,
+                                        borderRadius: 12,
+                                        marginVertical: 20,
+                                        width: "65%"
+                                    }} onPress={handleRegister}>
+                                        <Text style={styles.buttonText}>Kayıt Ol</Text>
+                                    </TouchableOpacity>
+                                </View>
                                 <View style={styles.loginContainer}>
                                     <Text style={styles.loginText}>Hesabın zaten var mı? </Text>
                                     <TouchableOpacity onPress={() => navigation.navigate('auth/LoginScreen')}>
@@ -256,8 +290,11 @@ const styles = StyleSheet.create({
         paddingTop: 100
     },
     container: {
+        display: "flex",
+        justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 30
+        marginTop: 30,
+        width: "100%",
     },
     title: {
         fontSize: 36,
@@ -364,7 +401,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#004d40',
         paddingVertical: 12,
         paddingHorizontal: 60,
-        borderRadius: 25,
+        borderRadius: 12,
         marginVertical: 20,
     },
     buttonText: {
