@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
@@ -8,37 +8,44 @@ import {
     TouchableOpacity,
     KeyboardAvoidingView,
     ScrollView,
-    Image, SafeAreaView,
+    Image,
+    SafeAreaView,
+    ActivityIndicator,
 } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
-import {useUser} from "@/app/auth/UserContext";
-import {User} from "@/constants";
+import { useUser } from '@/app/auth/UserContext';
+import { User } from '@/constants';
 
 const EditProfileScreen: React.FC = () => {
     const navigation = useNavigation();
+    const { user, setUser } = useUser();
+    const [loading, setLoading] = useState(false);
     const [image, setImage] = useState<string | null>(null);
 
-    const { user, setUser } = useUser();
-
-    const [form, setForm] = useState<User>({
-        created_at: "",
-        deleted_at: "",
-        updated_at: "",
-        id: user?.id || 0,
-        username: user?.username || "",
-        name: user?.name || "",
-        surname: user?.surname || "",
-        email: user?.email || "",
-        phone: user?.phone || "",
-        role: user?.role || "",
-        profile_photo_url: user?.profile_photo_url || "",
-        email_verified_at: ""
+    const [form, setForm] = useState<Partial<User>>({
+        name: user?.name || '',
+        surname: user?.surname || '',
+        username: user?.username || '',
+        email: user?.email || '',
+        phone: user?.phone || '',
     });
 
-    const handleInputChange = (key: keyof typeof form, value: string) => {
-        setForm({ ...form, [key]: value });
+    useEffect(() => {
+        if (user) {
+            setForm({
+                name: user.name,
+                surname: user.surname,
+                username: user.username,
+                email: user.email,
+                phone: user.phone,
+            });
+        }
+    }, [user]);
+
+    const handleInputChange = (key: keyof User, value: string) => {
+        setForm(prev => ({ ...prev, [key]: value }));
     };
 
     const pickImage = async () => {
@@ -46,7 +53,7 @@ const EditProfileScreen: React.FC = () => {
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [1, 1],
-            quality: 1,
+            quality: 0.8,
         });
 
         if (!result.canceled) {
@@ -54,33 +61,38 @@ const EditProfileScreen: React.FC = () => {
         }
     };
 
-    const renderInput = (
-        placeholder: string,
-        icon: string,
-        key: keyof typeof form,
-        value: string,
-        secureTextEntry: boolean = false
-    ) => (
-        <View style={styles.inputGroup} key={key}>
-            <Text style={styles.label}>{placeholder}</Text>
-            <View style={styles.inputRow}>
-                <FeatherIcon name={icon} size={20} color="#004d40" />
-                <TextInput
-                    style={[styles.input, styles.montserratText]}
-                    placeholder={placeholder}
-                    placeholderTextColor="#004d40"
-                    value={value}
-                    onChangeText={(text) => handleInputChange(key, text)}
-                    secureTextEntry={secureTextEntry}
-                />
-            </View>
-        </View>
-    );
+    const handleSave = async () => {
+        setLoading(true);
+        try {
+            // Burada API çağrısı yapılacak
+            // Örnek: await updateUserProfile({ ...form, profilePhoto: image });
+
+            // Geçici olarak context'i güncelle
+            if (user) {
+                const updatedUser = {
+                    ...user,
+                    ...form,
+                    profile_photo_url: image || user.profile_photo_url,
+                };
+                setUser(updatedUser);
+            }
+
+            Alert.alert('Başarılı', 'Profil bilgileriniz güncellendi');
+            navigation.goBack();
+        } catch (error) {
+            Alert.alert('Hata', 'Güncelleme sırasında bir hata oluştu');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <SafeAreaView style={styles.container}>
             <KeyboardAvoidingView behavior="padding" style={styles.container}>
-                <ScrollView contentContainerStyle={styles.content}>
+                <ScrollView
+                    contentContainerStyle={styles.content}
+                    keyboardShouldPersistTaps="handled"
+                >
                     <TouchableOpacity
                         style={styles.backButton}
                         onPress={() => navigation.goBack()}
@@ -88,36 +100,88 @@ const EditProfileScreen: React.FC = () => {
                         <FeatherIcon name="arrow-left" size={24} color="#004d40" />
                     </TouchableOpacity>
 
-                    <Text style={[styles.title, styles.montserratText]}>Profil Düzenle</Text>
+                    <Text style={styles.title}>Profil Düzenle</Text>
 
-                    <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
-                        <View style={styles.imageContainer}>
-                            {image ? (
-                                <Image source={{ uri: image }} style={styles.profileImage} />
-                            ) : (
-                                <Image
-                                    source={{ uri: user?.profile_photo_url }}
-                                    style={styles.profileImage}
-                                />
-                            )}
+                    <TouchableOpacity
+                        style={styles.avatarContainer}
+                        onPress={pickImage}
+                    >
+                        <Image
+                            source={{
+                                uri: image || user?.profile_photo_url || 'https://via.placeholder.com/150',
+                            }}
+                            style={styles.avatar}
+                        />
+                        <View style={styles.cameraIcon}>
+                            <FeatherIcon name="camera" size={20} color="white" />
                         </View>
-                        <Text style={[styles.imageText, styles.montserratText]}>
-                            Profil Resmi Seç
-                        </Text>
                     </TouchableOpacity>
 
                     <View style={styles.formContainer}>
-                        {renderInput('Kullanıcı Adı', 'at-sign', 'username', form.username)}
-                        {renderInput('İsim Soyisim', 'user', 'name', form.name)}
-                        {renderInput('Telefon Numarası', 'phone', 'phone', form.phone)}
-                        {renderInput('E-posta', 'mail', 'email', form.email)}
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.label}>Ad</Text>
+                            <View style={styles.inputWrapper}>
+                                <FeatherIcon name="user" size={20} color="#004d40" />
+                                <TextInput
+                                    style={styles.input}
+                                    value={form.name}
+                                    onChangeText={text => handleInputChange('name', text)}
+                                    placeholder="Adınız"
+                                />
+                            </View>
+                        </View>
 
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.label}>Soyad</Text>
+                            <View style={styles.inputWrapper}>
+                                <FeatherIcon name="user" size={20} color="#004d40" />
+                                <TextInput
+                                    style={styles.input}
+                                    value={form.surname}
+                                    onChangeText={text => handleInputChange('surname', text)}
+                                    placeholder="Soyadınız"
+                                />
+                            </View>
+                        </View>
+
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.label}>E-posta</Text>
+                            <View style={styles.inputWrapper}>
+                                <FeatherIcon name="mail" size={20} color="#004d40" />
+                                <TextInput
+                                    style={styles.input}
+                                    value={form.email}
+                                    onChangeText={text => handleInputChange('email', text)}
+                                    keyboardType="email-address"
+                                    editable={false} // E-posta değiştirilemez
+                                />
+                            </View>
+                        </View>
+
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.label}>Telefon</Text>
+                            <View style={styles.inputWrapper}>
+                                <FeatherIcon name="phone" size={20} color="#004d40" />
+                                <TextInput
+                                    style={styles.input}
+                                    value={form.phone}
+                                    onChangeText={text => handleInputChange('phone', text)}
+                                    keyboardType="phone-pad"
+                                    placeholder="Telefon numaranız"
+                                />
+                            </View>
+                        </View>
 
                         <TouchableOpacity
-                            style={styles.saveButton}
-                            onPress={() => Alert.alert('Profil Güncellendi')}
+                            style={[styles.button, loading && styles.disabledButton]}
+                            onPress={handleSave}
+                            disabled={loading}
                         >
-                            <Text style={[styles.saveButtonText, styles.montserratText]}>Kaydet</Text>
+                            {loading ? (
+                                <ActivityIndicator color="white" />
+                            ) : (
+                                <Text style={styles.buttonText}>Kaydet</Text>
+                            )}
                         </TouchableOpacity>
                     </View>
                 </ScrollView>
@@ -132,83 +196,81 @@ const styles = StyleSheet.create({
         backgroundColor: '#F5F5F5',
     },
     content: {
-        paddingHorizontal: 30,
-        alignItems: 'center',
+        padding: 20,
+        paddingTop: 40,
     },
     backButton: {
-        alignSelf: 'flex-start',
-    },
-    title: {
-        fontSize: 28,
-        color: '#004d40',
-        fontWeight: 'bold',
         marginBottom: 20,
     },
-    imagePicker: {
-        alignItems: 'center',
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#004d40',
+        textAlign: 'center',
         marginBottom: 30,
     },
-    imageContainer: {
-        width: 100,
-        height: 100,
-        borderRadius: 50,
+    avatarContainer: {
+        alignSelf: 'center',
+        marginBottom: 30,
+    },
+    avatar: {
+        width: 120,
+        height: 120,
+        borderRadius: 60,
+    },
+    cameraIcon: {
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
         backgroundColor: '#004d40',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: 10,
-    },
-    profileImage: {
-        width: 100,
-        height: 100,
-        borderRadius: 50,
-    },
-    imageText: {
-        fontSize: 16,
-        color: '#004d40',
-        marginTop: 5,
+        borderRadius: 20,
+        padding: 8,
     },
     formContainer: {
-        width: '100%',
-        maxWidth: 400,
+        backgroundColor: 'white',
+        borderRadius: 12,
         padding: 20,
-        backgroundColor: '#fff',
-        borderRadius: 15,
-        elevation: 5,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 6,
+        elevation: 3,
     },
-    inputGroup: {
-        marginBottom: 15,
+    inputContainer: {
+        marginBottom: 20,
     },
     label: {
-        fontSize: 14,
         color: '#004d40',
-        marginBottom: 5,
+        marginBottom: 8,
+        fontWeight: '500',
     },
-    inputRow: {
+    inputWrapper: {
         flexDirection: 'row',
         alignItems: 'center',
         borderBottomWidth: 1,
-        borderColor: '#004d40',
+        borderColor: '#e0e0e0',
+        paddingBottom: 8,
     },
     input: {
         flex: 1,
-        padding: 10,
+        marginLeft: 10,
         fontSize: 16,
+        color: '#004d40',
     },
-    saveButton: {
-        marginTop: 20,
+    button: {
         backgroundColor: '#004d40',
-        paddingVertical: 15,
-        paddingHorizontal: 40,
-        borderRadius: 10,
+        borderRadius: 8,
+        padding: 16,
         alignItems: 'center',
+        marginTop: 20,
     },
-    saveButtonText: {
-        color: '#fff',
-        fontSize: 18,
+    disabledButton: {
+        opacity: 0.7,
+    },
+    buttonText: {
+        color: 'white',
         fontWeight: 'bold',
-    },
-    montserratText: {
-        fontFamily: 'Montserrat-regular',
+        fontSize: 16,
     },
 });
 

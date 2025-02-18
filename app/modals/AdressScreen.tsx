@@ -3,7 +3,6 @@ import {
     View,
     Text,
     StyleSheet,
-    FlatList,
     TouchableOpacity,
     Modal,
     TextInput,
@@ -69,8 +68,13 @@ const AdressScreen: React.FC = () => {
     }
 
     const handleAddAddress = async () => {
+        if (!addressDetails.trim()) {
+            Alert.alert('Uyarı', 'Lütfen tam adres bilgisi giriniz (Cadde, Sokak, Bina No, İlçe, Şehir)');
+            return;
+        }
+
         try {
-            await fetch(`${API_URL}/api/addresses`, {
+            const response = await fetch(`${API_URL}/api/addresses`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -81,10 +85,18 @@ const AdressScreen: React.FC = () => {
                     user_id: user?.id,
                 }),
             });
-            fetchAddresses();
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Adres eklenemedi');
+            }
+
+            setUserAddresses([...userAddresses, data.data]);
             setModalVisible(false);
+            Alert.alert('Başarılı', 'Adres başarıyla eklendi');
         } catch (error) {
-            console.error('Adres eklenemedi.', error);
+            Alert.alert('Hata', (error instanceof Error ? error.message : 'Adres eklenirken bir hata oluştu'));
         }
     }
 
@@ -161,12 +173,12 @@ const AdressScreen: React.FC = () => {
                         <View style={styles.inputGroup}>
                             <Feather name="map-pin" size={20} color="#004d40" style={styles.inputIcon} />
                             <TextInput
-                                style={styles.input}
+                                style={styles.inputMulti}
                                 placeholder="Adres (Sokak, Şehir, Posta Kodu)"
                                 placeholderTextColor="#757575"
                                 value={addressDetails}
                                 onChangeText={setAddressDetails}
-                                multiline
+                                multiline={true}
                             />
                         </View>
 
@@ -344,6 +356,11 @@ const styles = StyleSheet.create({
         flex: 1,
         height: 40,
         fontSize: 16,
+    },
+    inputMulti: {
+      flex: 1,
+      height: 120,
+      fontSize: 16,
     },
     modalButtonContainer: {
         flexDirection: 'row',
