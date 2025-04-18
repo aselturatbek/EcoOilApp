@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { StyleSheet, View } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, {Heatmap, Marker} from 'react-native-maps';
 import {Address} from "@/constants";
 import Constants from "expo-constants";
 
@@ -25,8 +25,14 @@ export default function LocationScreen() {
     }
 
     useEffect(() => {
-        fetchAddresses();
+        fetchAddresses().then();
     })
+
+    const heatmapData = [
+        { latitude: 41.0082, longitude: 28.9784, weight: 0.8 },  // İstanbul
+        { latitude: 39.9254, longitude: 32.8663, weight: 0.5 },  // Ankara
+        { latitude: 38.4237, longitude: 27.1428, weight: 0.3 },  // İzmir
+    ];
 
 
     return (
@@ -44,6 +50,11 @@ export default function LocationScreen() {
                     coordinate={{ latitude: 41.6354, longitude: 32.3370 }} // Bartın marker konumu
                     title="Atık Yağ Toplama Noktası"
                     description="Bu noktada atık yağlarınızı geri dönüştürebilirsiniz."
+                />
+                <Heatmap
+                    points={heatmapData}
+                    opacity={0.7}
+                    radius={50}
                 />
             </MapView>
         </View>
