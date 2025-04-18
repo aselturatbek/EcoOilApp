@@ -1,231 +1,235 @@
-import React from "react";
-import { View, Text, ImageBackground, StyleSheet, Dimensions } from "react-native";
-import Animated, { useSharedValue, useAnimatedScrollHandler, useAnimatedStyle, interpolate } from "react-native-reanimated";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import React, { useRef, useState } from "react";
+import {
+  View,
+  Text,
+  ImageBackground,
+  StyleSheet,
+  Dimensions,
+  FlatList,
+  TouchableOpacity,
+  Animated,
+} from "react-native";
 
 const { width, height } = Dimensions.get("window");
 
-const bgImage = require('../assets/images/bgdark.png');
-const bgImage2 = require('../assets/images/bgdarkest.png');
-const bgImage3 = require('../assets/images/bgfiligran.png');
-const recycleIllustration = require('../assets/images/carousel_1.png');
+const bgImage = require("../assets/images/bgdark.png");
+const bgImage2 = require("../assets/images/bgdarkest.png");
+const bgImage3 = require("../assets/images/bgfiligran.png");
+const recycleIllustration = require("../assets/images/carousel_1.png");
+
+// Carousel verileri
+const carouselData = [
+  {
+    id: "1",
+    text: "Geri dönüştür, dünyayı koru!",
+    buttonText: "Geri Dönüştür",
+    bgImage: bgImage,
+    showButton: true,
+  },
+  {
+    id: "2",
+    text: "Bugün geri dönüşüme katıl!",
+    buttonText: "Hemen Katıl",
+    bgImage: bgImage2,
+    showButton: false,
+  },
+  {
+    id: "3",
+    text: "Çevreye katkıda bulun!",
+    buttonText: "Katkı Sağla",
+    bgImage: bgImage3,
+    showButton: false,
+  },
+  {
+    id: "4",
+    text: "Doğayı korumak bizim elimizde!",
+    buttonText: "Katkı Sağla",
+    bgImage: bgImage,
+    showButton: false,
+  },
+];
 
 const Header = () => {
-  const translateX = useSharedValue(0);
+  const flatListRef = useRef<FlatList>(null);
+  const scrollX = useRef(new Animated.Value(0)).current;
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  const scrollHandler = useAnimatedScrollHandler((event) => {
-    translateX.value = event.contentOffset.x;
-  });
+  const renderItem = ({ item }: { item: any }) => {
+    return (
+      <View style={styles.page}>
+        <ImageBackground source={item.bgImage} style={styles.rect} imageStyle={styles.bgImage}>
+          <View style={styles.contentContainer}>
+            <View style={styles.textContainer}>
+              <Text style={styles.text}>{item.text}</Text>
+              {item.showButton && (
+                <TouchableOpacity style={styles.button}>
+                  <Text style={styles.buttonText}>{item.buttonText}</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+            <View style={styles.imageContainer}>
+              <ImageBackground
+                source={recycleIllustration}
+                style={styles.image}
+                imageStyle={styles.imageStyle}
+              />
+            </View>
+          </View>
+        </ImageBackground>
+      </View>
+    );
+  };
+
+  const onViewableItemsChanged = useRef(({ viewableItems }: any) => {
+    if (viewableItems.length > 0) {
+      setCurrentIndex(viewableItems[0].index);
+    }
+  }).current;
 
   return (
     <View style={styles.scrollArea}>
-      <Animated.ScrollView
+      <FlatList
+        ref={flatListRef}
+        data={carouselData}
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
-        onScroll={scrollHandler}
-        scrollEventThrottle={16}
-        snapToInterval={width * 0.9}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+        onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], {
+          useNativeDriver: false,
+        })}
+        onViewableItemsChanged={onViewableItemsChanged}
+        snapToInterval={width * 0.8 + 14} // Her bir öğenin genişliği + margin
+        snapToAlignment="center" // Öğeleri ortala
         decelerationRate="fast"
         contentContainerStyle={styles.scrollArea_contentContainerStyle}
-      >
-        {/* Carousel Item 1 */}
-        <View style={[styles.page]}>
-          <ParallaxPage
-            index={0}
-            translateX={translateX}
-            text="Geri dönüştür, dünyayı koru!"
-            buttonText="Geri Dönüştür"
-            bgImage={bgImage} // First image as background
-            showButton={true} // Show button only on the first page
-          />
-        </View>
-
-        {/* Carousel Item 2 */}
-        <View style={[styles.page]}>
-          <ParallaxPage
-            index={1}
-            translateX={translateX}
-            text="Bugün geri dönüşüme katıl!"
-            buttonText="Hemen Katıl"
-            bgImage={bgImage2} // Second image as background
-            showButton={false} // No button for other pages
-          />
-        </View>
-
-        {/* Carousel Item 3 */}
-        <View style={[styles.page]}>
-          <ParallaxPage
-            index={2}
-            translateX={translateX}
-            text="Çevreye katkıda bulun!"
-            buttonText="Katkı Sağla"
-            bgImage={bgImage3} // Third image as background
-            showButton={false} // No button for other pages
-          />
-        </View>
-
-        {/* Carousel Item 4 */}
-        <View style={[styles.page]}>
-          <ParallaxPage
-            index={3}
-            translateX={translateX}
-            text="Çevreye katkıda bulun!"
-            buttonText="Katkı Sağla"
-            bgImage={bgImage} // Fourth image as background
-            showButton={false} // No button for other pages
-          />
-        </View>
-      </Animated.ScrollView>
+      />
+      <View style={styles.pagination}>
+        {carouselData.map((_, index) => {
+          const opacity = scrollX.interpolate({
+            inputRange: [(index - 1) * width, index * width, (index + 1) * width],
+            outputRange: [0.3, 1, 0.3],
+            extrapolate: "clamp",
+          });
+          return (
+            <Animated.View
+              key={index}
+              style={[styles.paginationDot, { opacity }]}
+            />
+          );
+        })}
+      </View>
     </View>
-  );
-};
-
-// Parallax effect for each page
-interface ParallaxPageProps {
-  index: number;
-  translateX: Animated.SharedValue<number>;
-  text: string;
-  buttonText: string;
-  bgImage: any; // Background image for each page
-  showButton: boolean; // Control button visibility
-}
-
-const ParallaxPage: React.FC<ParallaxPageProps> = ({ index, translateX, text, buttonText, bgImage, showButton }) => {
-  const animatedStyle = useAnimatedStyle(() => {
-    const scale = interpolate(
-      translateX.value,
-      [(index - 1) * width * 0.9, index * width * 0.9, (index + 1) * width * 0.9],
-      [0.9, 1, 0.9]
-    );
-
-    return {
-      transform: [{ scale }],
-    };
-  });
-
-  return (
-    <Animated.View style={[styles.card, animatedStyle]}>
-      <ImageBackground
-        source={bgImage} // Dynamic bgImage for each card
-        style={styles.rect}
-        imageStyle={styles.bgImage}
-      >
-        <ImageBackground
-          source={recycleIllustration}
-          style={styles.rect}
-          imageStyle={styles.image}
-        />
-        <Text style={styles.loremIpsum2}>{text}</Text>
-
-        {/* Show button only on the first carousel page */}
-        {showButton && (
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>{buttonText}</Text>
-          </TouchableOpacity>
-        )}
-      </ImageBackground>
-    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
   scrollArea: {
-    width: '100%',
-    height: height * 0.25,
+    width: "100%",
+    height: height * 0.32,
     backgroundColor: "transparent",
-    marginTop: 9,
     alignSelf: "center",
-    overflow: "hidden",
   },
   scrollArea_contentContainerStyle: {
-    height: height * 0.25,
-    alignItems: 'center',
+    height: height * 0.30,
+    alignItems: "center",
     justifyContent: "center",
-    
+    paddingHorizontal: (width * 0.1) / 2, // Öğelerin kenarlardan boşluk almasını sağlar
   },
   bgImage: {
-    borderRadius: 21,
-    opacity: 1,
-    height: 180,
-    elevation: 5,
-    shadowColor: "#004d40",
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 0.7,
-    shadowRadius: 4,
+    borderRadius: 25,
+    height: height * 0.32,
   },
-  loremIpsum2: {
-    width: 150,
+  page: {
+    width: width * 0.8,
+    height: height * 0.25,
+    justifyContent: "center",
+    alignItems: "center",
+    marginHorizontal: 5, // Öğeler arası boşluk
+    shadowColor: "#333",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+    elevation: 5,
+  },
+  rect: {
+    width: width * 0.8,
+    height: height * 0.23,
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "hidden",
+    borderRadius: 20,
+  },
+  contentContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "90%",
+  },
+  textContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "flex-start",
+    marginRight: 10,
+  },
+  text: {
     fontFamily: "Montserrat-Bold",
     color: "#ffffff",
     fontSize: width * 0.05,
-    marginTop: -280,
-    marginRight: 130,
     textAlign: "left",
+    marginBottom: 10,
+    shadowColor: "#333",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 3,
     elevation: 5,
-    shadowColor: "#004d40",
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 0.7,
-    shadowRadius: 7,
+  },
+  imageContainer: {
+    width: 120,
+    height: 120,
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+  },
+  imageStyle: {
+    resizeMode: "contain",
   },
   button: {
-    width:130,
-    height:30,
+    width: width * 0.35,
+    height: 33,
     backgroundColor: "#004d40",
-    borderRadius: 13,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 40,
-    position:'absolute',
-    alignSelf: 'flex-start', // Aligned button to the left under the text
-    marginLeft: -139, // Added some margin to position button nicely
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 3,
     elevation: 5,
-    shadowColor: "#004d40",
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 0.7,
-    shadowRadius: 7,
   },
   buttonText: {
     fontFamily: "Montserrat-Bold",
     color: "white",
-    fontSize: width * 0.03,
+    fontSize: width * 0.035,
   },
-  rect: {
-    width: width * 0.8, // Adjusted to fit background and content
-    height: height * 0.22,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  image: {
-    width: 140,
-    height: 140,
-    marginLeft: 170,
-    marginTop: -100,
-    position: 'absolute',
-    elevation: 5,
-    shadowColor: "#004d40",
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 0.4,
-    shadowRadius: 7,
-  },
-  card: {
-    width: width * 0.8,
-    height: height * 0.15,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: 20,
-    marginLeft:35,
-    elevation: 5,
-    shadowColor: "#004d40",
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
-  },
-  page: {
-    width: width * 0.8,
+  pagination: {
+    flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
+    position: "absolute",
+    bottom: 10,
+    width: "100%",
+  },
+  paginationDot: {
+    width: 15,
+    height: 4,
+    borderRadius: 4,
+    backgroundColor: "#004d40",
+    marginHorizontal: 3,
+    marginTop: -40,
+    marginBottom:-20,
   },
 });
 
