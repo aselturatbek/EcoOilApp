@@ -122,7 +122,6 @@ const ProfileScreen: React.FC = () => {
                     title="Çıkış Yap"
                     color="#C62828"
                     onPress={() => handleLogout()}
-
                 />
 
             </ScrollView>
@@ -149,7 +148,8 @@ const styles = StyleSheet.create({
     banner: {
         width: width * 1.1, // Genişliği küçülttük
         height: 300, // Yüksekliği ayarladık
-        borderRadius: 60, // Yuvarlak kenar ekledik
+        borderBottomLeftRadius: 60, // Yuvarlak kenar ekledik
+        borderBottomRightRadius: 60, // Yuvarlak kenar ekledik
         overflow: "hidden", // Taşma olmaması için
         alignItems: "center",
         justifyContent: "center",

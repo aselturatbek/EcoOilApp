@@ -1,61 +1,87 @@
-import React, {useEffect, useState} from 'react';
-import { StyleSheet, View } from 'react-native';
-import MapView, {Heatmap, Marker} from 'react-native-maps';
-import {Address} from "@/constants";
-import Constants from "expo-constants";
-
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, Text } from 'react-native';
+import MapView, { Heatmap, Marker } from 'react-native-maps';
+import { Address } from '@/constants';
+import Constants from 'expo-constants';
 
 const API_URL = Constants.expoConfig?.extra?.API_URL ?? 'http://localhost:8000';
 
 export default function LocationScreen() {
-
-    /* ┏┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┳┓   */
-    /* ┣ Bu değişken ↓ Tüm adresleri tutuyor ona göre ┫ ♥︎ */
-    /* ┗┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┻┛   */
     const [allAddresses, setAllAddresses] = useState<Address[]>([]);
+    const [loading, setLoading] = useState(true);
 
     const fetchAddresses = async () => {
         try {
-            const response = await fetch(`${API_URL}/api/user_addresses/`);
+            const response = await fetch(`${API_URL}/api/addresses/`);
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
             const data = await response.json();
-            setAllAddresses(data);
+            if (Array.isArray(data)) {
+                setAllAddresses(data);
+            } else {
+                console.error('Invalid address data format received.');
+            }
         } catch (error) {
-            console.error('Adresler alınamadı.', error);
+            console.error('Failed to fetch addresses:', error);
+        } finally {
+            setLoading(false);
         }
-    }
+    };
 
     useEffect(() => {
-        fetchAddresses().then();
-    })
+        fetchAddresses();
+    }, [allAddresses]);
 
-    const heatmapData = [
-        { latitude: 41.0082, longitude: 28.9784, weight: 0.8 },  // İstanbul
-        { latitude: 39.9254, longitude: 32.8663, weight: 0.5 },  // Ankara
-        { latitude: 38.4237, longitude: 27.1428, weight: 0.3 },  // İzmir
-    ];
+    // Filter out addresses with invalid coordinates (null, undefined, or zero lat/long)
+    const validAddresses = allAddresses.filter(
+        (address) =>
+            typeof address.latitude === 'number' &&
+            typeof address.longitude === 'number' &&
+            address.latitude !== 0 &&
+            address.longitude !== 0
+    );
 
+    const heatmapData = validAddresses.map((address) => ({
+        latitude: address.latitude,
+        longitude: address.longitude,
+        weight: 1, // Weight for each address
+    }));
+
+    const initialRegion = validAddresses.length > 0
+        ? {
+              latitude: validAddresses[0]?.latitude || 41.6354, // Use first valid address or Bartın's default value
+              longitude: validAddresses[0]?.longitude || 32.3370,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+          }
+        : {
+              latitude: 41.6354, // Default value for Bartın
+              longitude: 32.3370,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+          };
+
+    if (loading) {
+        return (
+            <View style={styles.container}>
+                <Text>Loading map data...</Text>
+            </View>
+        );
+    }
 
     return (
         <View style={styles.container}>
-            <MapView
-                style={styles.map}
-                initialRegion={{
-                    latitude: 41.6354,  // Bartın'ın başlangıç noktası
-                    longitude: 32.3370,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
-                }}
-            >
+            <MapView style={styles.map} initialRegion={initialRegion}>
                 <Marker
-                    coordinate={{ latitude: 41.6354, longitude: 32.3370 }} // Bartın marker konumu
+                    coordinate={{ latitude: 41.6354, longitude: 32.3370 }} // Bartın marker
                     title="Atık Yağ Toplama Noktası"
                     description="Bu noktada atık yağlarınızı geri dönüştürebilirsiniz."
                 />
-                <Heatmap
-                    points={heatmapData}
-                    opacity={0.7}
-                    radius={50}
-                />
+                {/* Render Heatmap only if there are valid points */}
+                {heatmapData.length > 0 && (
+                    <Heatmap points={heatmapData} opacity={0.7} radius={50} />
+                )}
             </MapView>
         </View>
     );
@@ -64,6 +90,8 @@ export default function LocationScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     map: {
         width: '100%',

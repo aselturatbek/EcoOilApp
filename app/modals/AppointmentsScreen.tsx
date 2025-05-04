@@ -15,13 +15,16 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
-import {Address, Appointment} from "@/constants";
+import {Address, Appointment, Transaction} from "@/constants";
 import Constants from 'expo-constants';
 import { useUser } from "@/app/auth/UserContext";
+import {flex} from "nativewind/dist/postcss/to-react-native/properties/flex";
 
 const API_URL = Constants.expoConfig?.extra?.API_URL ?? 'http://localhost:8000';
 
 const AppointmentsScreen: React.FC = () => {
+    const { user } = useUser();
+
     const navigation = useNavigation();
     const [newAppointment, setNewAppointment] = useState({
         address_id: '',
@@ -31,15 +34,17 @@ const AppointmentsScreen: React.FC = () => {
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [tab, setTab] = useState<'current' | 'past'>('current');
+
     const [userAppointments, setUserAppointments] = useState<Appointment[]>([]);
 
     const [userAddresses, setUserAddresses] = useState<Address[]>([]);
 
-    const { user } = useUser();
+    const [allTransaction, setAllTransaction] = useState<Transaction[]>([]);
 
     const fetchAppointments = async () => {
         const response = await fetch(`${API_URL}/api/userAppointments/${user?.id}`);
         const data = await response.json();
+        // filter if appointment is in transactions
         setUserAppointments(data);
     }
 
@@ -105,6 +110,34 @@ const AppointmentsScreen: React.FC = () => {
         }
     };
 
+    const fetchTransactions = async () => {
+        const response = await fetch(`${API_URL}/api/transactions/${user?.id}`);
+        const data = await response.json();
+        setAllTransaction(data);
+    }
+
+    const handleAddTransaction = async (customer_id : number, appointment_id : number, address_id : number, amount : number) => {
+        const response = await fetch(`${API_URL}/api/transactions`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                amount: amount,
+                user_id: customer_id,
+                address_id: address_id,
+                appointment_id: appointment_id,
+                points: amount,
+            }),
+        });
+        const data = await response.json();
+        if (response.ok) {
+            Alert.alert('İşlem Eklendi');
+        } else {
+            Alert.alert('İşlem eklenirken bir hata oluştu.');
+        }
+    }
+
     return (
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
@@ -147,32 +180,49 @@ const AppointmentsScreen: React.FC = () => {
                                 <Text style={styles.appointmentOil}>Yağ Miktarı: {appointment.amount} Litre</Text>
                             </View>
                         </View>
-                        <TouchableOpacity
-                            onPress={() => Alert.alert(
-                                'Uyarı',
-                                `Bu randevuyu silmek istediğinize emin misiniz?`,
-                                [
-                                    {
-                                        text: 'İptal',
-                                        style: 'cancel',
-                                    },
-                                    {
-                                        text: 'Sil',
-                                        onPress: async () => {
-                                            await handleDeleteAppointment(appointment.id)
-                                        }
-                                    },
-                                ],
-                            )}>
-                            <FeatherIcon name="trash-2" size={20} color="#C62828" />
-                        </TouchableOpacity>
+                        <View style={{display: flex, flexDirection: 'row',}}>
+                            {user?.role !== 'user' ? (
+                                <TouchableOpacity
+                                    style={{marginRight: 16}}
+                                    onPress={() => {
+                                        handleAddTransaction(appointment.customer_id, appointment.id, appointment.address_id, appointment.amount);
+                                    }}>
+                                    <FeatherIcon name="check" size={20} color="#059669" />
+                                </TouchableOpacity>
+                            ) : null }
+                            <TouchableOpacity
+                                onPress={() => Alert.alert(
+                                    'Uyarı',
+                                    `Bu randevuyu silmek istediğinize emin misiniz?`,
+                                    [
+                                        {
+                                            text: 'İptal',
+                                            style: 'cancel',
+                                        },
+                                        {
+                                            text: 'Sil',
+                                            onPress: async () => {
+                                                await handleDeleteAppointment(appointment.id)
+                                            }
+                                        },
+                                    ],
+                                )}>
+                                <FeatherIcon name="trash-2" size={20} color="#C62828" />
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 ))}
 
-                <TouchableOpacity style={styles.addButton} onPress={() => setShowModal(true)}>
-                    <FeatherIcon name="plus" size={20} color="#004d40" style={styles.addButtonIcon} />
-                    <Text style={styles.addButtonText}>Yeni Randevu Ekle</Text>
-                </TouchableOpacity>
+                {
+                    user?.role === 'user' ? (
+                        <TouchableOpacity style={styles.addButton} onPress={() => setShowModal(true)}>
+                            <FeatherIcon name="plus" size={20} color="#004d40" style={styles.addButtonIcon} />
+                            <Text style={styles.addButtonText}>Yeni Randevu Ekle</Text>
+                        </TouchableOpacity>
+                    ) : (
+                        <Text style={styles.emptyText}>Toplayıcılar randevu oluşturamaz!</Text>
+                    )
+                }
 
                 <Modal visible={showModal} transparent={true} animationType="fade">
                     <View style={styles.modalContainer}>
@@ -219,6 +269,7 @@ const AppointmentsScreen: React.FC = () => {
                                         mode="datetime"
                                         display="compact"
                                         onChange={onDateChange}
+                                        minimumDate={new Date()}
                                     />
                                 </View>
                             )}
