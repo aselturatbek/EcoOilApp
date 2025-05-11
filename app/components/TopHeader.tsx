@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
-import { useNavigation } from '@react-navigation/native'; 
+import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useUser } from "@/app/auth/UserContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -17,7 +17,7 @@ type RootStackParamList = {
 
 type NavigationPropType = StackNavigationProp<RootStackParamList, 'auth/WelcomeScreen'>;
 
-const TopHeader = (props: any) => {
+const TopHeader = () => {
     const navigation = useNavigation<NavigationPropType>();
     const { user, setUser } = useUser();
 
@@ -28,111 +28,125 @@ const TopHeader = (props: any) => {
     };
 
     return (
-        <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-            <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                {user?.profile_photo_url ? (
-                    <Image source={{ uri: user?.profile_photo_url }} style={styles.profileImage} />
-                ) : (
-                    <Image source={profileImage} style={styles.profileImage} />
-                )}
-                <View style={{ display: "flex", flexDirection: "column", marginLeft: 8, paddingTop: 10 }}>
-                    <Text style={styles.WelcomeText}>Hoşgeldin,</Text>
-                    <Text style={styles.usernameText}>{user?.username}</Text>
+        <View style={styles.headerContainer}>
+            <View style={styles.leftSection}>
+                <Image
+                    source={user?.profile_photo_url ? { uri: user.profile_photo_url } : profileImage}
+                    style={styles.profileImage}
+                />
+                <View style={styles.textContainer}>
+                    <Text style={styles.welcomeText}>Hoşgeldin,</Text>
+                    <Text style={styles.usernameText} numberOfLines={1} ellipsizeMode="tail">
+                        {user?.username}
+                    </Text>
                 </View>
             </View>
 
-            <View style={{ position: 'relative' }}>
-                <Menu>
-                    <MenuTrigger>
-                        <FeatherIcon
-                            name="more-horizontal"
-                            style={styles.icon2}
+            <Menu>
+                <MenuTrigger>
+                    <FeatherIcon name="more-horizontal" style={styles.icon} />
+                </MenuTrigger>
+                <MenuOptions customStyles={{ optionsContainer: styles.menuOptions }}>
+                    <View style={styles.profileSection}>
+                        <Image
+                            source={user?.profile_photo_url ? { uri: user.profile_photo_url } : profileImage}
+                            style={styles.dropdownImage}
                         />
-                    </MenuTrigger>
-                    <MenuOptions customStyles={{ optionsContainer: styles.menuOptions }}>
-                        <View style={styles.profileSection}>
-                        {user?.profile_photo_url ? (
-                              <Image source={{ uri: user?.profile_photo_url }} style={styles.profileImage} />
-                          ) : (
-                              <Image source={profileImage} style={styles.profileImage} />
-                          )}
-                            <Text style={styles.username}>{user?.username}</Text>
-                        </View>
-                        <MenuOption onSelect={() => alert('Instagram')}>
-                            <Text style={styles.menuText}>Ayarlar</Text>
-                        </MenuOption>
-                        <MenuOption onSelect={() => alert('LinkedIn')}>
-                            <Text style={styles.menuText}>EcoOil</Text>
-                        </MenuOption>
-                        <MenuOption onSelect={handleLogout}>
-                            <Text style={styles.logoutText}>Çıkış Yap</Text>
-                        </MenuOption>
-                    </MenuOptions>
-                </Menu>
-            </View>
-
+                        <Text style={styles.menuUsername}>{user?.username}</Text>
+                    </View>
+                    <MenuOption onSelect={() => alert('Ayarlar')}>
+                        <Text style={styles.menuText}>Ayarlar</Text>
+                    </MenuOption>
+                    <MenuOption onSelect={() => alert('EcoOil')}>
+                        <Text style={styles.menuText}>EcoOil</Text>
+                    </MenuOption>
+                    <MenuOption onSelect={handleLogout}>
+                        <Text style={styles.logoutText}>Çıkış Yap</Text>
+                    </MenuOption>
+                </MenuOptions>
+            </Menu>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-    profileImage: {
-        width: 50,
-        height: 50,
-        borderRadius: 25,
-        marginTop: 10,
-        marginLeft:10,
-        
+    headerContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        paddingHorizontal: width * 0.06, // diğer componentlerle birebir hizalı
+        paddingTop: 20,
+        paddingBottom: 10,
     },
-    WelcomeText: {
-        fontFamily: 'Montserrat-Regular',
+    leftSection: {
+        flexDirection: "row",
+        alignItems: "center",
+        flex: 1,
+    },
+    profileImage: {
+        width: 48,
+        height: 48,
+        borderRadius: 24,
+    },
+    textContainer: {
+        marginLeft: 10,
+        justifyContent: "center",
+        flexShrink: 1,
+    },
+    welcomeText: {
+        fontFamily: "Montserrat-Regular",
         color: "#004d40",
-        fontSize: 20, // fixed font size
+        fontSize: 18,
     },
     usernameText: {
-        fontFamily: 'Montserrat-Bold',
+        fontFamily: "Montserrat-Bold",
         color: "#004d40",
-        fontSize: 20, // fixed font size
-        marginTop: 10,
+        fontSize: 20,
+        marginTop: 2,
     },
-    icon2: {
+    icon: {
+        fontSize: 28,
         color: "#004d40",
-        fontSize: 30,
-        marginLeft: 'auto',
-        marginTop: 10,
     },
     menuOptions: {
         backgroundColor: '#fff',
         borderRadius: 12,
-        padding: 5,
-        width: 160,
+        padding: 8,
+        width: 180,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.2,
         shadowRadius: 4,
-        elevation: 5, // Android shadow
+        elevation: 5,
     },
     profileSection: {
-        alignItems: 'flex-start',
+        flexDirection: "row",
+        alignItems: "center",
         marginBottom: 10,
-        marginLeft:8
+    },
+    dropdownImage: {
+        width: 36,
+        height: 36,
+        borderRadius: 18,
+        marginRight: 10,
+    },
+    menuUsername: {
+        fontFamily: "Montserrat-Bold",
+        fontSize: 15,
+        color: "#004d40",
+        flexShrink: 1,
     },
     menuText: {
-        fontFamily: 'Montserrat-Regular',
-        fontSize: 16,
+        fontFamily: "Montserrat-Regular",
+        fontSize: 14,
         color: '#333',
-        paddingVertical: 5,
+        paddingVertical: 6,
     },
     logoutText: {
-        fontFamily: 'Montserrat-Bold',
-        fontSize: 16,
-        color: '#ff4d4d',
-        paddingVertical: 5,
-    },
-    username: {
-        fontFamily: 'Montserrat-Bold',
-        color: '#004d40',
-        fontSize: 20,
+        fontFamily: "Montserrat-Bold",
+        fontSize: 14,
+        color: "#ff4d4d",
+        paddingVertical: 6,
     },
 });
 

@@ -17,7 +17,6 @@ const bgImage2 = require("../assets/images/bgdarkest.png");
 const bgImage3 = require("../assets/images/bgfiligran.png");
 const recycleIllustration = require("../assets/images/carousel_1.png");
 
-// Carousel verileri
 const carouselData = [
   {
     id: "1",
@@ -49,6 +48,9 @@ const carouselData = [
   },
 ];
 
+const ITEM_WIDTH = width - width * 0.12; // %6 padding each side
+const ITEM_HEIGHT = height * 0.22;
+
 const Header = () => {
   const flatListRef = useRef<FlatList>(null);
   const scrollX = useRef(new Animated.Value(0)).current;
@@ -56,27 +58,31 @@ const Header = () => {
 
   const renderItem = ({ item }: { item: any }) => {
     return (
-      <View style={styles.page}>
-        <ImageBackground source={item.bgImage} style={styles.rect} imageStyle={styles.bgImage}>
-          <View style={styles.contentContainer}>
-            <View style={styles.textContainer}>
-              <Text style={styles.text}>{item.text}</Text>
-              {item.showButton && (
-                <TouchableOpacity style={styles.button}>
-                  <Text style={styles.buttonText}>{item.buttonText}</Text>
-                </TouchableOpacity>
-              )}
+        <View style={styles.page}>
+          <ImageBackground
+              source={item.bgImage}
+              style={styles.rect}
+              imageStyle={styles.bgImage}
+          >
+            <View style={styles.contentContainer}>
+              <View style={styles.textContainer}>
+                <Text style={styles.text}>{item.text}</Text>
+                {item.showButton && (
+                    <TouchableOpacity style={styles.button}>
+                      <Text style={styles.buttonText}>{item.buttonText}</Text>
+                    </TouchableOpacity>
+                )}
+              </View>
+              <View style={styles.imageContainer}>
+                <ImageBackground
+                    source={recycleIllustration}
+                    style={styles.image}
+                    imageStyle={styles.imageStyle}
+                />
+              </View>
             </View>
-            <View style={styles.imageContainer}>
-              <ImageBackground
-                source={recycleIllustration}
-                style={styles.image}
-                imageStyle={styles.imageStyle}
-              />
-            </View>
-          </View>
-        </ImageBackground>
-      </View>
+          </ImageBackground>
+        </View>
     );
   };
 
@@ -87,107 +93,85 @@ const Header = () => {
   }).current;
 
   return (
-    <View style={styles.scrollArea}>
-      <FlatList
-        ref={flatListRef}
-        data={carouselData}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], {
-          useNativeDriver: false,
-        })}
-        onViewableItemsChanged={onViewableItemsChanged}
-        snapToInterval={width * 0.8 + 14} // Her bir öğenin genişliği + margin
-        snapToAlignment="center" // Öğeleri ortala
-        decelerationRate="fast"
-        contentContainerStyle={styles.scrollArea_contentContainerStyle}
-      />
-      <View style={styles.pagination}>
-        {carouselData.map((_, index) => {
-          const opacity = scrollX.interpolate({
-            inputRange: [(index - 1) * width, index * width, (index + 1) * width],
-            outputRange: [0.3, 1, 0.3],
-            extrapolate: "clamp",
-          });
-          return (
-            <Animated.View
-              key={index}
-              style={[styles.paginationDot, { opacity }]}
-            />
-          );
-        })}
+      <View style={styles.container}>
+        <FlatList
+            ref={flatListRef}
+            data={carouselData}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(item) => item.id}
+            renderItem={renderItem}
+            onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], {
+              useNativeDriver: false,
+            })}
+            onViewableItemsChanged={onViewableItemsChanged}
+            snapToInterval={ITEM_WIDTH + 12}
+            snapToAlignment="center"
+            decelerationRate="fast"
+            contentContainerStyle={styles.carouselContent}
+        />
+        <View style={styles.pagination}>
+          {carouselData.map((_, index) => {
+            const opacity = scrollX.interpolate({
+              inputRange: [(index - 1) * width, index * width, (index + 1) * width],
+              outputRange: [0.3, 1, 0.3],
+              extrapolate: "clamp",
+            });
+            return <Animated.View key={index} style={[styles.dot, { opacity }]} />;
+          })}
+        </View>
       </View>
-    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  scrollArea: {
-    width: "100%",
-    height: height * 0.32,
-    backgroundColor: "transparent",
-    alignSelf: "center",
+  container: {
+    paddingHorizontal: width * 0.035,
+    marginTop: -10,
   },
-  scrollArea_contentContainerStyle: {
-    height: height * 0.30,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: (width * 0.1) / 2, // Öğelerin kenarlardan boşluk almasını sağlar
-  },
-  bgImage: {
-    borderRadius: 25,
-    height: height * 0.32,
+  carouselContent: {
+    paddingBottom: 10,
   },
   page: {
-    width: width * 0.8,
-    height: height * 0.25,
-    justifyContent: "center",
-    alignItems: "center",
-    marginHorizontal: 5, // Öğeler arası boşluk
-    shadowColor: "#333",
+    width: ITEM_WIDTH,
+    height: ITEM_HEIGHT,
+    borderRadius: 18,
+    marginHorizontal: 7,
+    overflow: "hidden",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
-    elevation: 5,
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    elevation: 3,
   },
   rect: {
-    width: width * 0.8,
-    height: height * 0.23,
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    overflow: "hidden",
-    borderRadius: 20,
+  },
+  bgImage: {
+    resizeMode: "cover",
   },
   contentContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    width: "90%",
+    paddingHorizontal: 14,
   },
   textContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "flex-start",
     marginRight: 10,
   },
   text: {
     fontFamily: "Montserrat-Bold",
-    color: "#ffffff",
-    fontSize: width * 0.05,
-    textAlign: "left",
-    marginBottom: 10,
-    shadowColor: "#333",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 3,
-    elevation: 5,
+    fontSize: width * 0.045,
+    color: "#fff",
+    marginBottom: 8,
   },
   imageContainer: {
-    width: 120,
-    height: 120,
+    width: 130,
+    height:130,
   },
   image: {
     width: "100%",
@@ -197,39 +181,31 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
   button: {
-    width: width * 0.35,
-    height: 33,
     backgroundColor: "#004d40",
     borderRadius: 10,
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+    marginTop: 5,
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 3,
-    elevation: 5,
   },
   buttonText: {
     fontFamily: "Montserrat-Bold",
-    color: "white",
     fontSize: width * 0.035,
+    color: "#fff",
   },
   pagination: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    position: "absolute",
-    bottom: 10,
-    width: "100%",
+    marginTop: 8,
   },
-  paginationDot: {
-    width: 15,
+  dot: {
+    width: 16,
     height: 4,
-    borderRadius: 4,
+    borderRadius: 2,
     backgroundColor: "#004d40",
-    marginHorizontal: 3,
-    marginTop: -40,
-    marginBottom:-20,
+    marginHorizontal: 4,
   },
 });
 

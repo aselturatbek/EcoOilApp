@@ -118,11 +118,11 @@ const ProfileScreen: React.FC = () => {
                     )}
                 </View>
 
-                <Button
-                    title="Çıkış Yap"
-                    color="#C62828"
-                    onPress={() => handleLogout()}
-                />
+                <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+                    <FeatherIcon name="log-out" size={18} color="#C62828" />
+                    <Text style={styles.logoutText}>Çıkış Yap</Text>
+                </TouchableOpacity>
+
 
             </ScrollView>
         </View>
@@ -143,21 +143,21 @@ const styles = StyleSheet.create({
     },
     scrollViewContent: {
         alignItems: "center",
-        paddingVertical: 20,
+        paddingVertical: 30,
     },
     banner: {
-        width: width * 1.1, // Genişliği küçülttük
-        height: 300, // Yüksekliği ayarladık
-        borderBottomLeftRadius: 60, // Yuvarlak kenar ekledik
-        borderBottomRightRadius: 60, // Yuvarlak kenar ekledik
-        overflow: "hidden", // Taşma olmaması için
+        width: width,
+        height: 280,
+        borderBottomLeftRadius: 40,
+        borderBottomRightRadius: 40,
+        overflow: "hidden",
         alignItems: "center",
         justifyContent: "center",
-        marginBottom: 40,
-        marginTop: -19,
+        marginBottom: 30,
     },
     bannerImage: {
-        resizeMode: "cover", // Görüntüyü düzgün yerleştirmek için
+        resizeMode: "cover",
+        opacity:0.7,
     },
     profileContainer: {
         position: "relative",
@@ -165,55 +165,65 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     profileImage: {
-        width: 110,
-        height: 110,
-        borderRadius: 55,
+        width: 120,
+        height: 120,
+        borderRadius: 60,
         borderWidth: 3,
         borderColor: "#fff",
     },
     editIcon: {
         position: "absolute",
-        bottom: 0,
-        right: 11,
-        backgroundColor: "#026a59",
-        padding: 5,
+        bottom: 5,
+        right: -5,
+        backgroundColor: "#26a69a",
+        padding: 6,
         borderRadius: 20,
+        elevation: 2,
     },
     name: {
-        fontSize: 24,
+        fontSize: 22,
         color: "#fff",
-        marginTop: 20,
+        marginTop: 18,
+        fontFamily: "Montserrat-Bold",
     },
     pointsContainer: {
         flexDirection: "row",
         alignItems: "center",
-        marginTop: 5,
-    },
-    pointsText: {
-        marginLeft: 1,
-        fontSize: 16,
-        color: "#fff",
+        marginTop: 6,
     },
     ecoOilLogo: {
-        width: 40,
-        height: 40,
-        marginLeft: 10,
+        width: 36,
+        height: 36,
+        marginRight: 6,
+    },
+    pointsText: {
+        fontSize: 16,
+        color: "#fff",
+        fontFamily: "Montserrat-Regular",
     },
     buttonContainer: {
         width: width * 0.9,
+        marginTop: 10,
+        marginBottom: 20,
     },
     button: {
         flexDirection: "row",
         alignItems: "center",
-        backgroundColor: "#E6E6E6",
-        padding: 15,
-        borderRadius: 10,
-        marginBottom: 10,
+        backgroundColor: "#e0f2f1",
+        padding: 14,
+        borderRadius: 12,
+        marginBottom: 12,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.05,
+        shadowRadius: 2,
+        elevation: 2,
     },
     buttonText: {
         fontSize: 16,
-        marginLeft: 10,
+        marginLeft: 12,
         color: "#004d40",
+        fontFamily: "Montserrat-Regular",
     },
     icon: {
         color: "#004d40",
@@ -225,6 +235,30 @@ const styles = StyleSheet.create({
     montserratBold: {
         fontFamily: "Montserrat-Bold",
     },
+    logoutButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#fbe9e7', // Açık mercan ton
+        paddingVertical: 14,
+        borderRadius: 12,
+        width: width * 0.9,
+        alignSelf: 'center',
+        marginBottom: 40,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.07,
+        shadowRadius: 3,
+        elevation: 2,
+    },
+    logoutText: {
+        fontSize: 16,
+        color: '#C62828',
+        fontFamily: 'Montserrat-Bold',
+        marginLeft: 10,
+    },
+
 });
+
 
 export default ProfileScreen;

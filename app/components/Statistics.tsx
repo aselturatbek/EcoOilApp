@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import Constants from "expo-constants";
 
-const { height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 const API_URL = Constants.expoConfig?.extra?.API_URL ?? 'http://localhost:8000';
 
@@ -13,25 +13,21 @@ const Statistics = () => {
     const getUsersCount = async () => {
         try {
             const response = await fetch(`${API_URL}/api/totalUserCount`);
-            if (!response.ok) {
-                throw new Error(`Error: ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`Error: ${response.status}`);
             const data = await response.json();
             setTotalUserCount(data.total_users);
         } catch (error) {
             console.error("Failed to fetch user count:", error);
         }
-    }
+    };
 
     useEffect(() => {
         getUsersCount();
     }, []);
 
     return (
-        <View>
-            <Text style={styles.loremIpsum2}>
-                Geri Dönüşümler
-            </Text>
+        <View style={styles.container}>
+            <Text style={styles.title}>Geri Dönüşümler</Text>
 
             <View style={styles.statsContainer}>
                 <View style={[styles.statBox, styles.box1]}>
@@ -55,58 +51,54 @@ const Statistics = () => {
 };
 
 const styles = StyleSheet.create({
-    loremIpsum2: {
+    container: {
+        paddingHorizontal: width * 0.045,
+        marginTop: -10,
+    },
+    title: {
         fontFamily: "Montserrat-Bold",
         color: "#004d40",
-        fontSize: 18, // Sabit font boyutu
-        marginTop: 10,
-        marginLeft:10
+        fontSize: 18,
+        marginBottom: 14,
     },
     statsContainer: {
         flexDirection: "row",
-        justifyContent: 'space-around',
-        margin: 10,
+        justifyContent: "space-between",
     },
     statBox: {
-        width: '30%',
-        height: height * 0.12,
-        borderRadius: 15,
-        justifyContent: 'center',
-        alignItems: 'center',
+        width: (width - width * 0.12 - 20) / 3, // 3 kutu arası 10+10 margin
+
+        borderRadius: 14,
+        justifyContent: "center",
+        alignItems: "center",
         padding: 10,
-        backgroundColor: '#004d40',
-        elevation: 5, // Android için gölge
-        shadowColor: '#000', // iOS için gölge
+        backgroundColor: "#004d40",
+        elevation: 3,
+        shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.7,
-        shadowRadius: 4,
+        shadowOpacity: 0.15,
+        shadowRadius: 3,
     },
-    box1: {
-        backgroundColor: '#004d40',
-        opacity: 0.6,
-    },
-    box2: {
-        backgroundColor: '#004d40',
-        opacity: 0.7,
-    },
-    box3: {
-        backgroundColor: '#004d40',
-        opacity: 0.8,
-    },
+    box1: { backgroundColor: '#00897b' }, // 🔸 Orta ton
+    box2: { backgroundColor: '#00695c' }, // 🔹 Daha doygun yeşil
+    box3: { backgroundColor: '#004d40' }, // ✅ Ana renk
+
+
     statIcon: {
-        fontSize: 30,
-        color: '#fff',
+        fontSize: 28,
+        color: "#fff",
         marginBottom: 5,
     },
     statText: {
-        fontSize: 20,
-        color: '#fff',
-        fontFamily: 'Montserrat-Bold',
+        fontSize: 18,
+        color: "#fff",
+        fontFamily: "Montserrat-Bold",
     },
     statLabel: {
-        fontSize: 10,
-        color: '#fff',
-        fontFamily: 'Montserrat-Regular',
+        fontSize: 12,
+        color: "#fff",
+        fontFamily: "Montserrat-Regular",
+        textAlign: "center",
     },
 });
 

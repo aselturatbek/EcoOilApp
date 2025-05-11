@@ -168,7 +168,9 @@ const AppointmentComponent = ({ refreshing }: { refreshing: boolean }) => {
 
 const styles = StyleSheet.create({
     container: {
-        margin: 10,
+        marginTop: 0,
+        marginBottom: 10,
+        marginHorizontal: width * 0.045,
         padding: 15,
         borderRadius: 20,
         backgroundColor: '#ffffff',
@@ -177,8 +179,8 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 5,
         elevation: 3,
-        marginVertical: 20,
     },
+
     header: {
         flexDirection: 'row',
         alignItems: 'center',
