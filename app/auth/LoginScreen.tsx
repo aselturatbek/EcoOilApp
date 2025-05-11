@@ -140,7 +140,6 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 36,
-        fontWeight: 'bold',
         color: '#004d40',
         textAlign: 'center',
         fontFamily: 'Montserrat-Bold',
@@ -194,7 +193,6 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#ffffff',
         fontSize: 18,
-        fontWeight: 'bold',
         textAlign: 'center',
         fontFamily: 'Montserrat-Bold',
     },
