@@ -7,7 +7,7 @@ import {
     TextInput,
     Alert,
     ScrollView,
-    Modal,
+    Modal, SafeAreaView,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import FeatherIcon from 'react-native-vector-icons/Feather';
@@ -139,7 +139,7 @@ const AppointmentsScreen: React.FC = () => {
     }
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
                 <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
                     <FeatherIcon name="arrow-left" size={24} color="#004d40" />
@@ -180,7 +180,7 @@ const AppointmentsScreen: React.FC = () => {
                                 <Text style={styles.appointmentOil}>Yağ Miktarı: {appointment.amount} Litre</Text>
                             </View>
                         </View>
-                        <View style={{display: flex, flexDirection: 'row',}}>
+                        <View style={{flexDirection: 'row'}}>
                             {user?.role !== 'user' ? (
                                 <TouchableOpacity
                                     style={{marginRight: 16}}
@@ -299,7 +299,7 @@ const AppointmentsScreen: React.FC = () => {
                     </View>
                 </Modal>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 
@@ -316,7 +316,6 @@ const styles = StyleSheet.create({
     },
     backButton: {
         alignSelf: 'flex-start',
-        marginTop: 40,
         marginBottom: 20,
     },
     title: {

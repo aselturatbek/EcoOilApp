@@ -9,7 +9,7 @@ import {
     Alert,
     KeyboardAvoidingView,
     Platform,
-    Dimensions, SafeAreaView,
+    Dimensions, SafeAreaView, ScrollView,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -17,6 +17,8 @@ import { useNavigation } from '@react-navigation/native';
 import {useUser} from "@/app/auth/UserContext";
 import Constants from "expo-constants";
 import { Address } from '@/constants';
+import {Picker} from "@react-native-picker/picker";
+import {Dropdown} from "react-native-element-dropdown";
 
 
 const API_URL = Constants.expoConfig?.extra?.API_URL ?? 'http://localhost:8000';
@@ -28,8 +30,15 @@ const AdressScreen: React.FC = () => {
     const [addresses, setAddresses] = useState<Address[]>([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [editModalVisible, setEditModalVisible] = useState(false);
+
     const [addressName, setAddressName] = useState('');
     const [addressDetails, setAddressDetails] = useState('');
+    const [mahalle, setMahalle] = useState('');
+    const [ilce, setIlce] = useState('');
+    const [il, setIl] = useState('');
+    const [value, setValue] = useState(null);
+    const [isFocus, setIsFocus] = useState(false);
+
     const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
 
     const openEditModal = (address: Address) => {
@@ -116,30 +125,84 @@ const AdressScreen: React.FC = () => {
         </View>
     );
 
+    const cities = [
+        { label: 'Adana', value: 'Adana' },
+        { label: 'Adıyaman', value: 'Adıyaman' },
+        { label: 'Afyonkarahisar', value: 'Afyonkarahisar' },
+        { label: 'Ağrı', value: 'Ağrı' },
+        { label: 'Aksaray', value: 'Aksaray' },
+        { label: 'Amasya', value: 'Amasya' },
+        { label: 'Ankara', value: 'Ankara' },
+        { label: 'Antalya', value: 'Antalya' },
+        { label: 'Ardahan', value: 'Ardahan' },
+        { label: 'Artvin', value: 'Artvin' },
+        { label: 'Aydın', value: 'Aydın' },
+        { label: 'Balıkesir', value: 'Balıkesir' },
+        { label: 'Bartın', value: 'Bartın' },
+        { label: 'Batman', value: 'Batman' },
+        { label: 'Bayburt', value: 'Bayburt' },
+        { label: 'Bilecik', value: 'Bilecik' },
+        { label: 'Bingöl', value: 'Bingöl' },
+        { label: 'Bitlis', value: 'Bitlis' },
+        { label: 'Bolu', value: 'Bolu' },
+        { label: 'Burdur', value: 'Burdur' },
+        { label: 'Bursa', value: 'Bursa' },
+        { label: 'Çanakkale', value: 'Çanakkale' },
+        { label: 'Çankırı', value: 'Çankırı' },
+        { label: 'Çorum', value: 'Çorum' },
+        { label: 'Denizli', value: 'Denizli' },
+        { label: 'Diyarbakır', value: 'Diyarbakır' },
+        { label: 'Düzce', value: 'Düzce' },
+        { label: 'Edirne', value: 'Edirne' },
+        { label: 'Elazığ', value: 'Elazığ' },
+        { label: 'Erzincan', value: 'Erzincan' },
+        { label: 'Erzurum', value: 'Erzurum' },
+        { label: 'Eskişehir', value: 'Eskişehir' },
+        { label: 'Gaziantep', value: 'Gaziantep' },
+        { label: 'Giresun', value: 'Giresun' },
+        { label: 'Gümüşhane', value: 'Gümüşhane' },
+        { label: 'Hakkari', value: 'Hakkari' },
+        { label: 'Hatay', value: 'Hatay' },
+        { label: 'Iğdır', value: 'Iğdır' },
+        { label: 'Isparta', value: 'Isparta' },
+        { label: "İstanbul", value:"İstanbul"},
+    ];
+
+
+
     return (
         <SafeAreaView style={styles.container}>
             <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
                 <Ionicons name="arrow-back" size={24} color="#004d40" />
             </TouchableOpacity>
-            <View style={{ width: "100%", justifyContent: "center", alignItems: "center" }}>
+            <View style={{ width: "100%", justifyContent: "center", alignItems: "center", marginBottom: 24 }}>
                 <Text style={[styles.title, styles.montserratBold]}>Adreslerim</Text>
             </View>
 
-            {userAddresses.map((userAddress) => (
-                <View style={styles.addressItem} key={userAddress.id}>
-                    <Ionicons name="location-outline" size={24} color="#004d40" style={styles.icon} />
-                    <View style={{ flex: 1 }}>
-                        <Text style={[styles.addressTitle, styles.montserratBold]}>{userAddress.address_name}</Text>
-                        <Text style={[styles.addressDetails, styles.montserratText]}>{userAddress.address_line_1}</Text>
+            <ScrollView
+                contentContainerStyle={{ paddingBottom: 42, gap: 10, display: "flex" }}
+                showsVerticalScrollIndicator={false}
+            >
+                {userAddresses.map((userAddress) => (
+                    <View style={styles.addressItem} key={userAddress.id}>
+                        <Ionicons name="location-outline" size={24} color="#004d40" style={styles.icon} />
+                        <View style={{ flex: 1 }}>
+                            <Text style={[styles.addressTitle, styles.montserratBold]}>{userAddress.address_name}</Text>
+                            <Text
+                                style={[styles.addressDetails, styles.montserratText]}
+                                numberOfLines={2}
+                                ellipsizeMode="tail"
+                            >{userAddress.address_line_1}</Text>
+                        </View>
+                        {/*<TouchableOpacity onPress={() => openEditModal(userAddress)}>*/}
+                        {/*    <Feather name="edit" size={24} color="#004d40" style={styles.actionIcon} />*/}
+                        {/*</TouchableOpacity>*/}
+                        <TouchableOpacity onPress={() => handleDelete(userAddress)}>
+                            <Feather name="trash" size={24} color="#C62828" style={styles.actionIcon} />
+                        </TouchableOpacity>
                     </View>
-                    <TouchableOpacity onPress={() => openEditModal(userAddress)}>
-                        <Feather name="edit" size={24} color="#004d40" style={styles.actionIcon} />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => handleDelete(userAddress)}>
-                        <Feather name="trash" size={24} color="#C62828" style={styles.actionIcon} />
-                    </TouchableOpacity>
-                </View>
-            ))}
+                ))}
+            </ScrollView>
 
             <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
                 <Feather name="plus" size={30} color="#fff" />
@@ -156,31 +219,164 @@ const AdressScreen: React.FC = () => {
                     behavior={Platform.OS === 'ios' ? 'padding' : undefined}
                     style={styles.modalContainer}
                 >
-                    <View style={styles.modalContent}>
+                    <View style={{
+                        width: '90%',
+                        backgroundColor: '#fff',
+                        borderRadius: 8,
+                        padding: 26,
+                        alignItems: 'center',
+                        display: 'flex',
+                        gap: 10,
+                    }}>
                         <Text style={[styles.modalTitle, styles.montserratBold]}>Yeni Adres Ekle</Text>
 
-                        <View style={styles.inputGroup}>
-                            <Feather name="tag" size={20} color="#004d40" style={styles.inputIcon} />
-                            <TextInput
-                                style={styles.input}
-                                placeholder="Adres Başlığı (Örn: Ev, İş)"
-                                placeholderTextColor="#757575"
-                                value={addressName}
-                                onChangeText={setAddressName}
-                            />
+                        <View style={{
+                            display: 'flex',
+                            width: '100%',
+                        }}>
+                            <Text style={{
+                                fontSize: 16,
+                                fontFamily: 'Montserrat-Bold',
+                                color: '#004d40',
+                                marginBottom: 4,
+                                marginHorizontal: 4
+                            }}>
+                                Adres Başlığı
+                            </Text>
+                            <View style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderWidth: 1,
+                                borderColor: '#ddd',
+                                borderRadius: 6,
+                                paddingHorizontal: 16,
+                                marginBottom: 10
+                            }}>
+                                <Feather name="tag" size={20} color="#004d40" style={styles.inputIcon} />
+                                <TextInput
+                                    style={{
+                                        flex: 1,
+                                        height: 50,
+                                        fontSize: 16,
+                                    }}
+                                    placeholder="Adres Başlığı (Örn: Ev, İş)"
+                                    placeholderTextColor="#757575"
+                                    value={addressName}
+                                    onChangeText={setAddressName}
+                                />
+                            </View>
+
+                            <Text style={{
+                                fontSize: 16,
+                                fontFamily: 'Montserrat-Bold',
+                                color: '#004d40',
+                                marginBottom: 4,
+                                marginHorizontal: 4
+                            }}>
+                                Mahalle
+                            </Text>
+                            <View style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderWidth: 1,
+                                borderColor: '#ddd',
+                                borderRadius: 6,
+                                paddingHorizontal: 16,
+                                marginBottom: 10
+                            }}>
+                                <Feather name="map-pin" size={20} color="#004d40" style={styles.inputIcon} />
+                                <TextInput
+                                    style={{
+                                        flex: 1,
+                                        height: 50,
+                                        fontSize: 16,
+                                    }}
+                                    placeholder="Mahalle (Örn: Bartın Merkez Mahallesi)"
+                                    placeholderTextColor="#757575"
+                                    value={mahalle}
+                                    onChangeText={setMahalle}
+                                />
+                            </View>
+
+                            <Text style={{
+                                fontSize: 16,
+                                fontFamily: 'Montserrat-Bold',
+                                color: '#004d40',
+                                marginBottom: 4,
+                                marginHorizontal: 4
+                            }}>
+                                İlçe
+                            </Text>
+                            <View style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderWidth: 1,
+                                borderColor: '#ddd',
+                                borderRadius: 6,
+                                paddingHorizontal: 16,
+                                marginBottom: 10
+                            }}>
+                                <Feather name="map-pin" size={20} color="#004d40" style={styles.inputIcon} />
+                                <TextInput
+                                    style={{
+                                        flex: 1,
+                                        height: 50,
+                                        fontSize: 16,
+                                    }}
+                                    placeholder="İlçe (Örn: Cumhuriyet Mahallesi)"
+                                    placeholderTextColor="#757575"
+                                    value={ilce}
+                                    onChangeText={setIlce}
+                                />
+                            </View>
+
+                            <Text style={{
+                                fontSize: 16,
+                                fontFamily: 'Montserrat-Bold',
+                                color: '#004d40',
+                                marginBottom: 4,
+                                marginHorizontal: 4
+                            }}>
+                                İl
+                            </Text>
+                            <View style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderWidth: 1,
+                                borderColor: '#ddd',
+                                borderRadius: 6,
+                                paddingHorizontal: 16,
+                                marginBottom: 10
+                            }}>
+                                <Feather name="map-pin" size={20} color="#004d40" style={styles.inputIcon} />
+                                <Dropdown
+                                    style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+                                    placeholderStyle={styles.placeholderStyle}
+                                    selectedTextStyle={styles.selectedTextStyle}
+                                    inputSearchStyle={styles.inputSearchStyle}
+                                    iconStyle={styles.iconStyle}
+                                    data={cities}
+                                    search
+                                    maxHeight={300}
+                                    labelField="label"
+                                    valueField="value"
+                                    placeholder={!isFocus ? 'Şehir' : '...'}
+                                    searchPlaceholder="Arama..."
+                                    value={value}
+                                    onFocus={() => setIsFocus(true)}
+                                    onBlur={() => setIsFocus(false)}
+                                    onChange={item => {
+                                        setIl(item.value);
+                                        setIsFocus(false);
+                                    }}
+                                />
+                            </View>
                         </View>
 
-                        <View style={styles.inputGroup}>
-                            <Feather name="map-pin" size={20} color="#004d40" style={styles.inputIcon} />
-                            <TextInput
-                                style={styles.inputMulti}
-                                placeholder="Adres (Sokak, Şehir, Posta Kodu)"
-                                placeholderTextColor="#757575"
-                                value={addressDetails}
-                                onChangeText={setAddressDetails}
-                                multiline={true}
-                            />
-                        </View>
 
                         <View style={styles.modalButtonContainer}>
                             <TouchableOpacity style={styles.saveButton} onPress={() => {handleAddAddress()}}>
@@ -198,71 +394,101 @@ const AdressScreen: React.FC = () => {
             </Modal>
 
             {/* Adres Düzenleme Modalı */}
-            <Modal
-                visible={editModalVisible}
-                animationType="slide"
-                transparent={true}
-                onRequestClose={() => setEditModalVisible(false)}
-            >
-                <KeyboardAvoidingView
-                    behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-                    style={styles.modalContainer}
-                >
-                    <View style={styles.modalContent}>
-                        <Text style={[styles.modalTitle, styles.montserratBold]}>Adresi Düzenle</Text>
+            {/*<Modal*/}
+            {/*    visible={editModalVisible}*/}
+            {/*    animationType="slide"*/}
+            {/*    transparent={true}*/}
+            {/*    onRequestClose={() => setEditModalVisible(false)}*/}
+            {/*>*/}
+            {/*    <KeyboardAvoidingView*/}
+            {/*        behavior={Platform.OS === 'ios' ? 'padding' : undefined}*/}
+            {/*        style={styles.modalContainer}*/}
+            {/*    >*/}
+            {/*        <View style={styles.modalContent}>*/}
+            {/*            <Text style={[styles.modalTitle, styles.montserratBold]}>Adresi Düzenle</Text>*/}
 
-                        <View style={styles.inputGroup}>
-                            <Feather name="tag" size={20} color="#004d40" style={styles.inputIcon} />
-                            <TextInput
-                                style={styles.input}
-                                placeholder="Adres Başlığı (Örn: Ev, İş)"
-                                placeholderTextColor="#757575"
-                                value={addressName}
-                                onChangeText={setAddressName}
-                            />
-                        </View>
+            {/*            <View style={styles.inputGroup}>*/}
+            {/*                <Feather name="tag" size={20} color="#004d40" style={styles.inputIcon} />*/}
+            {/*                <TextInput*/}
+            {/*                    style={styles.input}*/}
+            {/*                    placeholder="Adres Başlığı (Örn: Ev, İş)"*/}
+            {/*                    placeholderTextColor="#757575"*/}
+            {/*                    value={addressName}*/}
+            {/*                    onChangeText={setAddressName}*/}
+            {/*                />*/}
+            {/*            </View>*/}
 
-                        <View style={styles.inputGroup}>
-                            <Feather name="map-pin" size={20} color="#004d40" style={styles.inputIcon} />
-                            <TextInput
-                                style={styles.input}
-                                placeholder="Adres (Sokak, Şehir, Posta Kodu)"
-                                placeholderTextColor="#757575"
-                                value={addressDetails}
-                                onChangeText={setAddressDetails}
-                                multiline
-                            />
-                        </View>
+            {/*            <View style={styles.inputGroup}>*/}
+            {/*                <Feather name="map-pin" size={20} color="#004d40" style={styles.inputIcon} />*/}
+            {/*                <TextInput*/}
+            {/*                    style={styles.input}*/}
+            {/*                    placeholder="Adres (Sokak, Şehir, Posta Kodu)"*/}
+            {/*                    placeholderTextColor="#757575"*/}
+            {/*                    value={addressDetails}*/}
+            {/*                    onChangeText={setAddressDetails}*/}
+            {/*                    multiline*/}
+            {/*                />*/}
+            {/*            </View>*/}
 
-                        <View style={styles.modalButtonContainer}>
-                            <TouchableOpacity style={styles.saveButton}>
-                                <Text style={[styles.saveButtonText, styles.montserratText]}>Güncelle</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={styles.cancelButton}
-                                onPress={() => setEditModalVisible(false)}
-                            >
-                                <Text style={[styles.saveButtonText, styles.montserratText]}>İptal</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </KeyboardAvoidingView>
-            </Modal>
+            {/*            <View style={styles.modalButtonContainer}>*/}
+            {/*                <TouchableOpacity style={styles.saveButton}>*/}
+            {/*                    <Text style={[styles.saveButtonText, styles.montserratText]}>Güncelle</Text>*/}
+            {/*                </TouchableOpacity>*/}
+            {/*                <TouchableOpacity*/}
+            {/*                    style={styles.cancelButton}*/}
+            {/*                    onPress={() => setEditModalVisible(false)}*/}
+            {/*                >*/}
+            {/*                    <Text style={[styles.saveButtonText, styles.montserratText]}>İptal</Text>*/}
+            {/*                </TouchableOpacity>*/}
+            {/*            </View>*/}
+            {/*        </View>*/}
+            {/*    </KeyboardAvoidingView>*/}
+            {/*</Modal>*/}
         </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
+    dropdown: {
+        height: 50,
+        borderRadius: 6,
+        paddingHorizontal: 8,
+        width: '90%'
+    },
+    label: {
+        position: 'absolute',
+        backgroundColor: 'white',
+        left: 22,
+        top: 8,
+        zIndex: 999,
+        paddingHorizontal: 8,
+        fontSize: 14,
+    },
+    placeholderStyle: {
+        fontSize: 16,
+        color: '#757575',
+    },
+    selectedTextStyle: {
+        fontSize: 16,
+    },
+    iconStyle: {
+        width: 20,
+        height: 20,
+    },
+    inputSearchStyle: {
+        height: 40,
+        fontSize: 16,
+    },
     container: {
         alignItems: "center",
         backgroundColor: '#F5F5F5',
-        padding: 20,
-        position: 'relative',
+        paddingHorizontal: 20,
         height: height,
     },
     backButton: {
         alignSelf: 'flex-start',
         marginBottom: 10,
+        marginHorizontal: 20
     },
     title: {
         fontSize: 28,
@@ -281,13 +507,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#E6E6E6',
         padding: 15,
         borderRadius: 15,
-        marginBottom: 10,
         width: width * 0.9,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 5,
-        elevation: 5,
+        height: 102,
+        borderWidth: 0.17,
+        borderColor: '#c5c5c5',
     },
     icon: {
         marginRight: 10,
@@ -302,6 +525,7 @@ const styles = StyleSheet.create({
     addressDetails: {
         fontSize: 16,
         color: '#333',
+
     },
     emptyText: {
         textAlign: 'center',

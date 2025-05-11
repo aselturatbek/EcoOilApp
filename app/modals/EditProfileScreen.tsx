@@ -17,6 +17,10 @@ import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
 import { useUser } from '@/app/auth/UserContext';
 import { User } from '@/constants';
+import Constants from "expo-constants";
+
+const API_URL = Constants.expoConfig?.extra?.API_URL ?? 'http://localhost:8000';
+
 
 const EditProfileScreen: React.FC = () => {
     const navigation = useNavigation();
@@ -24,29 +28,13 @@ const EditProfileScreen: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [image, setImage] = useState<string | null>(null);
 
-    const [form, setForm] = useState<Partial<User>>({
-        name: user?.name || '',
-        surname: user?.surname || '',
-        username: user?.username || '',
-        email: user?.email || '',
-        phone: user?.phone || '',
-    });
-
-    useEffect(() => {
-        if (user) {
-            setForm({
-                name: user.name,
-                surname: user.surname,
-                username: user.username,
-                email: user.email,
-                phone: user.phone,
-            });
-        }
-    }, [user]);
-
-    const handleInputChange = (key: keyof User, value: string) => {
-        setForm(prev => ({ ...prev, [key]: value }));
-    };
+    const [editUsername, setEditUsername] = useState(user?.username);
+    const [editName, setEditName] = useState(user?.name);
+    const [editSurname, setEditSurname] = useState(user?.surname);
+    const [editEmail, setEditEmail] = useState(user?.email);
+    const [editPhone, setEditPhone] = useState(user?.phone);
+    const [role, setRole] = useState(user?.role);
+    const [editProfilePhoto, setEditProfilePhoto] = useState(user?.profile_photo_url);
 
     const pickImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -61,26 +49,50 @@ const EditProfileScreen: React.FC = () => {
         }
     };
 
+    // const handleSave = async () => {
+    //     setLoading(true);
+    //     try {
+    //         if (user) {
+    //             const updatedUser = {
+    //                 ...user,
+    //                 ...form,
+    //                 profile_photo_url: image || user.profile_photo_url,
+    //             };
+    //             setUser(updatedUser);
+    //         }
+    //
+    //         Alert.alert('Başarılı', 'Profil bilgileriniz güncellendi');
+    //         navigation.goBack();
+    //     } catch (error) {
+    //         Alert.alert('Hata', 'Güncelleme sırasında bir hata oluştu');
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
+
+    // save function to /api/user/ url
     const handleSave = async () => {
         setLoading(true);
         try {
-            // Burada API çağrısı yapılacak
-            // Örnek: await updateUserProfile({ ...form, profilePhoto: image });
-
-            // Geçici olarak context'i güncelle
-            if (user) {
-                const updatedUser = {
-                    ...user,
-                    ...form,
-                    profile_photo_url: image || user.profile_photo_url,
-                };
-                setUser(updatedUser);
-            }
-
+            const response = await fetch(`${API_URL}/api/updateUser/${user?.id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: editUsername,
+                    name: editName,
+                    surname: editSurname,
+                    email: editEmail,
+                    phone: editPhone,
+                    role: role,
+                    profile_photo_url: image || user?.profile_photo_url,
+                }),
+            });
             Alert.alert('Başarılı', 'Profil bilgileriniz güncellendi');
             navigation.goBack();
         } catch (error) {
-            Alert.alert('Hata', 'Güncelleme sırasında bir hata oluştu');
+            Alert.alert('Hata');
         } finally {
             setLoading(false);
         }
@@ -108,7 +120,7 @@ const EditProfileScreen: React.FC = () => {
                     >
                         <Image
                             source={{
-                                uri: image || user?.profile_photo_url || 'https://via.placeholder.com/150',
+                                uri: image || user?.profile_photo_url || '',
                             }}
                             style={styles.avatar}
                         />
@@ -124,8 +136,8 @@ const EditProfileScreen: React.FC = () => {
                                 <FeatherIcon name="user" size={20} color="#004d40" />
                                 <TextInput
                                     style={styles.input}
-                                    value={form.name}
-                                    onChangeText={text => handleInputChange('name', text)}
+                                    value={editName}
+                                    onChangeText={e => setEditName(e)}
                                     placeholder="Adınız"
                                 />
                             </View>
@@ -137,8 +149,8 @@ const EditProfileScreen: React.FC = () => {
                                 <FeatherIcon name="user" size={20} color="#004d40" />
                                 <TextInput
                                     style={styles.input}
-                                    value={form.surname}
-                                    onChangeText={text => handleInputChange('surname', text)}
+                                    value={editSurname}
+                                    onChangeText={setEditSurname}
                                     placeholder="Soyadınız"
                                 />
                             </View>
@@ -150,8 +162,7 @@ const EditProfileScreen: React.FC = () => {
                                 <FeatherIcon name="mail" size={20} color="#004d40" />
                                 <TextInput
                                     style={styles.input}
-                                    value={form.email}
-                                    onChangeText={text => handleInputChange('email', text)}
+                                    value={user?.email}
                                     keyboardType="email-address"
                                     editable={false} // E-posta değiştirilemez
                                 />
@@ -164,10 +175,10 @@ const EditProfileScreen: React.FC = () => {
                                 <FeatherIcon name="phone" size={20} color="#004d40" />
                                 <TextInput
                                     style={styles.input}
-                                    value={form.phone}
-                                    onChangeText={text => handleInputChange('phone', text)}
+                                    value={user?.phone}
                                     keyboardType="phone-pad"
                                     placeholder="Telefon numaranız"
+                                    editable={false}
                                 />
                             </View>
                         </View>
@@ -196,8 +207,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#F5F5F5',
     },
     content: {
-        padding: 20,
-        paddingTop: 40,
+        paddingHorizontal: 20
     },
     backButton: {
         marginBottom: 20,
@@ -212,11 +222,14 @@ const styles = StyleSheet.create({
     avatarContainer: {
         alignSelf: 'center',
         marginBottom: 30,
+        backgroundColor: "#E0E0E0",
+        borderRadius: 100,
+        padding: 10,
     },
     avatar: {
         width: 120,
         height: 120,
-        borderRadius: 60,
+        borderRadius: 100,
     },
     cameraIcon: {
         position: 'absolute',

@@ -15,8 +15,12 @@ import Header from "../components/Header";
 import Statistics from "../components/Statistics";
 import AppointmentComponent from "../components/AppointmentComponent";
 import BlogComponent from "../components/BlogComponent";
+import Constants from "expo-constants";
 
 const { width } = Dimensions.get("window");
+
+const API_URL = Constants.expoConfig?.extra?.API_URL ?? 'http://localhost:8000';
+
 
 function Index(props: any) {
     const [refreshing, setRefreshing] = useState(false);
