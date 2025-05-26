@@ -7,7 +7,7 @@ import {
     TextInput,
     Alert,
     ScrollView,
-    Modal, SafeAreaView,
+    Modal, SafeAreaView, Platform,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import FeatherIcon from 'react-native-vector-icons/Feather';
@@ -19,6 +19,7 @@ import {Address, Appointment, Transaction} from "@/constants";
 import Constants from 'expo-constants';
 import { useUser } from "@/app/auth/UserContext";
 import {flex} from "nativewind/dist/postcss/to-react-native/properties/flex";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const API_URL = Constants.expoConfig?.extra?.API_URL ?? 'http://localhost:8000';
 
@@ -141,11 +142,27 @@ const AppointmentsScreen: React.FC = () => {
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
-                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-                    <FeatherIcon name="arrow-left" size={24} color="#004d40" />
-                </TouchableOpacity>
-
-                <Text style={styles.title}>Randevularım</Text>
+                <View style={{
+                    width: '100%',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    paddingTop: Platform.OS === 'ios' ? 20 : Constants.statusBarHeight + 30,
+                    paddingBottom: 40,
+                    paddingHorizontal: 20,
+                }}>
+                    <TouchableOpacity style={{
+                        alignSelf: 'flex-start',
+                        position: "absolute",
+                        left: 20,
+                        top: Platform.OS === 'ios' ? 25 : Constants.statusBarHeight + 40,
+                    }} onPress={() => navigation.goBack()}>
+                        <Ionicons name="arrow-back" size={24} color="#004d40" />
+                    </TouchableOpacity>
+                    <View style={{ width: "100%", justifyContent: "center", alignItems: "center",}}>
+                        <Text style={[styles.title]}>Randevularım</Text>
+                    </View>
+                </View>
 
                 <View style={styles.tabContainer}>
                     <TouchableOpacity

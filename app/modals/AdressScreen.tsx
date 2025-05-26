@@ -76,53 +76,11 @@ const AdressScreen: React.FC = () => {
         }
     }
 
-    // const handleAddAddress = async () => {
-    //     if (!addressDetails.trim()) {
-    //         Alert.alert('Uyarı', 'Lütfen tam adres bilgisi giriniz (Cadde, Sokak, Bina No, İlçe, Şehir)');
-    //         return;
-    //     }
-    //
-    //     try {
-    //         const response = await fetch(`${API_URL}/api/addresses`, {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify({
-    //                 address_name: addressName,
-    //                 address_line_1: addressDetails,
-    //                 user_id: user?.id,
-    //             }),
-    //         });
-    //
-    //         const data = await response.json();
-    //
-    //         if (!response.ok) {
-    //             throw new Error(data.message || 'Adres eklenemedi');
-    //         }
-    //
-    //         setUserAddresses([...userAddresses, data.data]);
-    //         setModalVisible(false);
-    //         Alert.alert('Başarılı', 'Adres başarıyla eklendi');
-    //     } catch (error) {
-    //         Alert.alert('Hata', (error instanceof Error ? error.message : 'Adres eklenirken bir hata oluştu'));
-    //     }
-    // }
-
     const handleAddAddress = async () => {
-        // example request body
-        //        {
-        //            "address_name": "Ev Adresi",
-        //            "Mahalle": "Kocatepe Mahallesi",
-        //            "İlçe": "Kocasinan",
-        //            "İl": "Kayseri",
-        //        }
-
         if (!addressName.trim() || !mahalle.trim() || !ilce.trim() || !il.trim()) {
             Alert.alert('Uyarı', 'Lütfen tüm alanları doldurun.');
             return;
         }
-        // mahalle, ilce, il bilgilerini tek bir string olarak birleştiriyoruz
         const fullAddress = `${mahalle}, ${ilce}/${il}`;
 
         try {
@@ -215,11 +173,26 @@ const AdressScreen: React.FC = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-                <Ionicons name="arrow-back" size={24} color="#004d40" />
-            </TouchableOpacity>
-            <View style={{ width: "100%", justifyContent: "center", alignItems: "center", marginBottom: 24 }}>
-                <Text style={[styles.title, styles.montserratBold]}>Adreslerim</Text>
+            <View style={{
+                width: '100%',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingTop: Platform.OS === 'ios' ? 20 : Constants.statusBarHeight + 30,
+                paddingBottom: 40,
+                paddingHorizontal: 20,
+            }}>
+                <TouchableOpacity style={{
+                    alignSelf: 'flex-start',
+                    position: "absolute",
+                    left: 20,
+                    top: Platform.OS === 'ios' ? 25 : Constants.statusBarHeight + 40,
+                }} onPress={() => navigation.goBack()}>
+                    <Ionicons name="arrow-back" size={24} color="#004d40" />
+                </TouchableOpacity>
+                <View style={{ width: "100%", justifyContent: "center", alignItems: "center",}}>
+                    <Text style={[styles.title, styles.montserratBold]}>Adreslerim</Text>
+                </View>
             </View>
 
             <ScrollView

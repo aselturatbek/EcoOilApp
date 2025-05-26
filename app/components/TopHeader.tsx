@@ -37,7 +37,7 @@ const TopHeader = () => {
                 <View style={styles.textContainer}>
                     <Text style={styles.welcomeText}>Hoşgeldin,</Text>
                     <Text style={styles.usernameText} numberOfLines={1} ellipsizeMode="tail">
-                        {user?.username}
+                        {user?.name}
                     </Text>
                 </View>
             </View>

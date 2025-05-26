@@ -10,38 +10,27 @@ import Constants from "expo-constants";
 type RootStackParamList = {
     Home: undefined;
     'modals/AppointmentsScreen': undefined;
-    // Other screens
 };
 
 type NavigationPropType = StackNavigationProp<RootStackParamList, 'modals/AppointmentsScreen'>;
-
-const { width, height } = Dimensions.get("window");
-const doctorImage = require('../assets/images/bgdark.png');
-
+const { width, height } = Dimensions.get("window")
 const API_URL = Constants.expoConfig?.extra?.API_URL ?? 'http://localhost:8000';
+const doctorImage = require('../assets/images/bgdark.png');
 
 const AppointmentComponent = ({ refreshing }: { refreshing: boolean }) => {
     const navigation = useNavigation<NavigationPropType>();
     const { user } = useUser();
     const [lastAppointment, setLastAppointment] = useState<Appointment>();
 
-    const [isUserHaveAppointment, setIsUserHaveAppointment] = useState(false);
-
     useEffect(() => {
         if (refreshing) {
             fetchLastAppointment();
-            if (lastAppointment?.id) {
-                setIsUserHaveAppointment(true);
-            }
-            else {
-                setIsUserHaveAppointment(false);
-            }
         }
     }, [refreshing]);
 
     useEffect(() => {
         fetchLastAppointment();
-    }, [lastAppointment]);
+    }, []);
 
     const fetchLastAppointment = async () => {
         try {
@@ -50,23 +39,23 @@ const AppointmentComponent = ({ refreshing }: { refreshing: boolean }) => {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-            if (data) {
-                setLastAppointment(data);
-                if (lastAppointment?.id) {
-                    setIsUserHaveAppointment(true);
-                }
+            const upcomingAppointments = data.filter((appointment: { date: string | number | Date; }) => new Date(appointment.date) > new Date());
+            if (upcomingAppointments.length > 0) {
+                const sortedAppointments = upcomingAppointments.sort((a, b) =>
+                    new Date(a.date).getTime() - new Date(b.date).getTime()
+                );
+                setLastAppointment(sortedAppointments[0]);
             } else {
-                console.warn('No appointment data found');
+                console.warn("No upcoming appointments");
             }
         } catch (error) {
-            setIsUserHaveAppointment(false);
             console.error('Failed to fetch the last appointment:', error);
         }
     }
 
     return (
         <View>
-            {isUserHaveAppointment ? (
+            {lastAppointment ? (
                 <View style={styles.container}>
                     <View>
                         <Text style={{

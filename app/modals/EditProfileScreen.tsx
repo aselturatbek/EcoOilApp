@@ -10,7 +10,7 @@ import {
     ScrollView,
     Image,
     SafeAreaView,
-    ActivityIndicator,
+    ActivityIndicator, Platform,
 } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import * as ImagePicker from 'expo-image-picker';
@@ -105,14 +105,30 @@ const EditProfileScreen: React.FC = () => {
                     contentContainerStyle={styles.content}
                     keyboardShouldPersistTaps="handled"
                 >
-                    <TouchableOpacity
-                        style={styles.backButton}
-                        onPress={() => navigation.goBack()}
-                    >
-                        <FeatherIcon name="arrow-left" size={24} color="#004d40" />
-                    </TouchableOpacity>
+                    <View
+                        style={{
+                            width: '100%',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            paddingTop: Platform.OS === 'ios' ? 20 : Constants.statusBarHeight + 30,
+                            paddingBottom: 10,
+                            paddingHorizontal: 20,
+                        }}>
+                        <TouchableOpacity
+                            style={{
+                                alignSelf: 'flex-start',
+                                position: "absolute",
+                                left: 20,
+                                top: Platform.OS === 'ios' ? 25 : Constants.statusBarHeight + 35,
+                            }}
+                            onPress={() => navigation.goBack()}
+                        >
+                            <FeatherIcon name="arrow-left" size={24} color="#004d40" />
+                        </TouchableOpacity>
 
-                    <Text style={styles.title}>Profil Düzenle</Text>
+                        <Text style={styles.title}>Profil Düzenle</Text>
+                    </View>
 
                     <TouchableOpacity
                         style={styles.avatarContainer}

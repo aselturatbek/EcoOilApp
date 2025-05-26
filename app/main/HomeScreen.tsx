@@ -8,7 +8,7 @@ import {
     Platform,
     View,
     StatusBar,
-    RefreshControl,
+    RefreshControl, SafeAreaView,
 } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 import Constants from "expo-constants";
@@ -46,7 +46,7 @@ const Index = () => {
 
     return (
         <MenuProvider>
-            <View style={styles.container}>
+            <SafeAreaView style={styles.container}>
                 <StatusBar
                     translucent
                     backgroundColor="transparent"
@@ -73,7 +73,7 @@ const Index = () => {
                         <BlogComponent />
                     </View>
                 </ScrollView>
-            </View>
+            </SafeAreaView>
         </MenuProvider>
     );
 };
