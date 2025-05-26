@@ -19,6 +19,7 @@ function FormScreen() {
     const handleSubmit = () => {
         // İşlemler burada yapılır, örneğin form verilerini göndermek
         alert('Form gönderildi');
+        alert('Form gönderildi');
     };
 
     return (

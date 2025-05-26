@@ -235,7 +235,7 @@ const RegisterScreen: React.FC = () => {
                                         <Text style={{
                                             color: "#004d40",
                                             fontSize: 16,
-                                            fontWeight: "bold"
+                                            fontFamily:"Montserrat-Bold"
                                         }}>Geri</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity style={{
@@ -298,7 +298,6 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 36,
-        fontWeight: 'bold',
         color: '#004d40',
         textAlign: 'center',
         fontFamily: 'Montserrat-Bold',
@@ -312,7 +311,6 @@ const styles = StyleSheet.create({
     },
     titleWelcome: {
         fontSize: 46,
-        fontWeight: 'bold',
         color: '#004d40',
         textAlign: 'center',
         fontFamily: 'Montserrat-Bold',
@@ -364,7 +362,6 @@ const styles = StyleSheet.create({
     },
     label: {
         fontSize: 14,
-        fontWeight: 'bold',
         color: '#004d40',
         marginBottom: 5,
         fontFamily: 'Montserrat-Bold',
@@ -372,7 +369,6 @@ const styles = StyleSheet.create({
     },
     label2: {
         fontSize: 14,
-        fontWeight: 'bold',
         color: '#004d40',
         marginBottom: 5,
         fontFamily: 'Montserrat-Bold',
@@ -380,7 +376,6 @@ const styles = StyleSheet.create({
     },
     labelPhone: {
         fontSize: 14,
-        fontWeight: 'bold',
         color: '#004d40',
         marginBottom: 5,
         fontFamily: 'Montserrat-Bold',
@@ -407,7 +402,6 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#fff',
         fontSize: 16,
-        fontWeight: 'bold',
         fontFamily: 'Montserrat-Bold',
     },
     loginContainer: {
@@ -420,7 +414,6 @@ const styles = StyleSheet.create({
     },
     loginLink: {
         color: '#004d40',
-        fontWeight: 'bold',
         fontFamily: 'Montserrat-Bold',
     },
 });

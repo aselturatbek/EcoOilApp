@@ -73,13 +73,11 @@ const styles = StyleSheet.create({
         marginTop: -40,
     },
     boldTitle: {
-        fontWeight: 'bold',
         color: '#004d40',
         fontSize: 35,
-        fontFamily: 'Montserrat-Bold',
+        fontFamily: "Montserrat-Bold",
     },
     thinTitle: {
-        fontWeight: 'bold',
         color: '#004d40',
         fontSize: 32,
         fontFamily: 'Montserrat-Regular',
@@ -110,7 +108,6 @@ const styles = StyleSheet.create({
     navButtonText: {
         color: '#ffffff',
         fontSize: 18,
-        fontWeight: 'bold',
         textAlign: 'center',
         fontFamily: 'Montserrat-Bold'
     },
