@@ -12,10 +12,13 @@ import {
     TextInput,
 } from "react-native";
 import FeatherIcon from "react-native-vector-icons/Feather";
+import {useUser} from "@/app/auth/UserContext";
 
 const { width, height } = Dimensions.get("window");
 
 function GiftScreen() {
+    const { user } = useUser();
+
     const [modalVisible, setModalVisible] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedGift, setSelectedGift] = useState<{ name: string; points: string; description: string } | null>(null);

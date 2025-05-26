@@ -76,11 +76,54 @@ const AdressScreen: React.FC = () => {
         }
     }
 
+    // const handleAddAddress = async () => {
+    //     if (!addressDetails.trim()) {
+    //         Alert.alert('Uyarı', 'Lütfen tam adres bilgisi giriniz (Cadde, Sokak, Bina No, İlçe, Şehir)');
+    //         return;
+    //     }
+    //
+    //     try {
+    //         const response = await fetch(`${API_URL}/api/addresses`, {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify({
+    //                 address_name: addressName,
+    //                 address_line_1: addressDetails,
+    //                 user_id: user?.id,
+    //             }),
+    //         });
+    //
+    //         const data = await response.json();
+    //
+    //         if (!response.ok) {
+    //             throw new Error(data.message || 'Adres eklenemedi');
+    //         }
+    //
+    //         setUserAddresses([...userAddresses, data.data]);
+    //         setModalVisible(false);
+    //         Alert.alert('Başarılı', 'Adres başarıyla eklendi');
+    //     } catch (error) {
+    //         Alert.alert('Hata', (error instanceof Error ? error.message : 'Adres eklenirken bir hata oluştu'));
+    //     }
+    // }
+
     const handleAddAddress = async () => {
-        if (!addressDetails.trim()) {
-            Alert.alert('Uyarı', 'Lütfen tam adres bilgisi giriniz (Cadde, Sokak, Bina No, İlçe, Şehir)');
+        // example request body
+        //        {
+        //            "address_name": "Ev Adresi",
+        //            "Mahalle": "Kocatepe Mahallesi",
+        //            "İlçe": "Kocasinan",
+        //            "İl": "Kayseri",
+        //        }
+
+        if (!addressName.trim() || !mahalle.trim() || !ilce.trim() || !il.trim()) {
+            Alert.alert('Uyarı', 'Lütfen tüm alanları doldurun.');
             return;
         }
+        // mahalle, ilce, il bilgilerini tek bir string olarak birleştiriyoruz
+        const fullAddress = `${mahalle}, ${ilce}/${il}`;
 
         try {
             const response = await fetch(`${API_URL}/api/addresses`, {
@@ -90,7 +133,7 @@ const AdressScreen: React.FC = () => {
                 },
                 body: JSON.stringify({
                     address_name: addressName,
-                    address_line_1: addressDetails,
+                    address_line_1: fullAddress,
                     user_id: user?.id,
                 }),
             });
@@ -371,7 +414,9 @@ const AdressScreen: React.FC = () => {
                                     onBlur={() => setIsFocus(false)}
                                     onChange={item => {
                                         setIl(item.value);
+                                        setValue(item.value)
                                         setIsFocus(false);
+                                        console.log(`Seçilen şehir: ${il}`);
                                     }}
                                 />
                             </View>

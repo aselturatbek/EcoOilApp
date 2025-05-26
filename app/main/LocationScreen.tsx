@@ -50,17 +50,12 @@ export default function LocationScreen() {
 
     const initialRegion = validAddresses.length > 0
         ? {
-              latitude: validAddresses[0]?.latitude || 41.6354, // Use first valid address or Bartın's default value
-              longitude: validAddresses[0]?.longitude || 32.3370,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421,
+            latitude: 41.6354, // Default value for Bartın
+            longitude: 32.3370,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
           }
-        : {
-              latitude: 41.6354, // Default value for Bartın
-              longitude: 32.3370,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421,
-          };
+        : {};
 
     if (loading) {
         return (
