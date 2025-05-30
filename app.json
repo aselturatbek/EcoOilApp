@@ -8,7 +8,13 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "extra": {
-      "API_URL": "http://172.20.10.3:8000"
+      "API_URL": "https://web-production-7e102.up.railway.app/api",
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "17e7a8ea-e57a-4c56-9a93-98755f93d4d9"
+      }
     },
     "splash": {
       "image": "./assets/images/splash.png",
@@ -16,13 +22,18 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.beyzabozkurt.myApp",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.beyzabozkurt.myApp"
     },
     "web": {
       "bundler": "metro",
