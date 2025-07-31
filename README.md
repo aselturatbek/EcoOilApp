@@ -1,50 +1,76 @@
-# Welcome to my Expo app 👋
+```markdown
+# EcoOilApp
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## Introduction
+**EcoOilApp** is a mobile application built with **React Native** and **Expo** that empowers users to engage in eco-friendly waste oil recycling. The app simplifies the process of scheduling waste oil pickups, submitting recycling forms, and redeeming rewards through a points system. By combining sleek visual elements with an intuitive multi-step registration and login flow, EcoOilApp aims to promote sustainability while offering practical benefits to its community. The repository contains well-organized components, screens, and assets that together create a professional and user-friendly recycling platform fileciteturn0file1, fileciteturn0file3.
 
-## Get started
+## Usage
+After installing the application, users can:
+- Register and log in using a simple guided multi-step form.
+- Submit recycling requests through dedicated forms for waste oil delivery.
+- Review and manage appointments for waste oil pickups.
+- Browse a rewards screen to exchange accumulated points for attractive gifts.
+- Enjoy a dynamic home screen with carousel banners and interactive icons.
 
-1. Install dependencies
+Developers can also use the built-in navigation to traverse between login, registration, form submission, and reward screens. The app leverages components like custom icons, collapsible sections, and animated headers for a polished user experience fileciteturn0file7.
 
+## Features
+- **User Authentication:** Secure login and registration flows with input masking and multi-step indicators.
+- **Waste Oil Form Submission:** A detailed form for entering personal information, oil quantity, and contact details to schedule a waste oil pickup fileciteturn0file3.
+- **Rewards System:** Earn points by recycling and redeem those for exciting prizes such as bicycles, t-shirts, and more fileciteturn0file2.
+- **Dynamic Home Screen:** A carousel that displays promotional messages, encourages recycling actions, and highlights rewards.
+- **Responsive Design:** Custom components and styles ensure consistency across different device sizes using Expo and React Native’s built-in utilities.
+- **Real-time Updates:** Integration with a backend API for handling login, transactions, and appointment management as seen in the LoginScreen and FormScreen implementations fileciteturn0file10.
+
+## Configuration
+The application uses configuration settings from Expo’s constants and environment settings. For example:
+- **API URL:** The backend endpoint is configured in the Login screen using Expo Constants. Developers can override the default API URL by modifying the configuration in the environment settings.
+- **Themes and Styles:** Style guides are embedded directly within component files, with colors and fonts defined consistently across the application for a cohesive look.
+
+Configure the API endpoint for development or production via environment variables before deploying the app.
+
+## Requirements
+- **Node.js** (version 12 or above)
+- **Expo CLI**: Used for building and running the application on both iOS and Android.
+- **Yarn or npm**: Dependency management.
+- **React Native**: The framework used to build the mobile application.
+- Additional native modules as specified in the package configuration from Expo (e.g., vector icons, async storage, and date picker libraries).
+
+## Installation
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/aselturatbek/EcoOilApp.git
+   cd EcoOilApp
+   ```
+2. **Install dependencies:**
    ```bash
    npm install
+   # or
+   yarn install
    ```
-
-2. Start the app
-
+3. **Start the Expo development server:**
    ```bash
-    npx expo start
+   expo start
    ```
+4. Use the Expo app on your mobile device or an emulator to run the application.
 
-In the output, you'll find options to open the app in a
+## Contributing
+Contributions are welcome, and we encourage you to help improve EcoOilApp. To contribute:
+- Fork the repository and create your branch:  
+  ```bash
+  git checkout -b feature/my-new-feature
+  ```
+- Make your changes and commit them with clear messages.
+- Push your branch and open a pull request.
+- Ensure your code follows the established coding conventions and includes comments where necessary.
+- For any major changes, please open an issue first to discuss what you would like to change.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+Please follow a clear commit message guideline and ensure that new features include tests and documentation where applicable.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## License
+This project is licensed under the **MIT License**. The rights to use, modify, and distribute this software are granted under the terms of the MIT License, as detailed in the LICENSE file.
 
-## Get a fresh project
+--------------------------------------------------
 
-When you're ready, run:
-
-```bash
-npm run reset-project
+EcoOilApp is designed with professionalism in mind, providing a comprehensive solution for eco-friendly waste oil management while maintaining clean, modular, and maintainable code throughout the repository fileciteturn0file0.
 ```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
